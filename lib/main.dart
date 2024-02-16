@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/screen/splash.dart';
+import 'package:nanyang_application/screen/login.dart';
 
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -23,8 +24,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
-
-
+        '/login': (context) => const LoginScreen(),
       },
     );
   }
