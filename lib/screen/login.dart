@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 import 'dart:ui';
+
+import 'package:nanyang_application/widget/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,9 +11,26 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  double _opacity = 0.0; // Initial opacity value
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
+
+    Future.delayed(const Duration(milliseconds: 3000), () {
+      setState(() {
+        _opacity = 1.0; // Set opacity to fully visible
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -85,98 +103,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.25,
-                  ),
-                  const Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Text(
-                      'Nanyang Mobile',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                      ),
+              AnimatedOpacity(
+                duration: const Duration(milliseconds: 1500),
+                opacity: _opacity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.275,
                     ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Form(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16.0),
-                            ),
-                            const TextField(
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16.0),
-                            ),
-                            const TextField(
-                              decoration: InputDecoration(
-                                labelText: 'Password',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.0),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                text: 'Lupa Password?',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0,
-                                  color: Colors.black,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/register',
-                                    );
-                                  },
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16.0),
-                            ),
-                            Container(
-                              width: double.infinity,
-                              height: 50.0,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // Your code here...
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.black,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16.0),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'Masuk',
-                                  style: TextStyle(fontSize: 18.0),
-                                ),
-                              ),
-                            )
-                          ],
+                    const Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text(
+                        'Nanyang Mobile',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                  ),
-                ],
+                    const Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: LoginForm()
+                      ),
+                    ),
+                  ],
+                ),
               )
             ],
           ),

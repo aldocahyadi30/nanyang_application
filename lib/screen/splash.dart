@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:nanyang_application/screen/login.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -22,21 +23,24 @@ class _SplashScreenState extends State<SplashScreen> {
       });
     });
 
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation1, animation2) => const LoginScreen(),
-          transitionDuration: const Duration(seconds: 3),
-          transitionsBuilder: (context, animation, animation2, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-        ),
-      );
-    });
+    if (Supabase.instance.client.auth.currentSession == null) {
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation1, animation2) =>
+                const LoginScreen(),
+            transitionDuration: const Duration(seconds: 3),
+            transitionsBuilder: (context, animation, animation2, child) {
+              return FadeTransition(
+                opacity: animation,
+                child: child,
+              );
+            },
+          ),
+        );
+      });
+    }
   }
 
   @override
