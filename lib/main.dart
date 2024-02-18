@@ -5,6 +5,7 @@ import 'package:nanyang_application/screen/home.dart';
 import 'package:nanyang_application/screen/splash.dart';
 import 'package:nanyang_application/screen/login.dart';
 import 'package:nanyang_application/service/auth_service.dart';
+import 'package:nanyang_application/service/user_service.dart';
 import 'package:nanyang_application/viewmodel/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -19,21 +20,16 @@ Future<void> main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoZ2xzZmlieHplZGt6YmNyb2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcwOTk5NjIsImV4cCI6MjAyMjY3NTk2Mn0.IQ-3YBRNTGMo0wwhJrK1UFd6ljGYS_kq0q2-hItUhTE',
   );
-  runApp(const MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final hasSession = Supabase.instance.client.auth.currentSession != null;
 
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
+  runApp(
+    MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (context) =>
               LoginViewModel(authenticationService: AuthenticationService()),
         ),
-        // Add more providers as needed
         ChangeNotifierProvider(
           create: (context) => UserProvider(),
         ),
@@ -42,18 +38,32 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           fontFamily: 'Roboto',
+          primaryColor: Colors.white,
         ),
         builder: FToastBuilder(),
         navigatorKey: navigatorKey,
-        initialRoute: Supabase.instance.client.auth.currentSession != null
-            ? '/home'
-            : '/',
+        initialRoute: hasSession ? '/home' : '/',
         routes: {
           '/': (context) => const SplashScreen(),
           '/login': (context) => const LoginScreen(),
-          '/home': (context) => const HomeScreen(),
+          '/home': (context) {
+            if (hasSession) {
+              UserService()
+                  .getUserByID(Supabase.instance.client.auth.currentUser!.id)
+                  .then((userData) {
+                if (context.mounted) {
+                  Provider.of<UserProvider>(context, listen: false)
+                      .setUser(userData);
+                }
+              }).catchError((error) {
+                // Handle error if any
+                print('Error fetching user data: $error');
+              });
+            }
+            return const HomeScreen();
+          },
         },
       ),
-    );
-  }
+    ),
+  );
 }
