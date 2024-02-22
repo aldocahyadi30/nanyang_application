@@ -38,6 +38,7 @@ dependencies:
   supabase_flutter: ^2.3.3
   provider: ^6.1.1
   fluttertoast: ^8.2.4
+  device_preview: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +65,16 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/image/logo-nanyang.png
+    - assets/image/icon/menu/absensi.png
+    - assets/image/icon/menu/gaji.png
+    - assets/image/icon/menu/guidebook.png
+    - assets/image/icon/menu/kalender.png
+    - assets/image/icon/menu/peformance.png
+    - assets/image/icon/menu/pengumuman.png
+    - assets/image/icon/menu/chat.png
+    - assets/image/icon/menu/perizinan.png
+    - assets/image/icon/menu/manajemen.png
+    - assets/image/icon/menu/lainnya.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
