@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentPageIndex,
         backgroundColor: Colors.white,
-        indicatorColor: Colors.black,
+        indicatorColor: Colors.blue,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         elevation: 4,
         onDestinationSelected: (int index) {
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             icon: Icon(
               Icons.home_filled,
-              color: Colors.black,
+              color: Colors.blue,
               size: 28,
             ),
             label: 'Home',
@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             icon: Icon(
               Icons.timer_outlined,
-              color: Colors.black,
+              color: Colors.blue,
               size: 28,
             ),
             label: 'Absensi',
@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             icon: Icon(
               Icons.edit_document,
-              color: Colors.black,
+              color: Colors.blue,
               size: 28,
             ),
             label: 'Perizinan',
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             icon: Icon(
               Icons.settings,
-              color: Colors.black,
+              color: Colors.blue,
               size: 28,
             ),
             label: 'Pengaturan',

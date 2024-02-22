@@ -1,6 +1,3 @@
-//make model for user.dart
-import 'package:supabase_flutter/supabase_flutter.dart';
-
 class UserModel {
   final String id;
   final int employeeId;

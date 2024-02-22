@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:nanyang_application/screen/home.dart';
+import 'package:nanyang_application/screen/menu.dart';
 import 'package:nanyang_application/screen/splash.dart';
 import 'package:nanyang_application/screen/login.dart';
+import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/auth_service.dart';
 import 'package:nanyang_application/service/user_service.dart';
+import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:device_preview/device_preview.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -23,24 +27,41 @@ Future<void> main() async {
 
   final hasSession = Supabase.instance.client.auth.currentSession != null;
 
-  runApp(
-    MultiProvider(
+  runApp(DevicePreview(
+    enabled: true,
+    builder: (context) => MultiProvider(
       providers: [
         ChangeNotifierProvider(
           create: (context) =>
               LoginViewModel(authenticationService: AuthenticationService()),
         ),
         ChangeNotifierProvider(
+          create: (context) =>
+              AnnouncementViewModel(announcementService: AnnouncementService()),
+        ),
+        ChangeNotifierProvider(
           create: (context) => UserProvider(),
         ),
       ],
       child: MaterialApp(
+        useInheritedMediaQuery: true,
+        locale: DevicePreview.locale(context), // Add the locale here
+        builder: (context, child) {
+          return DevicePreview.appBuilder(
+              context, FToastBuilder()(context, child));
+        },
         title: 'Flutter Demo',
         theme: ThemeData(
-          fontFamily: 'Roboto',
-          primaryColor: Colors.white,
-        ),
-        builder: FToastBuilder(),
+            fontFamily: 'Roboto',
+            primaryColor: Colors.white,
+            navigationBarTheme: NavigationBarThemeData(
+              labelTextStyle: MaterialStateProperty.all(
+                const TextStyle(
+                  color: Colors.blue,
+                  fontSize: 16,
+                ),
+              ),
+            )),
         navigatorKey: navigatorKey,
         initialRoute: hasSession ? '/home' : '/',
         routes: {
@@ -62,8 +83,9 @@ Future<void> main() async {
             }
             return const HomeScreen();
           },
+          '/menu': (context) => const MenuScreen(),
         },
       ),
     ),
-  );
+  ));
 }

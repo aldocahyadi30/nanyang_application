@@ -84,7 +84,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              // Centered logo
               Positioned(
                 top: MediaQuery.of(context).size.height *
                     0.15, // 25% from bottom

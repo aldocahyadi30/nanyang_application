@@ -1,203 +1,52 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/widget/dashboard_menu_icon.dart';
 
 class DashboardMenuCard extends StatelessWidget {
   const DashboardMenuCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-        color: Colors.white,
-        elevation: 4,
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      IconButton(
-                        color: Colors.red,
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.timer_rounded,
-                          size: 40,
-                        ),
-                      ),
-                      const Text(
-                        'Absensi',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      IconButton(
-                        color: Colors.yellow,
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.edit_document,
-                          size: 40,
-                        ),
-                      ),
-                      const Text(
-                        'Perizinan',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      IconButton(
-                        color: Colors.lightBlue,
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.analytics,
-                          size: 40,
-                        ),
-                      ),
-                      const Text(
-                        'Peformance',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      IconButton(
-                        color: Colors.lightGreen,
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.payments,
-                          size: 40,
-                        ),
-                      ),
-                      const Text(
-                        'Gaji',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      IconButton(
-                        color: Colors.red,
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.timer_rounded,
-                          size: 40,
-                        ),
-                      ),
-                      const Text(
-                        'Absensi',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      IconButton(
-                        color: Colors.yellow,
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.edit_document,
-                          size: 40,
-                        ),
-                      ),
-                      const Text(
-                        'Perizinan',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      IconButton(
-                        color: Colors.lightBlue,
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.analytics,
-                          size: 40,
-                        ),
-                      ),
-                      const Text(
-                        'Peformance',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      IconButton(
-                        color: Colors.black,
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.more_horiz,
-                          size: 40,
-                        ),
-                      ),
-                      const Text(
-                        'Lainnya',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ));
+    return const Card(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              DashboardMenuIcon(
+                  image: 'assets/image/icon/menu/peformance.png',
+                  route: '/peformance',
+                  title: 'Peformance'),
+              DashboardMenuIcon(
+                  image: 'assets/image/icon/menu/gaji.png',
+                  route: '/gaji',
+                  title: 'Gaji'),
+              DashboardMenuIcon(
+                  image: 'assets/image/icon/menu/kalender.png',
+                  route: '/kalender',
+                  title: 'Kalender'),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              DashboardMenuIcon(
+                  image: 'assets/image/icon/menu/pengumuman.png',
+                  route: '/pengumuman',
+                  title: 'Pengumuman'),
+              DashboardMenuIcon(
+                  image: 'assets/image/icon/menu/chat.png',
+                  route: '/chat',
+                  title: 'Help Chat'),
+              DashboardMenuIcon(
+                  image: 'assets/image/icon/menu/lainnya.png',
+                  route: '/menu',
+                  title: 'Lainnya'),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
