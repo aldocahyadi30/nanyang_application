@@ -10,11 +10,11 @@ class UserService{
         user_id,
         email,
         level,
-        Employee!public_Employee_employee_id_fkey (
+        Employee!employee_id (
           employee_id,
           name,
           age,
-          Position!public_Employee_position_id_fkey (
+          Position!position_id (
             position_id,
             name
           )
@@ -23,7 +23,7 @@ class UserService{
 
       return UserModel.fromSupabase(data[0]);
     } catch (e) {
-      throw Exception('Get user failed');
+      throw Exception(e);
     }
   }
 }

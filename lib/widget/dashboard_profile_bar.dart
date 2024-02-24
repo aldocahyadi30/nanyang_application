@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DashboardProfileBar extends StatefulWidget {
   const DashboardProfileBar({super.key});
@@ -14,20 +13,40 @@ class _DashboardProfileBarState extends State<DashboardProfileBar> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
+    String avatarText = '';
+    String employeeName = '';
+
+    if (user != null) {
+      List<String> nameParts = user.name.split(' ');
+      avatarText = ((nameParts.isNotEmpty ? nameParts[0][0] : '') +
+              (nameParts.length > 1 ? nameParts[1][0] : ''))
+          .toUpperCase();
+
+      if (nameParts.length == 1) {
+        employeeName = nameParts[0]; // If there's only one word, use it as is
+      } else if (nameParts.length == 2) {
+        employeeName = nameParts
+            .join(' '); // If there are two words, join them with a space
+      } else {
+        // If there are more than two words, use the first two words and abbreviate the rest
+        employeeName = nameParts.take(2).join(' ') +
+            nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
+      }
+    }
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.1,
       child: ListTile(
-        leading: const CircleAvatar(
+        leading: CircleAvatar(
           radius: 30,
           backgroundColor: Colors.white,
           child: Text(
-            'AO',
-            style: TextStyle(color: Colors.black),
+            avatarText,
+            style: const TextStyle(color: Colors.black),
           ),
         ),
         title: Text(
-          user != null ? user.name : 'Nanyang',
+          user != null ? employeeName : 'Nanyang',
           style: const TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -41,12 +60,17 @@ class _DashboardProfileBarState extends State<DashboardProfileBar> {
             fontSize: 16,
           ),
         ),
-
-        trailing: IconButton(
-          iconSize: 24,
-          color: Colors.white,
-          icon: const Icon(Icons.notifications),
-          onPressed: () {},
+        trailing: Container(
+          decoration: BoxDecoration(
+            color: Colors.blue[400],
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: IconButton(
+            iconSize: 24,
+            color: Colors.white,
+            icon: const Icon(Icons.notifications),
+            onPressed: () {},
+          ),
         ),
       ),
     );

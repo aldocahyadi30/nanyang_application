@@ -12,15 +12,29 @@ class MenuScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.blue[400],
               borderRadius:
                   BorderRadius.circular(10),
             ),
             child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.blue),
+              icon: const Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
                 Navigator.pop(context);
               },
+            ),
+          ),
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.blue[200]!,
+                Colors.blue,
+                Colors.blue[700]!,
+                Colors.blue[800]!
+              ],
             ),
           ),
         ),

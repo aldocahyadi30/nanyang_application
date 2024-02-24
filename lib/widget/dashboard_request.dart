@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/request_service.dart';
-import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 
 class DashboardRequest extends StatefulWidget {

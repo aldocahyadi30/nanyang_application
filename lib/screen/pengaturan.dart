@@ -18,6 +18,20 @@ class PengaturanScreen extends StatelessWidget {
         backgroundColor: Colors.blue,
         elevation: 4,
         automaticallyImplyLeading: false,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.blue[200]!,
+                Colors.blue,
+                Colors.blue[700]!,
+                Colors.blue[800]!
+              ],
+            ),
+          ),
+        ),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,

@@ -21,19 +21,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   // title: const Text('Nanyang'),
-      //   // centerTitle: true,
-      //   automaticallyImplyLeading: false,
-      //   backgroundColor: Colors.white,
-      //   elevation: 0,
-      // ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: currentPageIndex,
         backgroundColor: Colors.white,
         indicatorColor: Colors.blue,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        elevation: 4,
+        elevation: 0,
         onDestinationSelected: (int index) {
           setState(() {
             currentPageIndex = index;

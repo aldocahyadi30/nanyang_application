@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/model/announcement.dart';
 import 'package:nanyang_application/model/request.dart';
-import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/request_service.dart';
 
 class RequestViewModel extends ChangeNotifier {

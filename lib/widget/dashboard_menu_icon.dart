@@ -25,7 +25,7 @@ class DashboardMenuIcon extends StatelessWidget {
             Image.asset(image, width: 44, height: 44),
             Text(
               title,
-              style: const TextStyle(color: Colors.black, fontSize: 12),
+              style: const TextStyle(color: Colors.black, fontSize: 10),
             ),
           ],
         ),

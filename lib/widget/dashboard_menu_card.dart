@@ -16,8 +16,8 @@ class DashboardMenuCard extends StatelessWidget {
             children: [
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/peformance.png',
-                  route: '/peformance',
-                  title: 'Peformance'),
+                  route: '/performance',
+                  title: 'Performance'),
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/gaji.png',
                   route: '/gaji',

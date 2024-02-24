@@ -13,21 +13,41 @@ class _PengaturanAccountState extends State<PengaturanAccount> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
+    String avatarText = '';
+    String employeeName = '';
+
+    if (user != null) {
+      List<String> nameParts = user.name.split(' ');
+      avatarText = ((nameParts.isNotEmpty ? nameParts[0][0] : '') +
+              (nameParts.length > 1 ? nameParts[1][0] : ''))
+          .toUpperCase();
+
+      if (nameParts.length == 1) {
+        employeeName = nameParts[0]; // If there's only one word, use it as is
+      } else if (nameParts.length == 2) {
+        employeeName = nameParts
+            .join(' '); // If there are two words, join them with a space
+      } else {
+        // If there are more than two words, use the first two words and abbreviate the rest
+        employeeName = nameParts.take(2).join(' ') +
+            nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
+      }
+    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Container(
         child: ListTile(
-          leading: const CircleAvatar(
+          leading: CircleAvatar(
             radius: 30,
             backgroundColor: Colors.black,
             child: Text(
-              'AO',
-              style: TextStyle(color: Colors.white),
+              avatarText,
+              style: const TextStyle(color: Colors.white),
             ),
           ),
           title: Text(
-            user != null ? user.name : 'Nanyang',
+            user != null ? employeeName : 'Nanyang',
             style: const TextStyle(
               color: Colors.black,
               fontSize: 20,

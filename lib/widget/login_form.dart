@@ -62,7 +62,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
+            padding: EdgeInsets.symmetric(vertical: 6.0),
           ),
           TextFormField(
             validator: (value) {
@@ -83,26 +83,6 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0),
-          ),
-          RichText(
-            text: TextSpan(
-              text: 'Lupa Password?',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.0,
-                color: Colors.black,
-              ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  Navigator.pushNamed(
-                    context,
-                    '/register',
-                  );
-                },
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
           ),
           Container(
             width: double.infinity,
@@ -156,7 +136,28 @@ class _LoginFormState extends State<LoginForm> {
                       style: TextStyle(fontSize: 18.0),
                     ),
             ),
-          )
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+          ),
+          RichText(
+            text: TextSpan(
+              text: 'Lupa Password?',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0,
+                color: Colors.black,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  Navigator.pushNamed(
+                    context,
+                    '/register',
+                  );
+                },
+            ),
+          ),
+          
         ],
       ),
     );

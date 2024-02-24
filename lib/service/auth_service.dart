@@ -17,11 +17,11 @@ class AuthenticationService {
         user_id,
         email,
         level,
-        Employee!public_Employee_employee_id_fkey (
+        Employee(
           employee_id,
           name,
           age,
-          Position!public_Employee_position_id_fkey (
+          Position(
             position_id,
             name
           )

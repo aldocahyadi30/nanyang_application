@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nanyang_application/provider/attendance_date_provider.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:nanyang_application/screen/home.dart';
 import 'package:nanyang_application/screen/menu.dart';
 import 'package:nanyang_application/screen/splash.dart';
 import 'package:nanyang_application/screen/login.dart';
 import 'package:nanyang_application/service/announcement_service.dart';
+import 'package:nanyang_application/service/attendance_service.dart';
 import 'package:nanyang_application/service/auth_service.dart';
 import 'package:nanyang_application/service/user_service.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/attedance_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -40,7 +43,14 @@ Future<void> main() async {
               AnnouncementViewModel(announcementService: AnnouncementService()),
         ),
         ChangeNotifierProvider(
+          create: (context) =>
+              AttendanceViewModel(attendanceService: AttendanceService()),
+        ),
+        ChangeNotifierProvider(
           create: (context) => UserProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DateProvider(),
         ),
       ],
       child: MaterialApp(
@@ -52,13 +62,15 @@ Future<void> main() async {
         },
         title: 'Flutter Demo',
         theme: ThemeData(
-            fontFamily: 'Roboto',
+            useMaterial3: true,
+            fontFamily: 'Poppins',
             primaryColor: Colors.white,
+            primarySwatch: Colors.blue,
             navigationBarTheme: NavigationBarThemeData(
               labelTextStyle: MaterialStateProperty.all(
                 const TextStyle(
                   color: Colors.blue,
-                  fontSize: 16,
+                  fontSize: 12,
                 ),
               ),
             )),
@@ -77,8 +89,7 @@ Future<void> main() async {
                       .setUser(userData);
                 }
               }).catchError((error) {
-                // Handle error if any
-                print('Error fetching user data: $error');
+                
               });
             }
             return const HomeScreen();

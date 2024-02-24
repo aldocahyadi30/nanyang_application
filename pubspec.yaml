@@ -126,6 +126,63 @@ flutter:
       - asset: assets/font/roboto/Roboto-BlackItalic.ttf
         weight: 900
         style: italic
+
+    - family: Poppins
+      fonts:
+      - asset: assets/font/poppins/Poppins-Thin.ttf
+        weight: 100
+        style: normal
+      - asset: assets/font/poppins/Poppins-ThinItalic.ttf
+        weight: 100
+        style: italic
+      - asset: assets/font/poppins/Poppins-ExtraLight.ttf
+        weight: 200
+        style: normal
+      - asset: assets/font/poppins/Poppins-ExtraLightItalic.ttf
+        weight: 200
+        style: italic
+      - asset: assets/font/poppins/Poppins-Light.ttf
+        weight: 300
+        style: normal
+      - asset: assets/font/poppins/Poppins-LightItalic.ttf
+        weight: 300
+        style: italic
+      - asset: assets/font/poppins/Poppins-Regular.ttf
+        weight: 400
+        style: normal
+      - asset: assets/font/poppins/Poppins-Italic.ttf
+        weight: 400
+        style: italic
+      - asset: assets/font/poppins/Poppins-Medium.ttf
+        weight: 500
+        style: normal
+      - asset: assets/font/poppins/Poppins-MediumItalic.ttf
+        weight: 500
+        style: italic
+      - asset: assets/font/poppins/Poppins-SemiBold.ttf
+        weight: 600
+        style: normal
+      - asset: assets/font/poppins/Poppins-SemiBoldItalic.ttf
+        weight: 600
+        style: italic
+      - asset: assets/font/poppins/Poppins-Bold.ttf
+        weight: 700
+        style: normal
+      - asset: assets/font/poppins/Poppins-BoldItalic.ttf
+        weight: 700
+        style: italic
+      - asset: assets/font/poppins/Poppins-ExtraBold.ttf
+        weight: 800
+        style: normal
+      - asset: assets/font/poppins/Poppins-ExtraBoldItalic.ttf
+        weight: 800
+        style: italic
+      - asset: assets/font/poppins/Poppins-Black.ttf
+        weight: 900
+        style: normal
+      - asset: assets/font/poppins/Poppins-BlackItalic.ttf
+        weight: 900
+        style: italic
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

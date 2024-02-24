@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:nanyang_application/widget/dashboard_menu_card.dart';
 import 'package:nanyang_application/widget/dashboard_pengumuman.dart';
 import 'package:nanyang_application/widget/dashboard_profile_bar.dart';
 import 'package:nanyang_application/widget/dashboard_request.dart';
-import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -15,7 +13,6 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  //MAKE FUNCTION SIGNOUT
   void signOut() async {
     await Supabase.instance.client.auth.signOut();
     if (context.mounted) {
@@ -33,10 +30,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Expanded(
                 flex: 1,
                 child: Container(
-                    color: Colors.blue,
-                    child: const Column(
-                      children: [SizedBox(height: 48), DashboardProfileBar()],
-                    )),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.blue[200]!,
+                        Colors.blue,
+                        Colors.blue[700]!,
+                        Colors.blue[800]!
+                      ],
+                    ),
+                  ),
+                  child: const Column(
+                    children: [SizedBox(height: 48), DashboardProfileBar()],
+                  ),
+                ),
               ),
               Expanded(
                 flex: 2,

@@ -14,15 +14,15 @@ class RequestService {
         reason,
         comment,
         post_later,
-        AttendanceRequestType!AttendanceRequest_request_type_id_AttendanceRequestType_request (
+        AttendanceRequestType(
           request_type_id,
           name,
         ),
-        Employee!AttendanceRequest_employee_id_Employee_employee_id (
+        Employee!employee_id(
           user_id,
           name,
         ),
-        Employee!AttendanceRequest_approver_id_Employee_employee_id (
+        Approver:approver_id(
           user_id,
           name,
         )
