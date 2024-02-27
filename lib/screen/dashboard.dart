@@ -57,15 +57,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.15),
                         const DashboardPengumuman(),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.005,
-                          color: Colors.grey[300],
+                        const Divider(
+                          height: 1,
+                          color: Colors.grey,
                         ),
                         const DashboardRequest(),
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.005,
-                          color: Colors.grey[300],
-                        ),
                       ],
                     ),
                   ),

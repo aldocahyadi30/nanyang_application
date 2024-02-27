@@ -7,8 +7,8 @@ class RequestModel {
   final int approverId;
   final String approverName;
   final int status;
-  final DateTime startDate;
-  final DateTime endDate;
+  final String startDate;
+  final String endDate;
   final String reason;
   final String comment;
 
@@ -34,13 +34,13 @@ class RequestModel {
         id: request['request_id'],
         requestTypeId: request['AttendanceRequestType']['request_type_id'],
         requestTypeName: request['AttendanceRequestType']['name'],
-        requesterId: request['Requester']['user_id'],
+        requesterId: request['Requester']['employee_id'],
         requesterName: request['Requester']['name'],
-        approverId: request['Approver']['user_id'],
+        approverId: request['Approver']['employee_id'],
         approverName: request['Approver']['name'],
         status: request['status'],
-        startDate: DateTime.parse(request['start_date']),
-        endDate: DateTime.parse(request['end_date']),
+        startDate: request['start_date'],
+        endDate: request['end_date'],
         reason: request['reason'],
         comment: request['comment'],
       );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/provider/attendance_date_provider.dart';
-import 'package:nanyang_application/widget/absensi_karyawan_list.dart';
-import 'package:nanyang_application/widget/datepicker.dart';
+import 'package:nanyang_application/widget/absensi_list.dart';
+import 'package:nanyang_application/widget/absensi_datepicker.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -23,13 +23,12 @@ class _AbsensiKaryawanScreenState extends State<AbsensiKaryawanScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: DatePicker(controller: _dateController),
+            child: AbsensiDatePicker(controller: _dateController),
           ),
           const SizedBox(height: 8),
           Container(
@@ -43,7 +42,7 @@ class _AbsensiKaryawanScreenState extends State<AbsensiKaryawanScreen> {
               ),
             ),
           ),
-          const Expanded(child: AbsensiKaryawanList())
+          const Expanded(child: AbsensiList(mode: 'karyawan',))
         ],
       ),
     );

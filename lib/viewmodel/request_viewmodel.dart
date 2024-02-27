@@ -17,4 +17,14 @@ class RequestViewModel extends ChangeNotifier {
       return null;
     }
   }
+
+  Future<List<RequestModel>?> getListRequest() async {
+    try {
+      List<RequestModel> request = await _requestService.getListRequest();
+      return request;
+    } catch (e) {
+      // Handle error
+      return null;
+    }
+  }
 }

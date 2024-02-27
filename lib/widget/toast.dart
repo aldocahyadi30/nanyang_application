@@ -32,7 +32,7 @@ void showToast(String message, String status) {
 
     fToast.showToast(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25.0),
           color: color,
@@ -46,7 +46,8 @@ void showToast(String message, String status) {
             ),
             Text(
               message,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white, fontSize: 12.0),
+
             ),
           ],
         ),

@@ -100,10 +100,10 @@ class _LoginFormState extends State<LoginForm> {
                   final user = await loginViewModel.login(email, password);
 
                   if (user != null) {
-                    
                     showToast('Login berhasil', 'success');
                     if (context.mounted) {
-                      Provider.of<UserProvider>(context, listen: false).setUser(user);
+                      Provider.of<UserProvider>(context, listen: false)
+                          .setUser(user);
                       Navigator.of(context).pushReplacementNamed('/home');
                     }
                   } else {
@@ -113,8 +113,7 @@ class _LoginFormState extends State<LoginForm> {
                     });
                   }
                 } else {
-                  showToast('Login gagal, mohon input ulang email dan password',
-                      'error');
+                  showToast('Cek kembali email dan password anda', 'error');
                   setState(() {
                     _isLoading = false;
                   });
@@ -157,7 +156,6 @@ class _LoginFormState extends State<LoginForm> {
                 },
             ),
           ),
-          
         ],
       ),
     );

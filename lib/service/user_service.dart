@@ -10,11 +10,11 @@ class UserService{
         user_id,
         email,
         level,
-        Employee!employee_id (
+        Employee(
           employee_id,
           name,
           age,
-          Position!position_id (
+          Position(
             position_id,
             name
           )

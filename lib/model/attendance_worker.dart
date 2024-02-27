@@ -1,4 +1,4 @@
-class AttedanceWorkerModel {
+class AttendanceWorkerModel {
   final int employeeId;
   final String employeeName;
   final int? attendanceId;
@@ -7,7 +7,7 @@ class AttedanceWorkerModel {
   final String? date;
   final String? time;
 
-  AttedanceWorkerModel({
+  AttendanceWorkerModel({
     this.attendanceId,
     required this.employeeId,
     required this.employeeName,
@@ -17,7 +17,7 @@ class AttedanceWorkerModel {
     this.time,
   });
 
-  static List<AttedanceWorkerModel> fromSupabaseList(
+  static List<AttendanceWorkerModel> fromSupabaseList(
       List<Map<String, dynamic>> employees,
       List<Map<String, dynamic>> attendances) {
     return employees.map((employee) {
@@ -32,7 +32,7 @@ class AttedanceWorkerModel {
         dateTemp = dateComponent[0];
         timeTemp = dateComponent[1];
       }
-      return AttedanceWorkerModel(
+      return AttendanceWorkerModel(
         employeeId: employee['employee_id'],
         employeeName: employee['name'],
         attendanceId: attendance['attendance_id'],

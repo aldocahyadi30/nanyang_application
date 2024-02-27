@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/provider/attendance_date_provider.dart';
 import 'package:provider/provider.dart';
 
-class DatePicker extends StatefulWidget {
+class PerizinanDatePicker extends StatefulWidget {
   final TextEditingController controller;
-  const DatePicker({Key? key, required this.controller}) : super(key: key);
+  const PerizinanDatePicker({Key? key, required this.controller})
+      : super(key: key);
 
   @override
-  State<DatePicker> createState() => _DatePickerState();
+  State<PerizinanDatePicker> createState() => _PerizinanDatePickerState();
 }
 
-class _DatePickerState extends State<DatePicker> {
+class _PerizinanDatePickerState extends State<PerizinanDatePicker> {
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -55,25 +56,15 @@ class _DatePickerState extends State<DatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
+    return GestureDetector(
+      onTap: () {
+        _selectDate(context);
+      },
       child: TextField(
         readOnly: true,
         controller: widget.controller,
         decoration: InputDecoration(
-          labelText: 'Filter Tanggal',
+          labelText: 'Tanggal',
           labelStyle: const TextStyle(color: Colors.blue),
           suffixIcon: IconButton(
             onPressed: () => _selectDate(context),

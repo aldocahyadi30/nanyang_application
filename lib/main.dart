@@ -9,10 +9,12 @@ import 'package:nanyang_application/screen/login.dart';
 import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
 import 'package:nanyang_application/service/auth_service.dart';
+import 'package:nanyang_application/service/request_service.dart';
 import 'package:nanyang_application/service/user_service.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
-import 'package:nanyang_application/viewmodel/attedance_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/login_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:device_preview/device_preview.dart';
@@ -41,6 +43,10 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (context) =>
               AnnouncementViewModel(announcementService: AnnouncementService()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) =>
+              RequestViewModel(requestService: RequestService()),
         ),
         ChangeNotifierProvider(
           create: (context) =>
@@ -88,9 +94,7 @@ Future<void> main() async {
                   Provider.of<UserProvider>(context, listen: false)
                       .setUser(userData);
                 }
-              }).catchError((error) {
-                
-              });
+              }).catchError((error) {});
             }
             return const HomeScreen();
           },

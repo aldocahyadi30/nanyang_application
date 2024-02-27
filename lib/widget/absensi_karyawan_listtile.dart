@@ -1,8 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/model/attedance_worker.dart';
+import 'package:nanyang_application/model/attendance_worker.dart';
 
 class AbsensiKaryawanListtile extends StatefulWidget {
-  final AttedanceWorkerModel model;
+  final AttendanceWorkerModel model;
   const AbsensiKaryawanListtile({super.key, required this.model});
 
   @override
@@ -20,12 +22,11 @@ class _AbsensiKaryawanListtileState extends State<AbsensiKaryawanListtile> {
 
     String employeeName = '';
     if (nameParts.length == 1) {
-      employeeName = nameParts[0]; // If there's only one word, use it as is
+      employeeName = nameParts[0];
     } else if (nameParts.length == 2) {
       employeeName =
-          nameParts.join(' '); // If there are two words, join them with a space
+          nameParts.join(' ');
     } else {
-      // If there are more than two words, use the first two words and abbreviate the rest
       employeeName = nameParts.take(2).join(' ') +
           nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
     }
@@ -35,12 +36,13 @@ class _AbsensiKaryawanListtileState extends State<AbsensiKaryawanListtile> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      elevation: 5,
+      elevation: 4,
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         leading: CircleAvatar(
           radius: 30,
-          backgroundColor: Colors.black,
+          backgroundColor:
+              Colors.primaries[Random().nextInt(Colors.primaries.length)],
           child: Text(
             avatarText,
             style: const TextStyle(color: Colors.white),

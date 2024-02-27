@@ -23,12 +23,11 @@ class _PengaturanAccountState extends State<PengaturanAccount> {
           .toUpperCase();
 
       if (nameParts.length == 1) {
-        employeeName = nameParts[0]; // If there's only one word, use it as is
+        employeeName = nameParts[0];
       } else if (nameParts.length == 2) {
         employeeName = nameParts
-            .join(' '); // If there are two words, join them with a space
+            .join(' ');
       } else {
-        // If there are more than two words, use the first two words and abbreviate the rest
         employeeName = nameParts.take(2).join(' ') +
             nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
       }

@@ -1,36 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/provider/attendance_date_provider.dart';
-import 'package:nanyang_application/service/attendance_service.dart';
-import 'package:nanyang_application/viewmodel/attedance_viewmodel.dart';
-import 'package:nanyang_application/widget/absensi_karyawan_listtile.dart';
+import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
+import 'package:nanyang_application/widget/perizinan_listtile.dart';
 import 'package:provider/provider.dart';
 
-class AbsensiKaryawanList extends StatefulWidget {
-  const AbsensiKaryawanList({super.key});
+class PerizinanList extends StatefulWidget {
+  const PerizinanList({super.key});
 
   @override
-  State<AbsensiKaryawanList> createState() => _AbsensiKaryawanListState();
+  State<PerizinanList> createState() => _PerizinanListState();
 }
 
-class _AbsensiKaryawanListState extends State<AbsensiKaryawanList> {
-  late final AttendanceViewModel _attendanceViewModel;
+class _PerizinanListState extends State<PerizinanList> {
+  late final RequestViewModel _requestViewModel;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _attendanceViewModel =
-        Provider.of<AttendanceViewModel>(context, listen: false);
+    _requestViewModel =
+        Provider.of<RequestViewModel>(context, listen: false);
   }
-
   @override
   Widget build(BuildContext context) {
-    String date = Provider.of<DateProvider>(context).date;
-    
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: FutureBuilder(
-        future: _attendanceViewModel.getTodayWorkerAttendance(date),
+        future: _requestViewModel.getListRequest(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -46,7 +41,7 @@ class _AbsensiKaryawanListState extends State<AbsensiKaryawanList> {
                 shrinkWrap: true,
                 itemCount: snapshot.data?.length,
                 itemBuilder: (context, index) {
-                  return AbsensiKaryawanListtile(model: snapshot.data![index]);
+                  return PerizinanListtile(model: snapshot.data![index]);
                 },
               );
             }
