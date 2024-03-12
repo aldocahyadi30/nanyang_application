@@ -7,6 +7,7 @@ class DashboardMenuCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Card(
+      elevation: 4,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

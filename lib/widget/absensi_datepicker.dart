@@ -13,16 +13,15 @@ class AbsensiDatePicker extends StatefulWidget {
 }
 
 class _DatePickerState extends State<AbsensiDatePicker> {
-  DateTime selectedDate = DateTime.now();
+  late DateTime selectedDate;
 
   @override
   void initState() {
     super.initState();
-    widget.controller.text = DateFormat('yyyy-MM-dd').format(selectedDate);
-
     Future.delayed(Duration.zero, () {
-      Provider.of<DateProvider>(context, listen: false)
-          .setDate(widget.controller.text);
+      selectedDate =  DateTime.parse(Provider.of<DateProvider>(context, listen: false).date);
+      widget.controller.text = DateFormat('dd-MM-yyyy').format(selectedDate);
+
     });
   }
 
@@ -47,9 +46,9 @@ class _DatePickerState extends State<AbsensiDatePicker> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        widget.controller.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+        widget.controller.text = DateFormat('dd-MM-yyyy').format(selectedDate);
         Provider.of<DateProvider>(context, listen: false)
-            .setDate(widget.controller.text);
+            .setDate(DateFormat('yyyy-MM-dd').format(selectedDate));
       });
     }
   }

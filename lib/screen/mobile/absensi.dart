@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/screen/absensi_cabutan.dart';
-import 'package:nanyang_application/screen/absensi_karyawan.dart';
+import 'package:nanyang_application/widget/absensi_cabutan.dart';
+import 'package:nanyang_application/widget/absensi_karyawan.dart';
 
 class AbsensiScreen extends StatefulWidget {
   const AbsensiScreen({super.key});
@@ -40,8 +40,8 @@ class _AbsensiScreenState extends State<AbsensiScreen>
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
               colors: [
                 Colors.blue[200]!,
                 Colors.blue,

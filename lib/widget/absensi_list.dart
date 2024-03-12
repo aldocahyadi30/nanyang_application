@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/model/attendance_labor.dart';
-import 'package:nanyang_application/model/attendance_worker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:nanyang_application/model/attendanceLabor.dart';
+import 'package:nanyang_application/model/attendanceWorker.dart';
 import 'package:nanyang_application/provider/attendance_date_provider.dart';
-import 'package:nanyang_application/service/attendance_service.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:nanyang_application/widget/absensi_cabutan_listtile.dart';
 import 'package:nanyang_application/widget/absensi_karyawan_listtile.dart';
+import 'package:nanyang_application/widget/toast.dart';
 import 'package:provider/provider.dart';
 
 class AbsensiList extends StatefulWidget {
@@ -18,6 +19,7 @@ class AbsensiList extends StatefulWidget {
 
 class _AbsensiKaryawanListState extends State<AbsensiList> {
   late final AttendanceViewModel _attendanceViewModel;
+  late FToast fToast;
 
   @override
   void initState() {
@@ -25,6 +27,7 @@ class _AbsensiKaryawanListState extends State<AbsensiList> {
     super.initState();
     _attendanceViewModel =
         Provider.of<AttendanceViewModel>(context, listen: false);
+    // initToast(context);
   }
 
   @override
@@ -41,6 +44,12 @@ class _AbsensiKaryawanListState extends State<AbsensiList> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            // showToast('Gagal mengambil data', 'error');
+            return const Center(
+              child: Text(
+                  'Terjadi kesalahan saat memuat data. Silahkan coba lagi.'),
             );
           } else {
             if (snapshot.data?.isEmpty ?? true) {
@@ -61,6 +70,7 @@ class _AbsensiKaryawanListState extends State<AbsensiList> {
                     return AbsensiKaryawanListtile(
                         model: snapshot.data![index] as AttendanceWorkerModel);
                   }
+                  return Container(); // Add a return statement to return a default Container widget.
                 },
               );
             }

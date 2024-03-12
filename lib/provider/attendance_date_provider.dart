@@ -4,7 +4,7 @@ class DateProvider extends ChangeNotifier {
   late String _date;
 
   DateProvider() {
-    _date = ''; // Initialize with an empty string
+    _date = DateTime.now().toString().substring(0, 10);
   }
 
   String get date => _date;

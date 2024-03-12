@@ -13,6 +13,7 @@ class _DashboardProfileBarState extends State<DashboardProfileBar> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
+    print('user: $user');
     String avatarText = '';
     String employeeName = '';
 
@@ -25,8 +26,7 @@ class _DashboardProfileBarState extends State<DashboardProfileBar> {
       if (nameParts.length == 1) {
         employeeName = nameParts[0];
       } else if (nameParts.length == 2) {
-        employeeName = nameParts
-            .join(' ');
+        employeeName = nameParts.join(' ');
       } else {
         employeeName = nameParts.take(2).join(' ') +
             nameParts.skip(2).map((name) => ' ${name[0]}.').join('');

@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nanyang_application/main.dart';
 
-FToast fToast = FToast();
+class ToastProvider with ChangeNotifier {
+  FToast _fToast = FToast();
 
-void initToast() {
-  fToast.init(navigatorKey.currentContext!);
-}
+  ToastProvider() {
+    _fToast.init(navigatorKey.currentContext!);
+  }
 
-void showToast(String message, String status) {
+  void showToast(String message, String status) {
     IconData icon;
     Color color;
 
-    switch(status) {
+    switch (status) {
       case 'success':
         icon = Icons.check;
         color = Colors.greenAccent;
@@ -31,7 +32,7 @@ void showToast(String message, String status) {
         break;
     }
 
-    fToast.showToast(
+    _fToast.showToast(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
         decoration: BoxDecoration(
@@ -48,7 +49,6 @@ void showToast(String message, String status) {
             Text(
               message,
               style: const TextStyle(color: Colors.white, fontSize: 12.0),
-
             ),
           ],
         ),
@@ -56,4 +56,5 @@ void showToast(String message, String status) {
       gravity: ToastGravity.BOTTOM,
       toastDuration: const Duration(seconds: 2),
     );
+  }
 }

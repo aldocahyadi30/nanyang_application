@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/widget/absensi_datepicker.dart';
 import 'package:nanyang_application/widget/absensi_list.dart';
 
-class AbsensiCabutanScreen extends StatefulWidget {
-  const AbsensiCabutanScreen({super.key});
+class AbsensiKaryawanScreen extends StatefulWidget {
+  const AbsensiKaryawanScreen({super.key});
 
   @override
-  State<AbsensiCabutanScreen> createState() => _AbsensiCabutanScreenState();
+  State<AbsensiKaryawanScreen> createState() => _AbsensiKaryawanScreenState();
 }
 
-class _AbsensiCabutanScreenState extends State<AbsensiCabutanScreen> {
+class _AbsensiKaryawanScreenState extends State<AbsensiKaryawanScreen> {
+  final TextEditingController _dateController = TextEditingController();
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _dateController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _dateController = TextEditingController();
-    @override
-    void dispose() {
-      // TODO: implement dispose
-      super.dispose();
-      _dateController.dispose();
-    }
-
     return Scaffold(
       body: Column(
         children: [
@@ -32,7 +32,7 @@ class _AbsensiCabutanScreenState extends State<AbsensiCabutanScreen> {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: const Text(
-              'Daftar Absensi Cabutan',
+              'Daftar Absensi Karyawan',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
@@ -41,7 +41,7 @@ class _AbsensiCabutanScreenState extends State<AbsensiCabutanScreen> {
           ),
           const Expanded(
               child: AbsensiList(
-            mode: 'cabutan',
+            mode: 'karyawan',
           ))
         ],
       ),

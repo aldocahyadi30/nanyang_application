@@ -1,23 +1,27 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nanyang_application/provider/attendance_date_provider.dart';
+import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
-import 'package:nanyang_application/screen/home.dart';
-import 'package:nanyang_application/screen/menu.dart';
-import 'package:nanyang_application/screen/splash.dart';
 import 'package:nanyang_application/screen/login.dart';
+import 'package:nanyang_application/screen/mobile/absensi.dart';
+import 'package:nanyang_application/screen/mobile/absensi_detail.dart';
+import 'package:nanyang_application/screen/mobile/home.dart';
+import 'package:nanyang_application/screen/mobile/menu.dart';
+import 'package:nanyang_application/screen/mobile/pengumuman.dart';
+import 'package:nanyang_application/screen/mobile/pengumuman_create.dart';
+import 'package:nanyang_application/screen/splash.dart';
 import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
 import 'package:nanyang_application/service/auth_service.dart';
 import 'package:nanyang_application/service/request_service.dart';
-import 'package:nanyang_application/service/user_service.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/login_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:device_preview/device_preview.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -29,8 +33,6 @@ Future<void> main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoZ2xzZmlieHplZGt6YmNyb2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcwOTk5NjIsImV4cCI6MjAyMjY3NTk2Mn0.IQ-3YBRNTGMo0wwhJrK1UFd6ljGYS_kq0q2-hItUhTE',
   );
-
-  final hasSession = Supabase.instance.client.auth.currentSession != null;
 
   runApp(DevicePreview(
     enabled: true,
@@ -56,6 +58,9 @@ Future<void> main() async {
           create: (context) => UserProvider(),
         ),
         ChangeNotifierProvider(
+          create: (context) => ToastProvider(),
+        ),
+        ChangeNotifierProvider(
           create: (context) => DateProvider(),
         ),
       ],
@@ -64,41 +69,42 @@ Future<void> main() async {
         locale: DevicePreview.locale(context), // Add the locale here
         builder: (context, child) {
           return DevicePreview.appBuilder(
-              context, FToastBuilder()(context, child));
+            context,
+            FToastBuilder()(context, child),
+          );
         },
         title: 'Flutter Demo',
         theme: ThemeData(
-            useMaterial3: true,
-            fontFamily: 'Poppins',
-            primaryColor: Colors.white,
-            primarySwatch: Colors.blue,
-            navigationBarTheme: NavigationBarThemeData(
-              labelTextStyle: MaterialStateProperty.all(
-                const TextStyle(
-                  color: Colors.blue,
-                  fontSize: 12,
-                ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.blue[100]),
+              overlayColor: MaterialStateProperty.all(Colors.blue),
+            ),
+          ),
+          useMaterial3: true,
+          fontFamily: 'Poppins',
+          primaryColor: Colors.white,
+          primarySwatch: Colors.blue,
+          navigationBarTheme: NavigationBarThemeData(
+            labelTextStyle: MaterialStateProperty.all(
+              const TextStyle(
+                color: Colors.blue,
+                fontSize: 12,
               ),
-            )),
+            ),
+          ),
+        ),
         navigatorKey: navigatorKey,
-        initialRoute: hasSession ? '/home' : '/',
+        initialRoute: '/',
         routes: {
           '/': (context) => const SplashScreen(),
           '/login': (context) => const LoginScreen(),
-          '/home': (context) {
-            if (hasSession) {
-              UserService()
-                  .getUserByID(Supabase.instance.client.auth.currentUser!.id)
-                  .then((userData) {
-                if (context.mounted) {
-                  Provider.of<UserProvider>(context, listen: false)
-                      .setUser(userData);
-                }
-              }).catchError((error) {});
-            }
-            return const HomeScreen();
-          },
+          '/home': (context) => const HomeScreen(),
           '/menu': (context) => const MenuScreen(),
+          '/absensi': (context) => const AbsensiScreen(),
+          '/absensi/detail': (context) => const AbsensiDetailScreen(),
+          '/pengumuman': (context) => const PengumumanScreen(),
+          '/pengumuman/create': (context) => const PengumumanCreateScreen(),
         },
       ),
     ),

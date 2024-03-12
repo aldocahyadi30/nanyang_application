@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/model/attendance_worker.dart';
+import 'package:nanyang_application/model/attendanceWorker.dart';
 
 class AbsensiKaryawanListtile extends StatefulWidget {
   final AttendanceWorkerModel model;

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/model/attendance_labor.dart';
+import 'package:nanyang_application/model/attendanceLabor.dart';
 
 class AbsensiCabutanListtile extends StatefulWidget {
   final AttendanceLaborModel model;
@@ -24,8 +24,7 @@ class _AbsensiCabutanListtileState extends State<AbsensiCabutanListtile> {
     if (nameParts.length == 1) {
       employeeName = nameParts[0];
     } else if (nameParts.length == 2) {
-      employeeName =
-          nameParts.join(' ');
+      employeeName = nameParts.join(' ');
     } else {
       employeeName = nameParts.take(2).join(' ') +
           nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
@@ -40,7 +39,8 @@ class _AbsensiCabutanListtileState extends State<AbsensiCabutanListtile> {
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         leading: CircleAvatar(
           radius: 30,
-          backgroundColor: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+          backgroundColor:
+              Colors.primaries[Random().nextInt(Colors.primaries.length)],
           child: Text(
             avatarText,
             style: const TextStyle(color: Colors.white),
@@ -54,8 +54,41 @@ class _AbsensiCabutanListtileState extends State<AbsensiCabutanListtile> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        
-        
+        subtitle: widget.model.status == 1
+            ? const Text(
+                'Absensi terisi',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              )
+            : const Text(
+                'Absensi belum terisi',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+        trailing: widget.model.status == 1
+            ? CircleAvatar(
+                backgroundColor: Colors.green[100],
+                child: const Icon(
+                  Icons.check,
+                  color: Colors.green,
+                ),
+              )
+            : CircleAvatar(
+                backgroundColor: Colors.red[100],
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.red,
+                ),
+              ),
+        onTap: () {
+          Navigator.pushNamed(context, '/absensi/detail', arguments: widget.model);
+        },
       ),
     );
   }
