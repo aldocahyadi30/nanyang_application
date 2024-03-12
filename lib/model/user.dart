@@ -28,4 +28,16 @@ class UserModel {
       positionName: user['Employee']['Position']['name'],
     );
   }
+
+  factory UserModel.empty() {
+    return UserModel(
+      id: '',
+      email: '',
+      name: '',
+      level: 0,
+      employeeId: 0,
+      positionId: 0,
+      positionName: '',
+    );
+  }
 }

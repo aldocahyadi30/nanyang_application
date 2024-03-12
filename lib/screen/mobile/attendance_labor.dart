@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/widget/absensi_datepicker.dart';
-import 'package:nanyang_application/widget/absensi_list.dart';
+import 'package:nanyang_application/widget/attendance_list.dart';
+import 'package:nanyang_application/widget/datepicker.dart';
 
-class AbsensiCabutanScreen extends StatefulWidget {
-  const AbsensiCabutanScreen({super.key});
+class AttendanceLaborScreen extends StatefulWidget {
+  const AttendanceLaborScreen({super.key});
 
   @override
-  State<AbsensiCabutanScreen> createState() => _AbsensiCabutanScreenState();
+  State<AttendanceLaborScreen> createState() => _AttendanceLaborScreenState();
 }
 
-class _AbsensiCabutanScreenState extends State<AbsensiCabutanScreen> {
+class _AttendanceLaborScreenState extends State<AttendanceLaborScreen> {
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _dateController = TextEditingController();
+    final TextEditingController dateController = TextEditingController();
     @override
     void dispose() {
       // TODO: implement dispose
       super.dispose();
-      _dateController.dispose();
-      print(_dateController.text);
+      dateController.dispose();
     }
 
     return Scaffold(
@@ -26,7 +25,7 @@ class _AbsensiCabutanScreenState extends State<AbsensiCabutanScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: AbsensiDatePicker(controller: _dateController),
+            child: Datepicker(controller: dateController, type: 'attendance-labor'),
           ),
           const SizedBox(height: 8),
           Container(
@@ -41,9 +40,8 @@ class _AbsensiCabutanScreenState extends State<AbsensiCabutanScreen> {
             ),
           ),
           const Expanded(
-              child: AbsensiList(
-            mode: 'cabutan',
-          ))
+            child: AttendanceList(mode: 'cabutan'),
+          )
         ],
       ),
     );

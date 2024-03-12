@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/widget/absensi_cabutan.dart';
-import 'package:nanyang_application/widget/absensi_karyawan.dart';
+import 'package:nanyang_application/screen/mobile/attendance_labor.dart';
+import 'package:nanyang_application/screen/mobile/attendance_worker.dart';
 
-class AbsensiScreen extends StatefulWidget {
-  const AbsensiScreen({super.key});
+class AttendanceScreen extends StatefulWidget {
+  const AttendanceScreen({super.key});
 
   @override
-  State<AbsensiScreen> createState() => _AbsensiScreenState();
+  State<AttendanceScreen> createState() => _AttendanceScreenState();
 }
 
-class _AbsensiScreenState extends State<AbsensiScreen>
+class _AttendanceScreenState extends State<AttendanceScreen>
     with TickerProviderStateMixin {
   late final TabController _tabController;
 
@@ -78,7 +78,7 @@ class _AbsensiScreenState extends State<AbsensiScreen>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [AbsensiKaryawanScreen(), AbsensiCabutanScreen()],
+        children: const [AttendanceWorkerScreen(), AttendanceLaborScreen()],
       ),
     );
   }

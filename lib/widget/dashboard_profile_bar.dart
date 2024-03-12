@@ -13,25 +13,8 @@ class _DashboardProfileBarState extends State<DashboardProfileBar> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
-    print('user: $user');
-    String avatarText = '';
-    String employeeName = '';
-
-    if (user != null) {
-      List<String> nameParts = user.name.split(' ');
-      avatarText = ((nameParts.isNotEmpty ? nameParts[0][0] : '') +
-              (nameParts.length > 1 ? nameParts[1][0] : ''))
-          .toUpperCase();
-
-      if (nameParts.length == 1) {
-        employeeName = nameParts[0];
-      } else if (nameParts.length == 2) {
-        employeeName = nameParts.join(' ');
-      } else {
-        employeeName = nameParts.take(2).join(' ') +
-            nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
-      }
-    }
+    String avatarText = Provider.of<UserProvider>(context).avatarInitials!;
+    String employeeName = Provider.of<UserProvider>(context).shortenedName!;
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.1,

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/widget/perizinan_datepicker.dart';
+import 'package:nanyang_application/widget/datepicker.dart';
 
-class PengumumanFilter extends StatefulWidget {
+class RequestFilter extends StatefulWidget {
   final TextEditingController controller;
 
-  const PengumumanFilter({super.key, required this.controller});
+  const RequestFilter({super.key, required this.controller});
 
   @override
-  State<PengumumanFilter> createState() => _PengumumanFilterState();
+  State<RequestFilter> createState() => _RequestFilterState();
 }
 
-class _PengumumanFilterState extends State<PengumumanFilter> {
+class _RequestFilterState extends State<RequestFilter> {
   void _showFilterModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -22,7 +22,7 @@ class _PengumumanFilterState extends State<PengumumanFilter> {
             children: <Widget>[
               ListTile(
                 leading: Icon(Icons.calendar_month),
-                title: PerizinanDatePicker(controller: widget.controller),
+                title: Datepicker(controller: widget.controller, type: 'request'),
                 onTap: () {
                   // Handle filter option 1
                   Navigator.pop(context); // Close the modal
@@ -66,7 +66,7 @@ class _PengumumanFilterState extends State<PengumumanFilter> {
       child: TextField(
         controller: widget.controller,
         decoration: InputDecoration(
-          labelText: 'Cari pengumuman...',
+          labelText: 'Cari karyawan...',
           labelStyle: const TextStyle(color: Colors.blue),
           suffixIcon: IconButton(
             onPressed: () => {

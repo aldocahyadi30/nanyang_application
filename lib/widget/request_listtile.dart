@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/model/request.dart';
 
-class PerizinanListtile extends StatefulWidget {
+class RequestListtile extends StatefulWidget {
   final RequestModel model;
-  const PerizinanListtile({super.key, required this.model});
+  const RequestListtile({super.key, required this.model});
 
   @override
-  State<PerizinanListtile> createState() => _PerizinanListtileState();
+  State<RequestListtile> createState() => _RequestListtileState();
 }
 
-class _PerizinanListtileState extends State<PerizinanListtile> {
+class _RequestListtileState extends State<RequestListtile> {
   @override
   Widget build(BuildContext context) {
     List<String> nameParts = widget.model.requesterName.split(' ');

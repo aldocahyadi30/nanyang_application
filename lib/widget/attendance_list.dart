@@ -2,22 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nanyang_application/model/attendanceLabor.dart';
 import 'package:nanyang_application/model/attendanceWorker.dart';
-import 'package:nanyang_application/provider/attendance_date_provider.dart';
+import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
-import 'package:nanyang_application/widget/absensi_cabutan_listtile.dart';
-import 'package:nanyang_application/widget/absensi_karyawan_listtile.dart';
-import 'package:nanyang_application/widget/toast.dart';
+import 'package:nanyang_application/widget/attendance_labor_listtile.dart';
+import 'package:nanyang_application/widget/attendance_worker_listtile.dart';
 import 'package:provider/provider.dart';
 
-class AbsensiList extends StatefulWidget {
+class AttendanceList extends StatefulWidget {
   final String mode;
-  const AbsensiList({super.key, required this.mode});
+  const AttendanceList({super.key, required this.mode});
 
   @override
-  State<AbsensiList> createState() => _AbsensiKaryawanListState();
+  State<AttendanceList> createState() => _AbsensiKaryawanListState();
 }
 
-class _AbsensiKaryawanListState extends State<AbsensiList> {
+class _AbsensiKaryawanListState extends State<AttendanceList> {
   late final AttendanceViewModel _attendanceViewModel;
   late FToast fToast;
 
@@ -32,14 +31,16 @@ class _AbsensiKaryawanListState extends State<AbsensiList> {
 
   @override
   Widget build(BuildContext context) {
-    String date = Provider.of<DateProvider>(context).date;
-
+    // String date = Provider.of<AttendanceDateProvider>(context).formattedDate;
+    String date = widget.mode == 'cabutan'
+        ? Provider.of<DateProvider>(context).attendanceLaborDateString
+        : Provider.of<DateProvider>(context).attendanceWorkerDateString;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: FutureBuilder(
         future: widget.mode == 'cabutan'
-            ? _attendanceViewModel.getTodayLaborerAttendance(date)
-            : _attendanceViewModel.getTodayWorkerAttendance(date),
+            ? _attendanceViewModel.getLaborAttendance(date)
+            : _attendanceViewModel.getWorkerAttendance(date),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -63,11 +64,11 @@ class _AbsensiKaryawanListState extends State<AbsensiList> {
                 itemBuilder: (context, index) {
                   if (snapshot.data![index] is AttendanceLaborModel &&
                       widget.mode == 'cabutan') {
-                    return AbsensiCabutanListtile(
+                    return AttendanceLaborListtile(
                         model: snapshot.data![index] as AttendanceLaborModel);
                   } else if (snapshot.data![index] is AttendanceWorkerModel &&
                       widget.mode == 'karyawan') {
-                    return AbsensiKaryawanListtile(
+                    return AttendanceWorkerListtile(
                         model: snapshot.data![index] as AttendanceWorkerModel);
                   }
                   return Container(); // Add a return statement to return a default Container widget.

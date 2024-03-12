@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/screen/mobile/absensi.dart';
+import 'package:nanyang_application/screen/mobile/attendance.dart';
 import 'package:nanyang_application/screen/mobile/dashboard.dart';
-import 'package:nanyang_application/screen/mobile/pengaturan.dart';
-import 'package:nanyang_application/screen/mobile/perizinan.dart';
+import 'package:nanyang_application/screen/mobile/setting.dart';
+import 'package:nanyang_application/screen/mobile/request.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,9 +15,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentPageIndex = 0;
   final DashboardScreen _dashboardScreen = const DashboardScreen();
-  final AbsensiScreen _absensiScreen = const AbsensiScreen();
-  final PerizinanScreen _perizinanScreen = const PerizinanScreen();
-  final PengaturanScreen _pengaturanScreen = const PengaturanScreen();
+  final AttendanceScreen _attendanceScreen = const AttendanceScreen();
+  final RequestScreen _requestScreen = const RequestScreen();
+  final SettingScreen _settingScreen = const SettingScreen();
 
   @override
   Widget build(BuildContext context) {
@@ -110,9 +110,9 @@ class _HomeScreenState extends State<HomeScreen> {
           index: currentPageIndex,
           children: [
             _dashboardScreen,
-            _absensiScreen,
-            _perizinanScreen,
-            _pengaturanScreen,
+            _attendanceScreen,
+            _requestScreen,
+            _settingScreen,
           ],
         ),
       ),

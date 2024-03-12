@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/widget/absensi_datepicker.dart';
-import 'package:nanyang_application/widget/absensi_list.dart';
+import 'package:nanyang_application/widget/attendance_list.dart';
+import 'package:nanyang_application/widget/datepicker.dart';
 
-class AbsensiKaryawanScreen extends StatefulWidget {
-  const AbsensiKaryawanScreen({super.key});
+class AttendanceWorkerScreen extends StatefulWidget {
+  const AttendanceWorkerScreen({super.key});
 
   @override
-  State<AbsensiKaryawanScreen> createState() => _AbsensiKaryawanScreenState();
+  State<AttendanceWorkerScreen> createState() => _AttendanceWorkerScreenState();
 }
 
-class _AbsensiKaryawanScreenState extends State<AbsensiKaryawanScreen> {
-  final TextEditingController _dateController = TextEditingController();
+class _AttendanceWorkerScreenState extends State<AttendanceWorkerScreen> {
+  final TextEditingController dateController = TextEditingController();
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _dateController.dispose();
+    dateController.dispose();
   }
 
   @override
@@ -25,7 +25,7 @@ class _AbsensiKaryawanScreenState extends State<AbsensiKaryawanScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: AbsensiDatePicker(controller: _dateController),
+            child: Datepicker(controller: dateController, type: 'attendance-worker'),
           ),
           const SizedBox(height: 8),
           Container(
@@ -40,7 +40,7 @@ class _AbsensiKaryawanScreenState extends State<AbsensiKaryawanScreen> {
             ),
           ),
           const Expanded(
-              child: AbsensiList(
+              child: AttendanceList(
             mode: 'karyawan',
           ))
         ],

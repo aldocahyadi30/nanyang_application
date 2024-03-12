@@ -17,6 +17,7 @@ class LoginViewModel extends ChangeNotifier {
       UserModel user = await _authenticationService.login(email, password);
       return user;
     } catch (e) {
+      UserModel user = UserModel.empty();
       if (e is AuthException) {
         Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
             .showToast('Akun tidak ditemukan!', 'error');
@@ -27,6 +28,8 @@ class LoginViewModel extends ChangeNotifier {
         Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
             .showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
+
+      return user;
     }
   }
 }

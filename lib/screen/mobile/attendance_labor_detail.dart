@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/widget/pengumuman_create_form.dart';
+import 'package:nanyang_application/model/attendanceLabor.dart';
+import 'package:nanyang_application/widget/attendance_labor_detail_form.dart';
 
-class PengumumanCreateScreen extends StatefulWidget {
-  const PengumumanCreateScreen({super.key});
+class AbsensiDetailScreen extends StatefulWidget {
+  const AbsensiDetailScreen({super.key});
 
   @override
-  State<PengumumanCreateScreen> createState() => _PengumumanCreateScreenState();
+  State<AbsensiDetailScreen> createState() => _AbsensiDetailScreenState();
 }
 
-class _PengumumanCreateScreenState extends State<PengumumanCreateScreen> {
+class _AbsensiDetailScreenState extends State<AbsensiDetailScreen> {
+  late Future<AttendanceLaborModel> futureModel = initializeModel();
+
+  Future<AttendanceLaborModel> initializeModel() async {
+    AttendanceLaborModel model =
+        ModalRoute.of(context)!.settings.arguments as AttendanceLaborModel;
+
+    return model;
+  }
+
+ 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,11 +43,10 @@ class _PengumumanCreateScreenState extends State<PengumumanCreateScreen> {
           ),
         ),
         title: const Text(
-          'Pengumuman',
+          'Absensi',
           style: TextStyle(
               color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
         ),
-        centerTitle: false,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -50,28 +61,24 @@ class _PengumumanCreateScreenState extends State<PengumumanCreateScreen> {
             ),
           ),
         ),
-        elevation: 4,
       ),
       body: Container(
+        height: MediaQuery.of(context).size.height,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'Form Pengumuman',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: PengumumanCreateForm(),
-              )
-            ],
-          ),
+          child: FutureBuilder(
+              future: futureModel,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  // handle the error
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return AttendanceLaborDetailForm(
+                      model: snapshot.data as AttendanceLaborModel);
+                }
+              }),
         ),
       ),
     );

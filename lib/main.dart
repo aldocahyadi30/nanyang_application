@@ -1,16 +1,16 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nanyang_application/provider/attendance_date_provider.dart';
+import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:nanyang_application/screen/login.dart';
-import 'package:nanyang_application/screen/mobile/absensi.dart';
-import 'package:nanyang_application/screen/mobile/absensi_detail.dart';
+import 'package:nanyang_application/screen/mobile/attendance.dart';
+import 'package:nanyang_application/screen/mobile/attendance_labor_detail.dart';
 import 'package:nanyang_application/screen/mobile/home.dart';
 import 'package:nanyang_application/screen/mobile/menu.dart';
-import 'package:nanyang_application/screen/mobile/pengumuman.dart';
-import 'package:nanyang_application/screen/mobile/pengumuman_create.dart';
+import 'package:nanyang_application/screen/mobile/announcement.dart';
+import 'package:nanyang_application/screen/mobile/announcement_create.dart';
 import 'package:nanyang_application/screen/splash.dart';
 import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
@@ -101,10 +101,10 @@ Future<void> main() async {
           '/login': (context) => const LoginScreen(),
           '/home': (context) => const HomeScreen(),
           '/menu': (context) => const MenuScreen(),
-          '/absensi': (context) => const AbsensiScreen(),
-          '/absensi/detail': (context) => const AbsensiDetailScreen(),
-          '/pengumuman': (context) => const PengumumanScreen(),
-          '/pengumuman/create': (context) => const PengumumanCreateScreen(),
+          '/attendance': (context) => const AttendanceScreen(),
+          '/attendance/detail': (context) => const AbsensiDetailScreen(),
+          '/announcement': (context) => const AnnouncementScreen(),
+          '/annoucnement/create': (context) => const AnnouncementDetailScreen(),
         },
       ),
     ),

@@ -1,27 +1,36 @@
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/provider/attendance_date_provider.dart';
+import 'package:intl/intl.dart';
+import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:provider/provider.dart';
 
-class AbsensiDatePicker extends StatefulWidget {
+class Datepicker extends StatefulWidget {
   final TextEditingController controller;
-  const AbsensiDatePicker({Key? key, required this.controller})
+  final String type;
+  const Datepicker({Key? key, required this.controller, required this.type})
       : super(key: key);
 
   @override
-  State<AbsensiDatePicker> createState() => _DatePickerState();
+  State<Datepicker> createState() => _DatePickerState();
 }
 
-class _DatePickerState extends State<AbsensiDatePicker> {
+class _DatePickerState extends State<Datepicker> {
   late DateTime selectedDate;
 
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      selectedDate =  DateTime.parse(Provider.of<DateProvider>(context, listen: false).date);
+      if (widget.type == 'attendance-worker') {
+        selectedDate = Provider.of<DateProvider>(context, listen: false)
+            .attendanceWorkerDate;
+      } else if (widget.type == 'attendance-labor') {
+        selectedDate = Provider.of<DateProvider>(context, listen: false)
+            .attendanceLaborDate;
+      } else if (widget.type == 'request') {
+        selectedDate =
+            Provider.of<DateProvider>(context, listen: false).requestDate;
+      }
       widget.controller.text = DateFormat('dd-MM-yyyy').format(selectedDate);
-
     });
   }
 
@@ -47,8 +56,16 @@ class _DatePickerState extends State<AbsensiDatePicker> {
       setState(() {
         selectedDate = picked;
         widget.controller.text = DateFormat('dd-MM-yyyy').format(selectedDate);
-        Provider.of<DateProvider>(context, listen: false)
-            .setDate(DateFormat('yyyy-MM-dd').format(selectedDate));
+        if (widget.type == 'attendance-worker') {
+          Provider.of<DateProvider>(context, listen: false)
+              .setAttendanceWorkerDate(selectedDate);
+        } else if (widget.type == 'attendance-labor') {
+          Provider.of<DateProvider>(context, listen: false)
+              .setAttendanceLaborDate(selectedDate);
+        } else if (widget.type == 'request') {
+          Provider.of<DateProvider>(context, listen: false)
+              .setRequestDate(selectedDate);
+        }
       });
     }
   }

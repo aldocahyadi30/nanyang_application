@@ -2,36 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:provider/provider.dart';
 
-class PengaturanAccount extends StatefulWidget {
-  const PengaturanAccount({super.key});
+class SettingAccount extends StatefulWidget {
+  const SettingAccount({super.key});
 
   @override
-  State<PengaturanAccount> createState() => _PengaturanAccountState();
+  State<SettingAccount> createState() => _SettingAccountState();
 }
 
-class _PengaturanAccountState extends State<PengaturanAccount> {
+class _SettingAccountState extends State<SettingAccount> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
-    String avatarText = '';
-    String employeeName = '';
-
-    if (user != null) {
-      List<String> nameParts = user.name.split(' ');
-      avatarText = ((nameParts.isNotEmpty ? nameParts[0][0] : '') +
-              (nameParts.length > 1 ? nameParts[1][0] : ''))
-          .toUpperCase();
-
-      if (nameParts.length == 1) {
-        employeeName = nameParts[0];
-      } else if (nameParts.length == 2) {
-        employeeName = nameParts
-            .join(' ');
-      } else {
-        employeeName = nameParts.take(2).join(' ') +
-            nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
-      }
-    }
+    String avatarText = Provider.of<UserProvider>(context).avatarInitials!;
+    String employeeName = Provider.of<UserProvider>(context).shortenedName!;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),

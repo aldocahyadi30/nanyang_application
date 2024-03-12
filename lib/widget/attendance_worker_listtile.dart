@@ -1,34 +1,27 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/model/attendanceLabor.dart';
+import 'package:nanyang_application/model/attendanceWorker.dart';
+import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
+import 'package:provider/provider.dart';
 
-class AbsensiCabutanListtile extends StatefulWidget {
-  final AttendanceLaborModel model;
-
-  const AbsensiCabutanListtile({super.key, required this.model});
+class AttendanceWorkerListtile extends StatefulWidget {
+  final AttendanceWorkerModel model;
+  const AttendanceWorkerListtile({super.key, required this.model});
 
   @override
-  State<AbsensiCabutanListtile> createState() => _AbsensiCabutanListtileState();
+  State<AttendanceWorkerListtile> createState() =>
+      _AttendanceWorkerListtileState();
 }
 
-class _AbsensiCabutanListtileState extends State<AbsensiCabutanListtile> {
+class _AttendanceWorkerListtileState extends State<AttendanceWorkerListtile> {
   @override
   Widget build(BuildContext context) {
-    List<String> nameParts = widget.model.employeeName.split(' ');
-    String avatarText = ((nameParts.isNotEmpty ? nameParts[0][0] : '') +
-            (nameParts.length > 1 ? nameParts[1][0] : ''))
-        .toUpperCase();
+    String avatarText = Provider.of<AttendanceViewModel>(context)
+        .getAvatarInitials(widget.model.employeeName);
+    String employeeName = Provider.of<AttendanceViewModel>(context)
+        .getShortenedName(widget.model.employeeName);
 
-    String employeeName = '';
-    if (nameParts.length == 1) {
-      employeeName = nameParts[0];
-    } else if (nameParts.length == 2) {
-      employeeName = nameParts.join(' ');
-    } else {
-      employeeName = nameParts.take(2).join(' ') +
-          nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
-    }
     return Card(
       color: Colors.white,
       shape: RoundedRectangleBorder(
@@ -55,20 +48,17 @@ class _AbsensiCabutanListtileState extends State<AbsensiCabutanListtile> {
           ),
         ),
         subtitle: widget.model.status == 1
-            ? const Text(
-                'Absensi terisi',
-                style: TextStyle(
-                  color: Colors.green,
+            ? Text(
+                'Masuk: ${widget.model.time}',
+                style: const TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
                 ),
               )
             : const Text(
-                'Absensi belum terisi',
+                'Tidak Hadir',
                 style: TextStyle(
-                  color: Colors.red,
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                  color: Colors.red,
                 ),
               ),
         trailing: widget.model.status == 1
@@ -86,9 +76,6 @@ class _AbsensiCabutanListtileState extends State<AbsensiCabutanListtile> {
                   color: Colors.red,
                 ),
               ),
-        onTap: () {
-          Navigator.pushNamed(context, '/absensi/detail', arguments: widget.model);
-        },
       ),
     );
   }

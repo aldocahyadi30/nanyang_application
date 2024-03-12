@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:nanyang_application/model/attendanceLabor.dart';
-import 'package:nanyang_application/provider/attendance_date_provider.dart';
+import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:nanyang_application/widget/toast.dart';
 import 'package:provider/provider.dart';
 
-class AbsensiDetailForm extends StatefulWidget {
+class AttendanceLaborDetailForm extends StatefulWidget {
   final AttendanceLaborModel model;
-  const AbsensiDetailForm({super.key, required this.model});
+  const AttendanceLaborDetailForm({super.key, required this.model});
 
   @override
-  State<AbsensiDetailForm> createState() => _AbsensiDetailFormState();
+  State<AttendanceLaborDetailForm> createState() => _AttendanceLaborDetailFormState();
 }
 
 enum AttendanceStatus { tugasBaru, tugasLanjut, tidakHadir }
 
-class _AbsensiDetailFormState extends State<AbsensiDetailForm> {
+class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
   int? radioValue;
   AttendanceStatus? _attendanceStatus;
   final TextEditingController _dateController = TextEditingController();
@@ -37,8 +36,7 @@ class _AbsensiDetailFormState extends State<AbsensiDetailForm> {
     // TODO: implement initState
     super.initState();
     // initToast(context);
-    _dateController.text = DateFormat('dd-MM-yyyy').format(
-        DateTime.parse(Provider.of<DateProvider>(context, listen: false).date));
+    _dateController.text = Provider.of<DateProvider>(context, listen: false).attendanceLaborDateString;
 
     radioValue = widget.model.type;
     if (widget.model.status == 1) {
@@ -53,7 +51,6 @@ class _AbsensiDetailFormState extends State<AbsensiDetailForm> {
     } else if (widget.model.status == 3) {
       _attendanceStatus = AttendanceStatus.tidakHadir;
     }
-
   }
 
   @override

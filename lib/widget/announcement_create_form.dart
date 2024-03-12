@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class PengumumanCreateForm extends StatefulWidget {
-  const PengumumanCreateForm({super.key});
+class AnnouncementCreateForm extends StatefulWidget {
+  const AnnouncementCreateForm({super.key});
 
   @override
-  State<PengumumanCreateForm> createState() => _PengumumanCreateFormState();
+  State<AnnouncementCreateForm> createState() => _AnnouncementCreateFormState();
 }
 
-class _PengumumanCreateFormState extends State<PengumumanCreateForm> {
+class _AnnouncementCreateFormState extends State<AnnouncementCreateForm> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 

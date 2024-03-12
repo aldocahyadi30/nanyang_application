@@ -1,11 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:nanyang_application/viewmodel/login_viewmodel.dart';
-import 'package:nanyang_application/widget/formButton.dart';
-import 'package:nanyang_application/widget/toast.dart';
+import 'package:nanyang_application/widget/form_button.dart';
 import 'package:provider/provider.dart';
 
 class LoginForm extends StatefulWidget {
@@ -44,9 +42,11 @@ class _LoginFormState extends State<LoginForm> {
           Provider.of<LoginViewModel>(context, listen: false);
       final user = await loginViewModel.login(email, password);
 
-      if (user != null) {
+      if (user?.id != null) {
         if (context.mounted) {
-          Provider.of<UserProvider>(context, listen: false).setUser(user);
+          Provider.of<ToastProvider>(context, listen: false)
+              .showToast('Login berhasil!', 'success');
+          Provider.of<UserProvider>(context, listen: false).setUser(user!);
           Navigator.of(context).pushReplacementNamed('/home');
         }
       } else {

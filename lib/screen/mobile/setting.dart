@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/widget/pengaturan_account.dart';
+import 'package:nanyang_application/widget/setting_account.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class PengaturanScreen extends StatelessWidget {
-  const PengaturanScreen({super.key});
+class SettingScreen extends StatelessWidget {
+  const SettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class PengaturanScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500),
             ),
           ),
-          const PengaturanAccount(),
+          const SettingAccount(),
           Divider(
             color: Colors.grey[300],
             height: 1,

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 
-class DashboardPengumuman extends StatefulWidget {
-  const DashboardPengumuman({super.key});
+class DashboardAnnouncement extends StatefulWidget {
+  const DashboardAnnouncement({super.key});
 
   @override
-  State<DashboardPengumuman> createState() => _DashboardPengumumanState();
+  State<DashboardAnnouncement> createState() => _DashboardAnnouncementState();
 }
 
-class _DashboardPengumumanState extends State<DashboardPengumuman> {
+class _DashboardAnnouncementState extends State<DashboardAnnouncement> {
   late final AnnouncementViewModel _announcementViewModel;
 
   @override

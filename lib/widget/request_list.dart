@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
-import 'package:nanyang_application/widget/perizinan_listtile.dart';
+import 'package:nanyang_application/widget/request_listtile.dart';
 import 'package:provider/provider.dart';
 
-class PerizinanList extends StatefulWidget {
-  const PerizinanList({super.key});
+class RequestList extends StatefulWidget {
+  const RequestList({super.key});
 
   @override
-  State<PerizinanList> createState() => _PerizinanListState();
+  State<RequestList> createState() => _RequestListState();
 }
 
-class _PerizinanListState extends State<PerizinanList> {
+class _RequestListState extends State<RequestList> {
   late final RequestViewModel _requestViewModel;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _requestViewModel =
-        Provider.of<RequestViewModel>(context, listen: false);
+    _requestViewModel = Provider.of<RequestViewModel>(context, listen: false);
   }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -41,7 +41,7 @@ class _PerizinanListState extends State<PerizinanList> {
                 shrinkWrap: true,
                 itemCount: snapshot.data?.length,
                 itemBuilder: (context, index) {
-                  return PerizinanListtile(model: snapshot.data![index]);
+                  return RequestListtile(model: snapshot.data![index]);
                 },
               );
             }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/main.dart';
 import 'package:nanyang_application/model/attendanceLabor.dart';
 import 'package:nanyang_application/model/attendanceWorker.dart';
-import 'package:nanyang_application/screen/mobile/absensi_detail.dart';
+import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AttendanceViewModel extends ChangeNotifier {
   final AttendanceService _attendanceService;
@@ -10,40 +13,78 @@ class AttendanceViewModel extends ChangeNotifier {
   AttendanceViewModel({required AttendanceService attendanceService})
       : _attendanceService = attendanceService;
 
-  Future<List<AttendanceWorkerModel>?> getTodayWorkerAttendance(
+  Future<List<AttendanceWorkerModel>?> getWorkerAttendance(
       String date) async {
     try {
       List<AttendanceWorkerModel> attendance =
-          await _attendanceService.getWorkerAttedance(date);
+          await _attendanceService.getWorkerAttedanceByDate(date);
 
       return attendance;
     } catch (e) {
-      print('error: $e');
-      throw Exception(e);
+      List<AttendanceWorkerModel> attendance = [];
+      if (e is PostgrestException) {
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
+            .showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+      } else {
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
+            .showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+      }
+
+      return attendance;
     }
   }
 
-  Future<List<AttendanceLaborModel>?> getTodayLaborerAttendance(
+  Future<List<AttendanceLaborModel>?> getLaborAttendance(
       String date) async {
     try {
       List<AttendanceLaborModel> attendance =
-          await _attendanceService.getLaborerAttendance(date);
+          await _attendanceService.getLaborAttendanceByDate(date);
 
       return attendance;
     } catch (e) {
-      throw Exception(e);
+      List<AttendanceLaborModel> attendance = [];
+      if (e is PostgrestException) {
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
+            .showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+      } else {
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
+            .showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+      }
+
+      return attendance;
     }
   }
 
   Future<AttendanceLaborModel> getLaborerAttendanceByID(int id) async {
     try {
       AttendanceLaborModel attendance =
-          await _attendanceService.getLaborerAttendanceByID(id);
+          await _attendanceService.getLaborAttendanceByID(id);
 
       return attendance;
     } catch (e) {
       throw Exception(e);
     }
+  }
+
+  String getShortenedName(String name) {
+    List<String> nameParts = name.split(' ');
+
+    if (nameParts.length == 1) {
+      return nameParts[0];
+    } else if (nameParts.length == 2) {
+      return nameParts.join(' ');
+    } else {
+      return nameParts.take(2).join(' ') +
+          nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
+    }
+  }
+
+  String getAvatarInitials(String name) {
+    List<String> nameParts = name.split(' ');
+
+    return ((nameParts.isNotEmpty ? nameParts[0][0] : '') +
+            (nameParts.length > 1 ? nameParts[1][0] : ''))
+        .toUpperCase();
   }
 
   Future<void> storeTodayLaborerAttendance(
@@ -57,13 +98,18 @@ class AttendanceViewModel extends ChangeNotifier {
       double? finalWeight,
       int? cleanScore) async {
     try {
-      await _attendanceService.storeLaborerAttendance(model, date, status, type,
+      await _attendanceService.storeLaborAttendance(model, date, status, type,
           initialQty, finalQty, initialWeight, finalWeight, cleanScore);
 
       notifyListeners();
     } catch (e) {
-      print('error: $e');
-      throw Exception(e);
+      if (e is PostgrestException) {
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
+            .showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+      } else {
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
+            .showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+      }
     }
   }
 }

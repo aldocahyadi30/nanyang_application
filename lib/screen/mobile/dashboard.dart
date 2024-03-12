@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/widget/dashboard_menu_card.dart';
-import 'package:nanyang_application/widget/dashboard_pengumuman.dart';
+import 'package:nanyang_application/widget/dashboard_announcement.dart';
 import 'package:nanyang_application/widget/dashboard_profile_bar.dart';
 import 'package:nanyang_application/widget/dashboard_request.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -51,7 +51,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       children: [
                         SizedBox(
                             height: MediaQuery.of(context).size.height * 0.15),
-                        const DashboardPengumuman(),
+                        const DashboardAnnouncement(),
                         const Divider(
                           height: 1,
                           color: Colors.grey,

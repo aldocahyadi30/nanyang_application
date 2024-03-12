@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/widget/perizinan_filter.dart';
-import 'package:nanyang_application/widget/perizinan_list.dart';
+import 'package:nanyang_application/widget/request_filter.dart';
+import 'package:nanyang_application/widget/request_list.dart';
 
-class PengumumanScreen extends StatefulWidget {
-  const PengumumanScreen({super.key});
+class AnnouncementScreen extends StatefulWidget {
+  const AnnouncementScreen({super.key});
 
   @override
-  State<PengumumanScreen> createState() => _PengumumanScreenState();
+  State<AnnouncementScreen> createState() => _AnnouncementScreenState();
 }
 
-class _PengumumanScreenState extends State<PengumumanScreen> {
+class _AnnouncementScreenState extends State<AnnouncementScreen> {
   final TextEditingController filterController = TextEditingController();
 
   @override
@@ -73,7 +73,7 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
         children: [
           Container(
             padding: const EdgeInsets.all(16),
-            child: PerizinanFilter(controller: filterController),
+            child: RequestFilter(controller: filterController),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,7 +97,7 @@ class _PengumumanScreenState extends State<PengumumanScreen> {
               ),
             ],
           ),
-          const Expanded(child: PerizinanList())
+          const Expanded(child: RequestList())
         ],
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/model/attendanceLabor.dart';
 import 'package:nanyang_application/model/attendanceWorker.dart';
@@ -8,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AttendanceService {
   SupabaseClient supabase = Supabase.instance.client;
 
-  Future<List<AttendanceWorkerModel>> getWorkerAttedance(String date) async {
+  Future<List<AttendanceWorkerModel>> getWorkerAttedanceByDate(String date) async {
     try {
       final startTime = '$date 01:00:00';
       final endTime = '$date 23:59:59';
@@ -25,12 +23,14 @@ class AttendanceService {
           .lte('Attendance.date', endTime)
           .order('name', ascending: true);
       return AttendanceWorkerModel.fromSupabaseList(attendance);
+    } on PostgrestException catch (error) {
+      throw PostgrestException(message: error.message);
     } catch (e) {
-      throw Exception(e);
+      throw Exception(e.toString());
     }
   }
 
-  Future<List<AttendanceLaborModel>> getLaborerAttendance(String date) async {
+  Future<List<AttendanceLaborModel>> getLaborAttendanceByDate(String date) async {
     try {
       final startTime = '$date 01:00:00';
       final endTime = '$date 23:59:59';
@@ -48,30 +48,30 @@ class AttendanceService {
           .order('name', ascending: true);
 
       return AttendanceLaborModel.fromSupabaseList(attendance);
+    } on PostgrestException catch (error) {
+      throw PostgrestException(message: error.message);
     } catch (e) {
-      print(e);
-      throw Exception(e);
+      throw Exception(e.toString());
     }
   }
 
-  Future<AttendanceLaborModel> getLaborerAttendanceByID(int id) async {
+  Future<AttendanceLaborModel> getLaborAttendanceByID(int id) async {
     try {
-      final attendance = await supabase
-          .from('Employee')
-          .select('''
+      final attendance = await supabase.from('Employee').select('''
           *,
           Position!inner(*),
           Attendance!left(*, AttendanceDetail(*))
-          ''')
-          .eq('Employee.employee_id', id).single();
+          ''').eq('Employee.employee_id', id).single();
 
       return AttendanceLaborModel.fromSupabase(attendance);
+    } on PostgrestException catch (error) {
+      throw PostgrestException(message: error.message);
     } catch (e) {
-      throw Exception(e);
+      throw Exception(e.toString());
     }
   }
 
-  Future<void> storeLaborerAttendance(
+  Future<void> storeLaborAttendance(
       AttendanceLaborModel model,
       String date,
       String status,
@@ -111,8 +111,10 @@ class AttendanceService {
         'depreciation_score': weightScore,
         'shape_score': qtyScore,
       }).select();
+    } on PostgrestException catch (error) {
+      throw PostgrestException(message: error.message);
     } catch (e) {
-      throw Exception(e);
+      throw Exception(e.toString());
     }
   }
 }
