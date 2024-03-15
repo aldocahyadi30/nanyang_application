@@ -6,7 +6,12 @@ import 'package:provider/provider.dart';
 class Datepicker extends StatefulWidget {
   final TextEditingController controller;
   final String type;
-  const Datepicker({Key? key, required this.controller, required this.type})
+  final Color color;
+  const Datepicker(
+      {Key? key,
+      required this.controller,
+      required this.type,
+      this.color = Colors.blue})
       : super(key: key);
 
   @override
@@ -29,6 +34,8 @@ class _DatePickerState extends State<Datepicker> {
       } else if (widget.type == 'request') {
         selectedDate =
             Provider.of<DateProvider>(context, listen: false).requestDate;
+      } else if (widget.type == 'normal') {
+        selectedDate = DateTime.now();
       }
       widget.controller.text = DateFormat('dd-MM-yyyy').format(selectedDate);
     });
@@ -72,33 +79,9 @@ class _DatePickerState extends State<Datepicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: TextField(
-        readOnly: true,
-        controller: widget.controller,
-        decoration: InputDecoration(
-          labelText: 'Filter Tanggal',
-          labelStyle: const TextStyle(color: Colors.blue),
-          suffixIcon: IconButton(
-            onPressed: () => _selectDate(context),
-            icon: const Icon(Icons.calendar_today, color: Colors.blue),
-          ),
-          border: InputBorder.none,
-        ),
-      ),
+    return IconButton(
+      onPressed: () => _selectDate(context),
+      icon: Icon(Icons.calendar_today, color: widget.color),
     );
   }
 }

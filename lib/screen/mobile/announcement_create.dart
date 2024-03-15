@@ -6,7 +6,8 @@ class AnnouncementDetailScreen extends StatefulWidget {
   const AnnouncementDetailScreen({super.key});
 
   @override
-  State<AnnouncementDetailScreen> createState() => _AnnouncementDetailScreenState();
+  State<AnnouncementDetailScreen> createState() =>
+      _AnnouncementDetailScreenState();
 }
 
 class _AnnouncementDetailScreenState extends State<AnnouncementDetailScreen> {
@@ -31,7 +32,7 @@ class _AnnouncementDetailScreenState extends State<AnnouncementDetailScreen> {
           ),
         ),
         title: const Text(
-          'Pengumuman',
+          'Form Pengumuman',
           style: TextStyle(
               color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
         ),
@@ -53,26 +54,11 @@ class _AnnouncementDetailScreenState extends State<AnnouncementDetailScreen> {
         elevation: 4,
       ),
       body: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'Form Pengumuman',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: AnnouncementCreateForm(),
-              )
-            ],
-          ),
-        ),
+        child: const SingleChildScrollView(
+            child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: AnnouncementCreateForm(),
+        ),),
       ),
     );
   }

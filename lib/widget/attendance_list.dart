@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nanyang_application/model/attendanceLabor.dart';
-import 'package:nanyang_application/model/attendanceWorker.dart';
+import 'package:nanyang_application/model/attendance_labor.dart';
+import 'package:nanyang_application/model/attendance_worker.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:nanyang_application/widget/attendance_labor_listtile.dart';
@@ -22,7 +22,6 @@ class _AbsensiKaryawanListState extends State<AttendanceList> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _attendanceViewModel =
         Provider.of<AttendanceViewModel>(context, listen: false);

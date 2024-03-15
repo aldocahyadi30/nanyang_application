@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/model/attendanceLabor.dart';
+import 'package:nanyang_application/model/attendance_labor.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -80,7 +80,7 @@ class _AttendanceLaborListtileState extends State<AttendanceLaborListtile> {
                 ),
               ),
         onTap: () {
-          Navigator.pushNamed(context, '/absensi/detail', arguments: widget.model);
+          Navigator.pushNamed(context, '/attendance/detail', arguments: widget.model);
         },
       ),
     );

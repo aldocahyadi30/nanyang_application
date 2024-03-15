@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nanyang_application/widget/announcement_list.dart';
 import 'package:nanyang_application/widget/request_filter.dart';
 import 'package:nanyang_application/widget/request_list.dart';
 
@@ -15,7 +16,6 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     filterController.dispose();
   }
@@ -64,7 +64,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/pengumuman/create');
+          Navigator.pushNamed(context, '/announcement/create');
         },
         backgroundColor: Colors.blue,
         child: const Icon(Icons.add),
@@ -97,7 +97,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
               ),
             ],
           ),
-          const Expanded(child: RequestList())
+          const Expanded(child: AnnouncementList())
         ],
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/main.dart';
-import 'package:nanyang_application/model/attendanceLabor.dart';
-import 'package:nanyang_application/model/attendanceWorker.dart';
+import 'package:nanyang_application/model/attendance_labor.dart';
+import 'package:nanyang_application/model/attendance_worker.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
 import 'package:provider/provider.dart';
@@ -10,45 +10,36 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AttendanceViewModel extends ChangeNotifier {
   final AttendanceService _attendanceService;
 
-  AttendanceViewModel({required AttendanceService attendanceService})
-      : _attendanceService = attendanceService;
+  AttendanceViewModel({required AttendanceService attendanceService}) : _attendanceService = attendanceService;
 
-  Future<List<AttendanceWorkerModel>?> getWorkerAttendance(
-      String date) async {
+  Future<List<AttendanceWorkerModel>?> getWorkerAttendance(String date) async {
     try {
-      List<AttendanceWorkerModel> attendance =
-          await _attendanceService.getWorkerAttedanceByDate(date);
+      List<AttendanceWorkerModel> attendance = await _attendanceService.getWorkerAttedanceByDate(date);
 
       return attendance;
     } catch (e) {
       List<AttendanceWorkerModel> attendance = [];
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
-            .showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
-            .showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
 
       return attendance;
     }
   }
 
-  Future<List<AttendanceLaborModel>?> getLaborAttendance(
-      String date) async {
+  Future<List<AttendanceLaborModel>?> getLaborAttendance(String date) async {
     try {
-      List<AttendanceLaborModel> attendance =
-          await _attendanceService.getLaborAttendanceByDate(date);
+      List<AttendanceLaborModel> attendance = await _attendanceService.getLaborAttendanceByDate(date);
 
       return attendance;
     } catch (e) {
       List<AttendanceLaborModel> attendance = [];
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
-            .showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
-            .showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
 
       return attendance;
@@ -57,8 +48,7 @@ class AttendanceViewModel extends ChangeNotifier {
 
   Future<AttendanceLaborModel> getLaborerAttendanceByID(int id) async {
     try {
-      AttendanceLaborModel attendance =
-          await _attendanceService.getLaborAttendanceByID(id);
+      AttendanceLaborModel attendance = await _attendanceService.getLaborAttendanceByID(id);
 
       return attendance;
     } catch (e) {
@@ -74,41 +64,28 @@ class AttendanceViewModel extends ChangeNotifier {
     } else if (nameParts.length == 2) {
       return nameParts.join(' ');
     } else {
-      return nameParts.take(2).join(' ') +
-          nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
+      return nameParts.take(2).join(' ') + nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
     }
   }
 
   String getAvatarInitials(String name) {
     List<String> nameParts = name.split(' ');
 
-    return ((nameParts.isNotEmpty ? nameParts[0][0] : '') +
-            (nameParts.length > 1 ? nameParts[1][0] : ''))
-        .toUpperCase();
+    return ((nameParts.isNotEmpty ? nameParts[0][0] : '') + (nameParts.length > 1 ? nameParts[1][0] : '')).toUpperCase();
   }
 
-  Future<void> storeTodayLaborerAttendance(
-      AttendanceLaborModel model,
-      String date,
-      String status,
-      int type,
-      int? initialQty,
-      int? finalQty,
-      double? initialWeight,
-      double? finalWeight,
-      int? cleanScore) async {
+  Future<void> storeTodayLaborerAttendance(AttendanceLaborModel model, String date, String status, int type, int? initialQty, int? finalQty,
+      double? initialWeight, double? finalWeight, int? cleanScore) async {
     try {
-      await _attendanceService.storeLaborAttendance(model, date, status, type,
-          initialQty, finalQty, initialWeight, finalWeight, cleanScore);
+      await _attendanceService.storeLaborAttendance(model, date, status, type, initialQty, finalQty, initialWeight, finalWeight, cleanScore);
+      Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Absensi berhasil disimpan', 'success');
 
       notifyListeners();
     } catch (e) {
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
-            .showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
-            .showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
     }
   }

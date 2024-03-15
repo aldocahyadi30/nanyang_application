@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nanyang_application/model/attendanceLabor.dart';
+import 'package:nanyang_application/model/attendance_labor.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
-import 'package:nanyang_application/widget/toast.dart';
 import 'package:provider/provider.dart';
 
 class AttendanceLaborDetailForm extends StatefulWidget {
@@ -23,8 +22,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _initialQtyController = TextEditingController();
   final TextEditingController _finalQtyController = TextEditingController();
-  final TextEditingController _initialWeightController =
-      TextEditingController();
+  final TextEditingController _initialWeightController = TextEditingController();
   final TextEditingController _finalWeightController = TextEditingController();
   final TextEditingController _cleanlinessController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -33,10 +31,9 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // initToast(context);
-    _dateController.text = Provider.of<DateProvider>(context, listen: false).attendanceLaborDateString;
+    _dateController.text = Provider.of<DateProvider>(context, listen: false).attendanceLaborDateStringFormat;
 
     radioValue = widget.model.type;
     if (widget.model.status == 1) {
@@ -122,8 +119,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                       ),
                       child: InputDecorator(
                         decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12.0, vertical: 8.0),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                             labelText: 'Jenis Pekerjaan',
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             border: OutlineInputBorder(),
@@ -162,8 +158,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                       ),
                       child: InputDecorator(
                         decoration: const InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                                horizontal: 12.0, vertical: 8.0),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                             labelText: 'Status Absensi',
                             floatingLabelBehavior: FloatingLabelBehavior.always,
                             border: OutlineInputBorder(),
@@ -208,9 +203,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                                 child: TextFormField(
                                   controller: _initialQtyController,
                                   keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     prefixIcon: Icon(Icons.numbers),
@@ -218,21 +211,16 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                                     fillColor: Colors.white,
                                     focusColor: Colors.blue,
                                     label: Text('Jumlah Awal'),
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.always,
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                   ),
                                 ),
                               ),
-                              const SizedBox(
-                                  width:
-                                      8), // Add some space between the fields
+                              const SizedBox(width: 8), // Add some space between the fields
                               Expanded(
                                 child: TextFormField(
                                   controller: _finalQtyController,
                                   keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     prefixIcon: Icon(Icons.numbers),
@@ -240,8 +228,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                                     fillColor: Colors.white,
                                     focusColor: Colors.blue,
                                     label: Text('Jumlah Akhir'),
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.always,
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                   ),
                                 ),
                               ),
@@ -255,9 +242,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                                 child: TextFormField(
                                   controller: _initialWeightController,
                                   keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     prefixIcon: Icon(Icons.scale),
@@ -265,21 +250,16 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                                     fillColor: Colors.white,
                                     focusColor: Colors.blue,
                                     label: Text('Berat Awal'),
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.always,
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                   ),
                                 ),
                               ),
-                              const SizedBox(
-                                  width:
-                                      8), // Add some space between the fields
+                              const SizedBox(width: 8), // Add some space between the fields
                               Expanded(
                                 child: TextFormField(
                                   controller: _finalWeightController,
                                   keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly
-                                  ],
+                                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     prefixIcon: Icon(Icons.scale),
@@ -287,8 +267,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                                     fillColor: Colors.white,
                                     focusColor: Colors.blue,
                                     label: Text('Berat Akhir'),
-                                    floatingLabelBehavior:
-                                        FloatingLabelBehavior.always,
+                                    floatingLabelBehavior: FloatingLabelBehavior.always,
                                   ),
                                 ),
                               ),
@@ -298,9 +277,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                           TextFormField(
                             controller: _cleanlinessController,
                             keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
+                            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               prefixIcon: Icon(Icons.percent),
@@ -308,8 +285,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                               fillColor: Colors.white,
                               focusColor: Colors.blue,
                               label: Text('Nilai Kebersihan'),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
+                              floatingLabelBehavior: FloatingLabelBehavior.always,
                             ),
                           ),
                         ],
@@ -329,50 +305,27 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                   setState(() {
                     _isLoading = true;
                   });
-                  final attendanceViewModel =
-                      Provider.of<AttendanceViewModel>(context, listen: false);
+                  final attendanceViewModel = Provider.of<AttendanceViewModel>(context, listen: false);
                   final date = _dateController.text;
                   final type = radioValue;
-                  final initialQty = _initialQtyController.text.isEmpty
-                      ? null
-                      : int.parse(_initialQtyController.text);
-                  final finalQty = _finalQtyController.text.isEmpty
-                      ? null
-                      : int.parse(_finalQtyController.text);
-                  final initialWeight = _initialQtyController.text.isEmpty
-                      ? null
-                      : double.parse(_initialWeightController.text);
-                  final finalWeight = _finalWeightController.text.isEmpty
-                      ? null
-                      : double.parse(_finalWeightController.text);
-                  final cleanScore = _cleanlinessController.text.isEmpty
-                      ? null
-                      : int.parse(_cleanlinessController.text);
+                  final initialQty = _initialQtyController.text.isEmpty ? null : int.parse(_initialQtyController.text);
+                  final finalQty = _finalQtyController.text.isEmpty ? null : int.parse(_finalQtyController.text);
+                  final initialWeight = _initialQtyController.text.isEmpty ? null : double.parse(_initialWeightController.text);
+                  final finalWeight = _finalWeightController.text.isEmpty ? null : double.parse(_finalWeightController.text);
+                  final cleanScore = _cleanlinessController.text.isEmpty ? null : int.parse(_cleanlinessController.text);
 
-                  try {
-                    attendanceViewModel
-                        .storeTodayLaborerAttendance(
-                            widget.model,
-                            date,
-                            _attendanceStatus.toString().split('.').last,
-                            type!,
-                            initialQty,
-                            finalQty,
-                            initialWeight,
-                            finalWeight,
-                            cleanScore)
-                        .then((_) {
-                      showToast('Absensi berhasil disimpan', 'success');
-                      setState(() {
-                        _isLoading = false;
-                      });
-                      Future.delayed(const Duration(seconds: 2), () {
-                        Navigator.pop(context);
-                      });
+                  attendanceViewModel
+                      .storeTodayLaborerAttendance(
+                          widget.model, date, _attendanceStatus.toString().split('.').last, type!, initialQty, finalQty, initialWeight, finalWeight, cleanScore)
+                      .then((_) {
+                    setState(() {
+                      _isLoading = false;
                     });
-                  } catch (e) {
-                    showToast('Terjadi error saat mengirim ', 'error');
-                  }
+                    //TODO 1.2: After redirect the widget not rebuild
+                    Future.delayed(const Duration(seconds: 2), () {
+                      Navigator.pushReplacementNamed(context, '/attendance');
+                    });
+                  });
                 }
               },
               child: _isLoading
@@ -381,10 +334,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
                     )
                   : const Text(
                       'Simpan Absensi',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.blue),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.blue),
                     ),
             ),
           ),

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:nanyang_application/widget/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -45,8 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
             fit: StackFit.loose,
             children: [
               Positioned(
-                left:
-                    MediaQuery.of(context).size.width * 0.085, // 25% from left
+                left: MediaQuery.of(context).size.width * 0.085, // 25% from left
                 top: MediaQuery.of(context).size.height * 0.1, // 25% from top
                 child: Hero(
                   tag: 'redAvatar',
@@ -58,8 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               // Avatar at top right
               Positioned(
-                right:
-                    MediaQuery.of(context).size.width * 0.085, // 25% from right
+                right: MediaQuery.of(context).size.width * 0.085, // 25% from right
                 top: MediaQuery.of(context).size.height * 0.1, // 25% from top
                 child: Hero(
                   tag: 'blueAvatar',
@@ -71,11 +69,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               // Avatar at bottom center
               Positioned(
-                top: MediaQuery.of(context).size.height *
-                    0.225, // 25% from bottom
+                top: MediaQuery.of(context).size.height * 0.225, // 25% from bottom
                 left: MediaQuery.of(context).size.width * 0.25, // 25% from left
-                right:
-                    MediaQuery.of(context).size.width * 0.25, // 25% from right
+                right: MediaQuery.of(context).size.width * 0.25, // 25% from right
                 child: Hero(
                   tag: 'greenAvatar',
                   child: CircleAvatar(
@@ -85,11 +81,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Positioned(
-                top: MediaQuery.of(context).size.height *
-                    0.15, // 25% from bottom
+                top: MediaQuery.of(context).size.height * 0.15, // 25% from bottom
                 left: MediaQuery.of(context).size.width * 0.25, // 25% from left
-                right:
-                    MediaQuery.of(context).size.width * 0.25, // 25% from right
+                right: MediaQuery.of(context).size.width * 0.25, // 25% from right
                 child: Hero(
                   tag: 'logo',
                   child: BackdropFilter(
@@ -123,10 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const Align(
                       alignment: Alignment.center,
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: LoginForm()
-                      ),
+                      child: Padding(padding: EdgeInsets.all(16.0), child: LoginForm()),
                     ),
                   ],
                 ),

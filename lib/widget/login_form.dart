@@ -38,14 +38,12 @@ class _LoginFormState extends State<LoginForm> {
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
       final password = _passwordController.text;
-      final loginViewModel =
-          Provider.of<LoginViewModel>(context, listen: false);
+      final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
       final user = await loginViewModel.login(email, password);
 
-      if (user?.id != null) {
+      if (user?.id != null || user?.id != '') {
         if (context.mounted) {
-          Provider.of<ToastProvider>(context, listen: false)
-              .showToast('Login berhasil!', 'success');
+          Provider.of<ToastProvider>(context, listen: false).showToast('Login berhasil!', 'success');
           Provider.of<UserProvider>(context, listen: false).setUser(user!);
           Navigator.of(context).pushReplacementNamed('/home');
         }
@@ -55,8 +53,7 @@ class _LoginFormState extends State<LoginForm> {
         });
       }
     } else {
-      Provider.of<ToastProvider>(context, listen: false)
-          .showToast('Cek kembali inputan anda!', 'error');
+      Provider.of<ToastProvider>(context, listen: false).showToast('Cek kembali inputan anda!', 'error');
       setState(() {
         _isLoading = false;
       });

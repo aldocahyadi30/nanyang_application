@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/model/attendanceLabor.dart';
+import 'package:nanyang_application/model/attendance_labor.dart';
 import 'package:nanyang_application/widget/attendance_labor_detail_form.dart';
 
 class AbsensiDetailScreen extends StatefulWidget {
@@ -14,13 +14,10 @@ class _AbsensiDetailScreenState extends State<AbsensiDetailScreen> {
   late Future<AttendanceLaborModel> futureModel = initializeModel();
 
   Future<AttendanceLaborModel> initializeModel() async {
-    AttendanceLaborModel model =
-        ModalRoute.of(context)!.settings.arguments as AttendanceLaborModel;
+    AttendanceLaborModel model = ModalRoute.of(context)!.settings.arguments as AttendanceLaborModel;
 
     return model;
   }
-
- 
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +41,14 @@ class _AbsensiDetailScreenState extends State<AbsensiDetailScreen> {
         ),
         title: const Text(
           'Absensi',
-          style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
         ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Colors.blue[200]!,
-                Colors.blue,
-                Colors.blue[700]!,
-                Colors.blue[800]!
-              ],
+              colors: [Colors.blue[200]!, Colors.blue, Colors.blue[700]!, Colors.blue[800]!],
             ),
           ),
         ),
@@ -75,8 +66,7 @@ class _AbsensiDetailScreenState extends State<AbsensiDetailScreen> {
                   // handle the error
                   return Text('Error: ${snapshot.error}');
                 } else {
-                  return AttendanceLaborDetailForm(
-                      model: snapshot.data as AttendanceLaborModel);
+                  return AttendanceLaborDetailForm(model: snapshot.data as AttendanceLaborModel);
                 }
               }),
         ),

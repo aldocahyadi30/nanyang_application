@@ -11,8 +11,7 @@ class SettingScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Pengaturan',
-          style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.blue,
@@ -23,12 +22,7 @@ class SettingScreen extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Colors.blue[200]!,
-                Colors.blue,
-                Colors.blue[700]!,
-                Colors.blue[800]!
-              ],
+              colors: [Colors.blue[200]!, Colors.blue, Colors.blue[700]!, Colors.blue[800]!],
             ),
           ),
         ),
@@ -43,10 +37,7 @@ class SettingScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: const Text(
               'Akun',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500),
+              style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),
             ),
           ),
           const SettingAccount(),
@@ -60,10 +51,7 @@ class SettingScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: const Text(
               'Pengaturan',
-              style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500),
+              style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),
             ),
           ),
           Container(

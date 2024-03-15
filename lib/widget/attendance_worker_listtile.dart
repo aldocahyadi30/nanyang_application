@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/model/attendanceWorker.dart';
+import 'package:nanyang_application/model/attendance_worker.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -10,17 +10,14 @@ class AttendanceWorkerListtile extends StatefulWidget {
   const AttendanceWorkerListtile({super.key, required this.model});
 
   @override
-  State<AttendanceWorkerListtile> createState() =>
-      _AttendanceWorkerListtileState();
+  State<AttendanceWorkerListtile> createState() => _AttendanceWorkerListtileState();
 }
 
 class _AttendanceWorkerListtileState extends State<AttendanceWorkerListtile> {
   @override
   Widget build(BuildContext context) {
-    String avatarText = Provider.of<AttendanceViewModel>(context)
-        .getAvatarInitials(widget.model.employeeName);
-    String employeeName = Provider.of<AttendanceViewModel>(context)
-        .getShortenedName(widget.model.employeeName);
+    String avatarText = Provider.of<AttendanceViewModel>(context).getAvatarInitials(widget.model.employeeName);
+    String employeeName = Provider.of<AttendanceViewModel>(context).getShortenedName(widget.model.employeeName);
 
     return Card(
       color: Colors.white,
@@ -32,8 +29,7 @@ class _AttendanceWorkerListtileState extends State<AttendanceWorkerListtile> {
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         leading: CircleAvatar(
           radius: 30,
-          backgroundColor:
-              Colors.primaries[Random().nextInt(Colors.primaries.length)],
+          backgroundColor: Colors.primaries[Random().nextInt(Colors.primaries.length)],
           child: Text(
             avatarText,
             style: const TextStyle(color: Colors.white),

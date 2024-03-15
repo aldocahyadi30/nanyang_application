@@ -34,7 +34,7 @@ class DashboardMenuCard extends StatelessWidget {
             children: [
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/pengumuman.png',
-                  route: '/pengumuman',
+                  route: '/announcement',
                   title: 'Pengumuman'),
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/chat.png',

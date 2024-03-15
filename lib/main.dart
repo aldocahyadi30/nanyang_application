@@ -104,7 +104,7 @@ Future<void> main() async {
           '/attendance': (context) => const AttendanceScreen(),
           '/attendance/detail': (context) => const AbsensiDetailScreen(),
           '/announcement': (context) => const AnnouncementScreen(),
-          '/annoucnement/create': (context) => const AnnouncementDetailScreen(),
+          '/announcement/create': (context) => const AnnouncementDetailScreen(),
         },
       ),
     ),

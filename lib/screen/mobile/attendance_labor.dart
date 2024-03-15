@@ -15,7 +15,6 @@ class _AttendanceLaborScreenState extends State<AttendanceLaborScreen> {
     final TextEditingController dateController = TextEditingController();
     @override
     void dispose() {
-      // TODO: implement dispose
       super.dispose();
       dateController.dispose();
     }
@@ -25,7 +24,34 @@ class _AttendanceLaborScreenState extends State<AttendanceLaborScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Datepicker(controller: dateController, type: 'attendance-labor'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: TextField(
+                readOnly: true,
+                controller: dateController,
+                decoration: InputDecoration(
+                  labelText: 'Filter Tanggal',
+                  labelStyle: const TextStyle(color: Colors.blue),
+                  suffixIcon: Datepicker(
+                    controller: dateController,
+                    type: 'attendance-labor',
+                  ),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 8),
           Container(

@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
-import 'package:nanyang_application/widget/request_listtile.dart';
+import 'package:flutter/widgets.dart';
+import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
+import 'package:nanyang_application/widget/announcement_listtile.dart';
 import 'package:provider/provider.dart';
 
-class RequestList extends StatefulWidget {
-  const RequestList({super.key});
+class AnnouncementList extends StatefulWidget {
+  const AnnouncementList({super.key});
 
   @override
-  State<RequestList> createState() => _RequestListState();
+  State<AnnouncementList> createState() => _AnnouncementListState();
 }
 
-class _RequestListState extends State<RequestList> {
-  late final RequestViewModel _requestViewModel;
+class _AnnouncementListState extends State<AnnouncementList> {
+  late final AnnouncementViewModel _announcementViewModel;
 
   @override
   void initState() {
     super.initState();
-    _requestViewModel = Provider.of<RequestViewModel>(context, listen: false);
+    _announcementViewModel = Provider.of<AnnouncementViewModel>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: FutureBuilder(
-        future: _requestViewModel.getListRequest(),
+    return FutureBuilder(
+        future: _announcementViewModel.getAnnouncement(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -40,13 +39,11 @@ class _RequestListState extends State<RequestList> {
                 shrinkWrap: true,
                 itemCount: snapshot.data?.length,
                 itemBuilder: (context, index) {
-                  return RequestListtile(model: snapshot.data![index]);
+                  return Padding(padding: const EdgeInsets.symmetric(horizontal: 8.0), child: AnnouncementListtile(model: snapshot.data![index]),);
                 },
               );
             }
           }
-        },
-      ),
-    );
+        });
   }
 }

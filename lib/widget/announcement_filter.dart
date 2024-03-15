@@ -68,9 +68,7 @@ class _AnnouncementFilterState extends State<AnnouncementFilter> {
           labelText: 'Cari pengumuman...',
           labelStyle: const TextStyle(color: Colors.blue),
           suffixIcon: IconButton(
-            onPressed: () => {
-              
-            },
+            onPressed: () => {},
             icon: const Icon(Icons.search, color: Colors.blue),
           ),
           border: InputBorder.none,

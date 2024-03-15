@@ -15,8 +15,7 @@ class _DashboardRequestState extends State<DashboardRequest> {
   @override
   void initState() {
     super.initState();
-    _requestViewModel =
-        RequestViewModel(requestService: RequestService());
+    _requestViewModel = RequestViewModel(requestService: RequestService());
   }
 
   @override
@@ -65,8 +64,7 @@ class _DashboardRequestState extends State<DashboardRequest> {
                       itemCount: snapshot.data?.length ?? 0,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title:
-                              Text(snapshot.data?[index].requestTypeName ?? 'No Title'),
+                          title: Text(snapshot.data?[index].requestTypeName ?? 'No Title'),
                         );
                       },
                     );
