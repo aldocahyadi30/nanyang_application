@@ -1,54 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/widget/dashboard_menu_icon.dart';
+import 'package:nanyang_application/widget/dashboard/dashboard_menu_icon.dart';
+
+import '../../widget/global/nanyang_appbar.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.blue[400],
-              borderRadius:
-                  BorderRadius.circular(10),
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.blue[200]!,
-                Colors.blue,
-                Colors.blue[700]!,
-                Colors.blue[800]!
-              ],
-            ),
-          ),
-        ),
-        title: const Text('Menu',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold)),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-        elevation: 4,
-        automaticallyImplyLeading: false,
+    return const Scaffold(
+      appBar: NanyangAppbar(
+        title: 'Menu',
+        isBackButton: false,
       ),
-      body: const Column(
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

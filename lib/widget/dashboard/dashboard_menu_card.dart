@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/widget/dashboard_menu_icon.dart';
+import 'package:nanyang_application/widget/dashboard/dashboard_menu_icon.dart';
 
 class DashboardMenuCard extends StatelessWidget {
   const DashboardMenuCard({super.key});

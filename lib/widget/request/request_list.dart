@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
-import 'package:nanyang_application/widget/announcement_listtile.dart';
+import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
+import 'package:nanyang_application/widget/request/request_listtile.dart';
 import 'package:provider/provider.dart';
 
-class AnnouncementList extends StatefulWidget {
-  const AnnouncementList({super.key});
+class RequestList extends StatefulWidget {
+  const RequestList({super.key});
 
   @override
-  State<AnnouncementList> createState() => _AnnouncementListState();
+  State<RequestList> createState() => _RequestListState();
 }
 
-class _AnnouncementListState extends State<AnnouncementList> {
-  late final AnnouncementViewModel _announcementViewModel;
+class _RequestListState extends State<RequestList> {
+  late final RequestViewModel _requestViewModel;
 
   @override
   void initState() {
     super.initState();
-    _announcementViewModel = Provider.of<AnnouncementViewModel>(context, listen: false);
+    _requestViewModel = Provider.of<RequestViewModel>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: _announcementViewModel.getAnnouncement(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: FutureBuilder(
+        future: _requestViewModel.getListRequest(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -39,11 +40,13 @@ class _AnnouncementListState extends State<AnnouncementList> {
                 shrinkWrap: true,
                 itemCount: snapshot.data?.length,
                 itemBuilder: (context, index) {
-                  return Padding(padding: const EdgeInsets.symmetric(horizontal: 8.0), child: AnnouncementListtile(model: snapshot.data![index]),);
+                  return RequestListtile(model: snapshot.data![index]);
                 },
               );
             }
           }
-        });
+        },
+      ),
+    );
   }
 }

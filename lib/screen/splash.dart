@@ -57,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Navigator.of(context).pushReplacementNamed('/home');
         }
       }).catchError((error) {
-        print('Error: $error');
+        debugPrint(error.toString());
       });
     }
   }

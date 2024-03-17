@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/model/attendance_labor.dart';
 import 'package:nanyang_application/model/attendance_worker.dart';
@@ -18,8 +19,10 @@ class AttendanceService {
           ''').eq('Position.type', 1).gte('Attendance.date', startTime).lte('Attendance.date', endTime).order('name', ascending: true);
       return AttendanceWorkerModel.fromSupabaseList(attendance);
     } on PostgrestException catch (error) {
+      debugPrint('Attendance error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
+      debugPrint('Attendance error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }
@@ -37,8 +40,10 @@ class AttendanceService {
 
       return AttendanceLaborModel.fromSupabaseList(attendance);
     } on PostgrestException catch (error) {
+      debugPrint('Attendance error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
+      debugPrint('Attendance error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }
@@ -53,8 +58,10 @@ class AttendanceService {
 
       return AttendanceLaborModel.fromSupabase(attendance);
     } on PostgrestException catch (error) {
+      debugPrint('Attendance error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
+      debugPrint('Attendance error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }
@@ -85,8 +92,10 @@ class AttendanceService {
         'shape_score': qtyScore,
       });
     } on PostgrestException catch (error) {
+      debugPrint('Attendance error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
+      debugPrint('Attendance error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }

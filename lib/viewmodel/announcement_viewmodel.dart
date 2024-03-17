@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nanyang_application/main.dart';
 import 'package:nanyang_application/model/announcement.dart';
 import 'package:nanyang_application/model/announcement_category.dart';
@@ -17,18 +18,23 @@ class AnnouncementViewModel extends ChangeNotifier {
       List<AnnouncementModel> announcement = await _announcementService.getDashboardAnnouncement();
       return announcement;
     } catch (e) {
-      // Handle error
-      return null;
+      List<AnnouncementModel> announcement = [];
+      if (e is PostgrestException) {
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+      } else {
+        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+      }
+      return announcement;
     }
   }
 
-  Future<List<AnnouncementModel>?> getAnnouncement() async{
-    try{
+  Future<List<AnnouncementModel>?> getAnnouncement() async {
+    try {
       List<AnnouncementModel> announcement = await _announcementService.getAnnouncement();
       return announcement;
-    } catch (e){
+    } catch (e) {
       List<AnnouncementModel> announcement = [];
-      if (e is PostgrestException){
+      if (e is PostgrestException) {
         Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
         Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
@@ -52,9 +58,13 @@ class AnnouncementViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> storeAnnouncement(AnnouncementModel announcement) async {
+  Future<void> storeAnnouncement(int categoryId, String title, String content, bool postLater, String date, String time) async {
     try {
-      await _announcementService.storeAnnouncement(announcement);
+      DateTime tempDate = DateFormat('dd-MM-yyyy').parse(date);
+      DateTime tempTime = DateFormat('HH:mm').parse(time);
+      DateTime dateTime = DateTime(tempDate.year, tempDate.month, tempDate.day, tempTime.hour, tempTime.minute);
+
+      await _announcementService.storeAnnouncement(categoryId, title, content, postLater, dateTime);
       Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Berhasil menambahkan pengumuman!', 'success');
     } catch (e) {
       if (e is PostgrestException) {

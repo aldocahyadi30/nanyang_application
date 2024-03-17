@@ -23,7 +23,7 @@ class FormButton extends StatefulWidget {
 class _FormButtonState extends State<FormButton> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: 64.0,
       child: ElevatedButton(

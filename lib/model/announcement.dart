@@ -5,8 +5,7 @@ class AnnouncementModel {
   final String title;
   final String content;
   final bool postLater;
-  final String postDate;
-  final String postTime;
+  final DateTime postDateTime;
 
   AnnouncementModel({
     required this.id,
@@ -15,12 +14,12 @@ class AnnouncementModel {
     required this.title,
     required this.content,
     required this.postLater,
-    this.postDate = '',
-    this.postTime = '',
+    required this.postDateTime
   });
 
   static List<AnnouncementModel> fromSupabaseList(List<Map<String, dynamic>> announcements) {
     return announcements.map((announcement) {
+      DateTime postDateTime = DateTime.parse(announcement['post_date'].toString());
       return AnnouncementModel(
         id: announcement['announcement_id'],
         categoryId: announcement['AnnouncementCategory']['category_id'],
@@ -28,8 +27,7 @@ class AnnouncementModel {
         title: announcement['title'],
         content: announcement['description'],
         postLater: announcement['post_later'],
-        postDate: announcement['post_date'].toString().split('T').first,
-        postTime: announcement['post_date'].toString().split('T').last.split('.').first,
+        postDateTime: postDateTime
       );
     }).toList();
   }

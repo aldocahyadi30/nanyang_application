@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:nanyang_application/widget/announcement_list.dart';
-import 'package:nanyang_application/widget/request_filter.dart';
-import 'package:nanyang_application/widget/request_list.dart';
+import 'package:nanyang_application/widget/announcement/announcement_list.dart';
+import 'package:nanyang_application/widget/global/nanyang_appbar.dart';
+import 'package:nanyang_application/widget/request/request_filter.dart';
 
 class AnnouncementScreen extends StatefulWidget {
   const AnnouncementScreen({super.key});
@@ -23,50 +22,16 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.blue[400],
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ),
-        title: const Text(
-          'Pengumuman',
-          style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: false,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.blue[200]!,
-                Colors.blue,
-                Colors.blue[700]!,
-                Colors.blue[800]!
-              ],
-            ),
-          ),
-        ),
-        elevation: 4,
+      appBar: const NanyangAppbar(
+        title: 'Pengumuman',
+        isBackButton: true,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, '/announcement/create');
         },
         backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         child: const Icon(Icons.add),
       ),
       body: Column(

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/widget/request_filter.dart';
-import 'package:nanyang_application/widget/request_list.dart';
+import 'package:nanyang_application/widget/global/nanyang_appbar.dart';
+import 'package:nanyang_application/widget/request/request_filter.dart';
+import 'package:nanyang_application/widget/request/request_list.dart';
 
 class RequestScreen extends StatefulWidget {
   const RequestScreen({super.key});
@@ -22,30 +23,9 @@ class _RequestScreenState extends State<RequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        title: const Text(
-          'Perizinan',
-          style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: false,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Colors.blue[200]!,
-                Colors.blue,
-                Colors.blue[700]!,
-                Colors.blue[800]!
-              ],
-            ),
-          ),
-        ),
-        elevation: 4,
-        automaticallyImplyLeading: false,
+      appBar: const NanyangAppbar(
+        title: 'Perizinan',
+        isBackButton: false,
       ),
       body: Column(
         children: [

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/screen/mobile/attendance_labor.dart';
-import 'package:nanyang_application/screen/mobile/attendance_worker.dart';
+import 'package:nanyang_application/screen/mobile/attendance/attendance_labor.dart';
+import 'package:nanyang_application/screen/mobile/attendance/attendance_worker.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -60,14 +60,12 @@ class _AttendanceScreenState extends State<AttendanceScreen>
           controller: _tabController,
           tabs: const [
             Tab(
-              icon: Icon(Icons.work, color: Colors.white),
               child: Text(
                 'Karyawan',
                 style: TextStyle(color: Colors.white),
               ),
             ),
             Tab(
-              icon: Icon(Icons.factory, color: Colors.white),
               child: Text(
                 'Pekerja Cabutan',
                 style: TextStyle(color: Colors.white),

@@ -1,4 +1,4 @@
-import 'package:intl/intl.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:nanyang_application/main.dart';
 import 'package:nanyang_application/model/announcement.dart';
 import 'package:nanyang_application/model/announcement_category.dart';
@@ -12,22 +12,16 @@ class AnnouncementService {
   Future<List<AnnouncementModel>> getDashboardAnnouncement() async {
     try {
       final data = await supabase.from('Announcement').select('''
-        announcement_id,
-        title,
-        description,
-        post_date,
-        post_later,
-        AnnouncementCategory!Announcement_category_id_AnnouncementCategory_category_id (
-          category_id,
-          name,
-          age,
-        )
-        ''').order('created_date', ascending: false).limit(2);
+        *,
+        AnnouncementCategory!inner(*)
+      ''').order('post_date', ascending: false).limit(2);
 
       return AnnouncementModel.fromSupabaseList(data);
     } on PostgrestException catch (error) {
+      debugPrint('Announcement error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
+      debugPrint('Announcement error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }
@@ -37,15 +31,14 @@ class AnnouncementService {
       final data = await supabase.from('Announcement').select('''
         *,
         AnnouncementCategory!inner(*)
-      ''');
-      print(data);
+      ''').order('post_date', ascending: false);
 
       return AnnouncementModel.fromSupabaseList(data);
     } on PostgrestException catch (error) {
-      print(error.message);
+      debugPrint('Announcement error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
-      print(e.toString());
+      debugPrint('Announcement error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }
@@ -58,29 +51,29 @@ class AnnouncementService {
         ''');
       return AnnouncementCategoryModel.fromSupabaseList(data);
     } on PostgrestException catch (error) {
+      debugPrint('Announcement error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
+      debugPrint('Announcement error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }
 
-  Future<void> storeAnnouncement(AnnouncementModel announcement) async {
+  Future<void> storeAnnouncement(int categoryId, String title, String content, bool postLater, DateTime dateTime) async {
     try {
-      DateTime date = DateFormat('dd-MM-yyyy').parse(announcement.postDate);
-      DateTime time = DateFormat('HH:mm').parse(announcement.postTime);
-      DateTime dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-
       await supabase.from('Announcement').insert({
-        'category_id': announcement.categoryId,
-        'title': announcement.title,
-        'description': announcement.content,
-        'post_later': announcement.postLater,
+        'category_id': categoryId,
+        'title': title,
+        'description': content,
+        'post_later': postLater,
         'post_date': dateTime.toIso8601String(),
         'created_by': Provider.of<UserProvider>(navigatorKey.currentContext!, listen: false).user!.employeeId,
       });
     } on PostgrestException catch (error) {
+      debugPrint('Announcement error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
+      debugPrint('Announcement error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }

@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/widget/attendance_list.dart';
-import 'package:nanyang_application/widget/datepicker.dart';
+import 'package:nanyang_application/widget/attendance/attendance_list.dart';
+import 'package:nanyang_application/widget/global/datepicker.dart';
 
-class AttendanceWorkerScreen extends StatefulWidget {
-  const AttendanceWorkerScreen({super.key});
+class AttendanceLaborScreen extends StatefulWidget {
+  const AttendanceLaborScreen({super.key});
 
   @override
-  State<AttendanceWorkerScreen> createState() => _AttendanceWorkerScreenState();
+  State<AttendanceLaborScreen> createState() => _AttendanceLaborScreenState();
 }
 
-class _AttendanceWorkerScreenState extends State<AttendanceWorkerScreen> {
-  final TextEditingController dateController = TextEditingController();
-  @override
-  void dispose() {
-    super.dispose();
-    dateController.dispose();
-  }
-
+class _AttendanceLaborScreenState extends State<AttendanceLaborScreen> {
   @override
   Widget build(BuildContext context) {
+    final TextEditingController dateController = TextEditingController();
+
+    @override
+    void dispose() {
+      super.dispose();
+      dateController.dispose();
+    }
+
     return Scaffold(
       body: Column(
         children: [
@@ -46,7 +47,7 @@ class _AttendanceWorkerScreenState extends State<AttendanceWorkerScreen> {
                   labelStyle: const TextStyle(color: Colors.blue),
                   suffixIcon: Datepicker(
                     controller: dateController,
-                    type: 'attendance-worker',
+                    type: 'attendance-labor',
                   ),
                   border: InputBorder.none,
                 ),
@@ -58,7 +59,7 @@ class _AttendanceWorkerScreenState extends State<AttendanceWorkerScreen> {
             alignment: Alignment.centerLeft,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: const Text(
-              'Daftar Absensi Karyawan',
+              'Daftar Absensi Cabutan',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
@@ -66,9 +67,8 @@ class _AttendanceWorkerScreenState extends State<AttendanceWorkerScreen> {
             ),
           ),
           const Expanded(
-              child: AttendanceList(
-            mode: 'karyawan',
-          ))
+            child: AttendanceList(mode: 'cabutan'),
+          )
         ],
       ),
     );

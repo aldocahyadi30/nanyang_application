@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nanyang_application/model/attendance_labor.dart';
-import 'package:nanyang_application/widget/attendance_labor_detail_form.dart';
+import 'package:nanyang_application/widget/attendance/attendance_labor_detail_form.dart';
 
 class AbsensiDetailScreen extends StatefulWidget {
   const AbsensiDetailScreen({super.key});

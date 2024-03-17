@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/screen/mobile/attendance.dart';
+import 'package:nanyang_application/screen/mobile/attendance/attendance.dart';
 import 'package:nanyang_application/screen/mobile/dashboard.dart';
-import 'package:nanyang_application/screen/mobile/setting.dart';
-import 'package:nanyang_application/screen/mobile/request.dart';
+import 'package:nanyang_application/screen/mobile/setting/setting.dart';
+import 'package:nanyang_application/screen/mobile/request/request.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

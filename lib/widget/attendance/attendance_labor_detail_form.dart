@@ -296,7 +296,7 @@ class _AttendanceLaborDetailFormState extends State<AttendanceLaborDetailForm> {
             ),
           ),
           const SizedBox(height: 16),
-          Container(
+          SizedBox(
             height: 64,
             width: double.infinity,
             child: ElevatedButton(

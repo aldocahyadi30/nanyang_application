@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/model/announcement.dart';
 import 'package:nanyang_application/model/announcement_category.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
-import 'package:nanyang_application/widget/datepicker.dart';
-import 'package:nanyang_application/widget/form_button.dart';
-import 'package:nanyang_application/widget/timepicker.dart';
+import 'package:nanyang_application/widget/global/datepicker.dart';
+import 'package:nanyang_application/widget/global/form_button.dart';
+import 'package:nanyang_application/widget/global/timepicker.dart';
 import 'package:provider/provider.dart';
 
 class AnnouncementCreateForm extends StatefulWidget {
@@ -16,7 +15,6 @@ class AnnouncementCreateForm extends StatefulWidget {
 
 class _AnnouncementCreateFormState extends State<AnnouncementCreateForm> {
   late final AnnouncementViewModel _announcementViewModel;
-  late  AnnouncementModel _announcementModel;
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
@@ -294,19 +292,9 @@ class _AnnouncementCreateFormState extends State<AnnouncementCreateForm> {
                   _isLoading = true;
                 });
 
-                _announcementModel = AnnouncementModel(
-                  id: 0,
-                  categoryId: selectedCategory!,
-                  categoryName: '',
-                  title: titleController.text,
-                  content: contentController.text,
-                  postLater: postLater,
-                  postDate: dateController.text,
-                  postTime: timeController.text,
-                );
-                
-
-                _announcementViewModel.storeAnnouncement(_announcementModel).then((value) {
+                _announcementViewModel
+                    .storeAnnouncement(selectedCategory!, titleController.text, contentController.text, postLater, dateController.text, timeController.text)
+                    .then((value) {
                   setState(() {
                     _isLoading = false;
                   });

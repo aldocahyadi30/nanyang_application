@@ -1,16 +1,19 @@
-import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:nanyang_application/screen/login.dart';
-import 'package:nanyang_application/screen/mobile/attendance.dart';
-import 'package:nanyang_application/screen/mobile/attendance_labor_detail.dart';
+import 'package:nanyang_application/screen/mobile/announcement/announcement.dart';
+import 'package:nanyang_application/screen/mobile/announcement/announcement_create.dart';
+import 'package:nanyang_application/screen/mobile/attendance/attendance.dart';
+import 'package:nanyang_application/screen/mobile/attendance/attendance_labor_detail.dart';
 import 'package:nanyang_application/screen/mobile/home.dart';
 import 'package:nanyang_application/screen/mobile/menu.dart';
-import 'package:nanyang_application/screen/mobile/announcement.dart';
-import 'package:nanyang_application/screen/mobile/announcement_create.dart';
+import 'package:nanyang_application/screen/mobile/setting/setting.dart';
+import 'package:nanyang_application/screen/mobile/setting/setting_configuration.dart';
+import 'package:nanyang_application/screen/mobile/setting/setting_configuration_detail.dart';
 import 'package:nanyang_application/screen/splash.dart';
 import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
@@ -26,33 +29,28 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter is initialized
-
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('id_ID', null);
   await Supabase.initialize(
     url: 'https://ghglsfibxzedkzbcrocl.supabase.co',
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdoZ2xzZmlieHplZGt6YmNyb2NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDcwOTk5NjIsImV4cCI6MjAyMjY3NTk2Mn0.IQ-3YBRNTGMo0wwhJrK1UFd6ljGYS_kq0q2-hItUhTE',
   );
 
-  runApp(DevicePreview(
-    enabled: true,
-    builder: (context) => MultiProvider(
+  runApp(
+    MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) =>
-              LoginViewModel(authenticationService: AuthenticationService()),
+          create: (context) => LoginViewModel(authenticationService: AuthenticationService()),
         ),
         ChangeNotifierProvider(
-          create: (context) =>
-              AnnouncementViewModel(announcementService: AnnouncementService()),
+          create: (context) => AnnouncementViewModel(announcementService: AnnouncementService()),
         ),
         ChangeNotifierProvider(
-          create: (context) =>
-              RequestViewModel(requestService: RequestService()),
+          create: (context) => RequestViewModel(requestService: RequestService()),
         ),
         ChangeNotifierProvider(
-          create: (context) =>
-              AttendanceViewModel(attendanceService: AttendanceService()),
+          create: (context) => AttendanceViewModel(attendanceService: AttendanceService()),
         ),
         ChangeNotifierProvider(
           create: (context) => UserProvider(),
@@ -65,13 +63,8 @@ Future<void> main() async {
         ),
       ],
       child: MaterialApp(
-        useInheritedMediaQuery: true,
-        locale: DevicePreview.locale(context), // Add the locale here
         builder: (context, child) {
-          return DevicePreview.appBuilder(
-            context,
-            FToastBuilder()(context, child),
-          );
+          return FToastBuilder()(context, child);
         },
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -105,8 +98,11 @@ Future<void> main() async {
           '/attendance/detail': (context) => const AbsensiDetailScreen(),
           '/announcement': (context) => const AnnouncementScreen(),
           '/announcement/create': (context) => const AnnouncementDetailScreen(),
+          '/setting' : (context) => const SettingScreen(),
+          '/setting/configuration': (context) => const SettingConfigurationScreen(),
+          '/setting/configuration/detail': (context) => const SettingConfigurationDetailScreen(),
         },
       ),
     ),
-  ));
+  );
 }

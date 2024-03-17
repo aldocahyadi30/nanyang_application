@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/widget/dashboard_menu_card.dart';
-import 'package:nanyang_application/widget/dashboard_announcement.dart';
-import 'package:nanyang_application/widget/dashboard_profile_bar.dart';
-import 'package:nanyang_application/widget/dashboard_request.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:nanyang_application/widget/dashboard/dashboard_menu_card.dart';
+import 'package:nanyang_application/widget/dashboard/dashboard_announcement.dart';
+import 'package:nanyang_application/widget/dashboard/dashboard_profile_bar.dart';
+import 'package:nanyang_application/widget/dashboard/dashboard_request.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -71,7 +70,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             right: 0,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Container(
+              child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.25,
                 width: double.infinity,
                 child: const DashboardMenuCard(),

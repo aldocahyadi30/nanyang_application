@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:nanyang_application/viewmodel/login_viewmodel.dart';
-import 'package:nanyang_application/widget/form_button.dart';
+import 'package:nanyang_application/widget/global/form_button.dart';
 import 'package:provider/provider.dart';
 
 class LoginForm extends StatefulWidget {
@@ -18,6 +18,7 @@ class _LoginFormState extends State<LoginForm> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  bool _isObscure = false;
 
   @override
   void initState() {
@@ -38,12 +39,14 @@ class _LoginFormState extends State<LoginForm> {
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
       final password = _passwordController.text;
-      final loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+      final loginViewModel =
+          Provider.of<LoginViewModel>(context, listen: false);
       final user = await loginViewModel.login(email, password);
 
       if (user?.id != null || user?.id != '') {
-        if (context.mounted) {
-          Provider.of<ToastProvider>(context, listen: false).showToast('Login berhasil!', 'success');
+        if (mounted) {
+          Provider.of<ToastProvider>(context, listen: false)
+              .showToast('Login berhasil!', 'success');
           Provider.of<UserProvider>(context, listen: false).setUser(user!);
           Navigator.of(context).pushReplacementNamed('/home');
         }
@@ -53,7 +56,8 @@ class _LoginFormState extends State<LoginForm> {
         });
       }
     } else {
-      Provider.of<ToastProvider>(context, listen: false).showToast('Cek kembali inputan anda!', 'error');
+      Provider.of<ToastProvider>(context, listen: false)
+          .showToast('Cek kembali inputan anda!', 'error');
       setState(() {
         _isLoading = false;
       });
@@ -103,9 +107,18 @@ class _LoginFormState extends State<LoginForm> {
               return null;
             },
             controller: _passwordController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
+              suffixIcon: IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isObscure = !_isObscure;
+                    });
+                  },
+                  icon: _isObscure
+                      ? const Icon(Icons.visibility_off)
+                      : const Icon(Icons.visibility)),
               labelText: 'Password',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
           ),
           const Padding(

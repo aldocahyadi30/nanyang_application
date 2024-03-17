@@ -4,8 +4,7 @@ import 'package:nanyang_application/model/attendance_labor.dart';
 import 'package:nanyang_application/model/attendance_worker.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
-import 'package:nanyang_application/widget/attendance_labor_listtile.dart';
-import 'package:nanyang_application/widget/attendance_worker_listtile.dart';
+import 'package:nanyang_application/widget/attendance/attendance_card.dart';
 import 'package:provider/provider.dart';
 
 class AttendanceList extends StatefulWidget {
@@ -63,12 +62,12 @@ class _AbsensiKaryawanListState extends State<AttendanceList> {
                 itemBuilder: (context, index) {
                   if (snapshot.data![index] is AttendanceLaborModel &&
                       widget.mode == 'cabutan') {
-                    return AttendanceLaborListtile(
-                        model: snapshot.data![index] as AttendanceLaborModel);
+                    return AttendanceCard(
+                        labor: snapshot.data![index] as AttendanceLaborModel);
                   } else if (snapshot.data![index] is AttendanceWorkerModel &&
                       widget.mode == 'karyawan') {
-                    return AttendanceWorkerListtile(
-                        model: snapshot.data![index] as AttendanceWorkerModel);
+                    return AttendanceCard(
+                        worker: snapshot.data![index] as AttendanceWorkerModel);
                   }
                   return Container(); // Add a return statement to return a default Container widget.
                 },

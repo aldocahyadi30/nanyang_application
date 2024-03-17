@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:nanyang_application/main.dart';
 
 class ToastProvider with ChangeNotifier {
-  FToast _fToast = FToast();
+final FToast _fToast = FToast();
 
   ToastProvider() {
     _fToast.init(navigatorKey.currentContext!);
