@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/screen/mobile/attendance/attendance.dart';
 import 'package:nanyang_application/screen/mobile/dashboard.dart';
 import 'package:nanyang_application/screen/mobile/setting/setting.dart';
 import 'package:nanyang_application/screen/mobile/request/request.dart';
-import 'package:nanyang_application/size.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,41 +23,41 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
+      statusBarIconBrightness: Brightness.light,
     ));
 
     return Scaffold(
-      backgroundColor: ColorTemplate.secondaryColor,
       bottomNavigationBar: Container(
-        decoration:  BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(dynamicWidth(25, context)),
-            topRight: Radius.circular(dynamicWidth(25, context)),
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Colors.grey,
+              width: 0.7,
+            ),
           ),
         ),
-        clipBehavior: Clip.antiAlias,
         child: NavigationBar(
           selectedIndex: currentPageIndex,
-          backgroundColor: ColorTemplate.primaryColor,
-          indicatorColor: ColorTemplate.primaryColor,
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+          backgroundColor: Colors.white,
+          indicatorColor: Colors.blue,
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
           elevation: 0,
           onDestinationSelected: (int index) {
             setState(() {
               currentPageIndex = index;
             });
           },
-          destinations: <Widget>[
+          destinations: const <Widget>[
             NavigationDestination(
               selectedIcon: Icon(
                 Icons.home_filled,
                 color: Colors.white,
-                size: dynamicWidth(40, context),
+                size: 28,
               ),
               icon: Icon(
-                Icons.home_outlined,
-                color: Colors.white,
-                size: dynamicWidth(40, context),
+                Icons.home_filled,
+                color: Colors.blue,
+                size: 28,
               ),
               label: 'Home',
             ),
@@ -67,25 +65,25 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedIcon: Icon(
                 Icons.timer_rounded,
                 color: Colors.white,
-                size: dynamicWidth(40, context),
+                size: 28,
               ),
               icon: Icon(
                 Icons.timer_outlined,
-                color: Colors.white,
-                size: dynamicWidth(40, context),
+                color: Colors.blue,
+                size: 28,
               ),
               label: 'Absensi',
             ),
             NavigationDestination(
               selectedIcon: Icon(
-                Icons.description,
+                Icons.edit_document,
                 color: Colors.white,
-                size: dynamicWidth(40, context),
+                size: 28,
               ),
               icon: Icon(
-                Icons.description_outlined,
-                color: Colors.white,
-                size: dynamicWidth(40, context),
+                Icons.edit_document,
+                color: Colors.blue,
+                size: 28,
               ),
               label: 'Perizinan',
             ),
@@ -93,12 +91,12 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedIcon: Icon(
                 Icons.settings,
                 color: Colors.white,
-                size: dynamicWidth(40, context),
+                size: 28,
               ),
               icon: Icon(
-                Icons.settings_outlined,
-                color: Colors.white,
-                size: dynamicWidth(40, context),
+                Icons.settings,
+                color: Colors.blue,
+                size: 28,
               ),
               label: 'Pengaturan',
             ),

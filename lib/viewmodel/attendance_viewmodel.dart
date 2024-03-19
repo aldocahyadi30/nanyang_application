@@ -9,37 +9,41 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AttendanceViewModel extends ChangeNotifier {
   final AttendanceService _attendanceService;
+  final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
 
   AttendanceViewModel({required AttendanceService attendanceService}) : _attendanceService = attendanceService;
 
   Future<List<AttendanceWorkerModel>?> getWorkerAttendance(String date) async {
     try {
-      List<AttendanceWorkerModel> attendance = await _attendanceService.getWorkerAttedanceByDate(date);
+      List<Map<String,dynamic>> data = await _attendanceService.getWorkerAttendanceByDate(date);
 
-      return attendance;
+      return AttendanceWorkerModel.fromSupabaseList(data);
     } catch (e) {
       List<AttendanceWorkerModel> attendance = [];
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        debugPrint('Attendance error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        debugPrint('Attendance error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
-
       return attendance;
     }
   }
 
   Future<List<AttendanceLaborModel>?> getLaborAttendance(String date) async {
     try {
-      List<AttendanceLaborModel> attendance = await _attendanceService.getLaborAttendanceByDate(date);
+      List<Map<String,dynamic>> data = await _attendanceService.getLaborAttendanceByDate(date);
 
-      return attendance;
+      return AttendanceLaborModel.fromSupabaseList(data);
     } catch (e) {
       List<AttendanceLaborModel> attendance = [];
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        debugPrint('Attendance error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        debugPrint('Attendance error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
 
       return attendance;
@@ -71,21 +75,25 @@ class AttendanceViewModel extends ChangeNotifier {
   String getAvatarInitials(String name) {
     List<String> nameParts = name.split(' ');
 
-    return ((nameParts.isNotEmpty ? nameParts[0][0] : '') + (nameParts.length > 1 ? nameParts[1][0] : '')).toUpperCase();
+    return ((nameParts.isNotEmpty ? nameParts[0][0] : '') + (nameParts.length > 1 ? nameParts[1][0] : ''))
+        .toUpperCase();
   }
 
-  Future<void> storeTodayLaborerAttendance(AttendanceLaborModel model, String date, String status, int type, int? initialQty, int? finalQty,
-      double? initialWeight, double? finalWeight, int? cleanScore) async {
+  Future<void> storeTodayLaborerAttendance(AttendanceLaborModel model, String date, String status, int type,
+      int? initialQty, int? finalQty, double? initialWeight, double? finalWeight, int? cleanScore) async {
     try {
-      await _attendanceService.storeLaborAttendance(model, date, status, type, initialQty, finalQty, initialWeight, finalWeight, cleanScore);
-      Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Absensi berhasil disimpan', 'success');
+      await _attendanceService.storeLaborAttendance(
+          model, date, status, type, initialQty, finalQty, initialWeight, finalWeight, cleanScore);
+      _toastProvider.showToast('Absensi berhasil disimpan', 'success');
 
       notifyListeners();
     } catch (e) {
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        debugPrint('Attendance error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        debugPrint('Attendance error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
     }
   }

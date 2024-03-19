@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/model/announcement.dart';
+import 'package:nanyang_application/size.dart';
 
 class AnnouncementListtile extends StatelessWidget {
   final AnnouncementModel model;
@@ -13,7 +14,7 @@ class AnnouncementListtile extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white, // Set the desired color for the card
-        borderRadius: BorderRadius.circular(8), // Set border radius for rounded corners
+        borderRadius: BorderRadius.circular(dynamicWidth(8, context)), // Set border radius for rounded corners
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.2), // Set shadow color
@@ -22,20 +23,20 @@ class AnnouncementListtile extends StatelessWidget {
           ),
         ],
       ),
-      margin: const EdgeInsets.all(8.0),
+      margin: dynamicMargin(8, 8, 8, 8, context),
       child: InkWell(
         onTap: () {
         },
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: dynamicPadding(8, 8, 8, 8, context),
           child: Row(
             children: [
               Container(
-                height: 100,
-                width: 4,
+                height: dynamicHeight(100, context),
+                width: dynamicWidth(4, context),
                 color: Colors.blue,
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: dynamicWidth(12, context)),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,32 +46,32 @@ class AnnouncementListtile extends StatelessWidget {
                       children: [
                         Text(
                           model.title,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue),
+                          style: TextStyle(fontSize: dynamicFontSize(16, context), fontWeight: FontWeight.bold, color: Colors.blue),
                         ),
                         Text(
                           model.categoryName,
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blue),
+                          style: TextStyle(fontSize: dynamicFontSize(14, context), fontWeight: FontWeight.bold, color: Colors.blue),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: dynamicHeight(8, context)),
                     Text(
                       model.content,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style: TextStyle(
+                        fontSize: dynamicFontSize(14, context),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: dynamicHeight(8, context)),
                     Row(
                       children: [
-                        const Icon(Icons.access_time_outlined, size: 16, color: Colors.grey),
-                        const SizedBox(width: 4),
+                        Icon(Icons.access_time_outlined, size: dynamicFontSize(16, context), color: Colors.grey),
+                        SizedBox(width: dynamicWidth(4, context)),
                         Text(
                           '$formattedTime, $formattedDate',
-                          style: const TextStyle(
-                            fontSize: 12,
+                          style: TextStyle(
+                            fontSize: dynamicFontSize(12, context),
                             color: Colors.grey,
                             fontStyle: FontStyle.italic,
                           ),

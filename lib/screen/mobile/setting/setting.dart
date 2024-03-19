@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/screen/mobile/setting/configuration/configuration.dart';
 import 'package:nanyang_application/widget/setting/setting_account.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -55,7 +56,12 @@ class SettingScreen extends StatelessWidget {
                   ),
                   title: const Text('Konfigurasi'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.pushNamed(context, '/setting/configuration'),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ConfigurationScreen(),
+                    ),
+                  ),
               ),
               ListTile(
                 leading: const CircleAvatar(

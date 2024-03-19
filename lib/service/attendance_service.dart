@@ -7,17 +7,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AttendanceService {
   SupabaseClient supabase = Supabase.instance.client;
 
-  Future<List<AttendanceWorkerModel>> getWorkerAttedanceByDate(String date) async {
+  Future<List<Map<String, dynamic>>> getWorkerAttendanceByDate(String date) async {
     try {
       final startTime = '$date 01:00:00';
       final endTime = '$date 23:59:59';
 
-      final attendance = await Supabase.instance.client.from('Employee').select('''
+      final data = await Supabase.instance.client.from('Employee').select('''
           *,
           Position!inner(*),
           Attendance!left(*)
           ''').eq('Position.type', 1).gte('Attendance.date', startTime).lte('Attendance.date', endTime).order('name', ascending: true);
-      return AttendanceWorkerModel.fromSupabaseList(attendance);
+      return data;
     } on PostgrestException catch (error) {
       debugPrint('Attendance error: ${error.message}');
       throw PostgrestException(message: error.message);
@@ -27,18 +27,18 @@ class AttendanceService {
     }
   }
 
-  Future<List<AttendanceLaborModel>> getLaborAttendanceByDate(String date) async {
+  Future<List<Map<String, dynamic>>> getLaborAttendanceByDate(String date) async {
     try {
       final startTime = '$date 01:00:00';
       final endTime = '$date 23:59:59';
 
-      final attendance = await Supabase.instance.client.from('Employee').select('''
+      final data = await Supabase.instance.client.from('Employee').select('''
           *,
           Position!inner(*),
           Attendance!left(*, AttendanceDetail(*))
           ''').eq('Position.type', 2).gte('Attendance.date', startTime).lte('Attendance.date', endTime).order('name', ascending: true);
 
-      return AttendanceLaborModel.fromSupabaseList(attendance);
+      return data;
     } on PostgrestException catch (error) {
       debugPrint('Attendance error: ${error.message}');
       throw PostgrestException(message: error.message);

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/model/announcement_category.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
+import 'package:nanyang_application/widget/form/form_picker_field.dart';
+import 'package:nanyang_application/widget/form/form_switch_field.dart';
+import 'package:nanyang_application/widget/form/form_text_field.dart';
 import 'package:nanyang_application/widget/global/datepicker.dart';
 import 'package:nanyang_application/widget/global/form_button.dart';
 import 'package:nanyang_application/widget/global/timepicker.dart';
@@ -106,178 +109,36 @@ class _AnnouncementCreateFormState extends State<AnnouncementCreateForm> {
           const SizedBox(
             height: 16,
           ),
-          Column(
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Judul Pengumuman',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: titleController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Masukan judul pengumuman';
-                  }
-                  return null;
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.white,
-                  focusColor: Colors.blue,
-                ),
-              ),
-            ],
-          ),
+          FormTextField(title: 'Judul Pengumuman', controller: titleController),
           const SizedBox(
             height: 16,
           ),
-          Column(
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Isi Pengumuman',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: contentController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Masukan isi pengumuman';
-                  }
-                  return null;
-                },
-                maxLines: 5,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  filled: true,
-                  fillColor: Colors.white,
-                  focusColor: Colors.blue,
-                ),
-              ),
-            ],
-          ),
+          FormTextField(title: 'Isi Pengumuman', maxLines: 5, controller: contentController),
           const SizedBox(
             height: 16,
           ),
-          Column(
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Tanggal Pengumuman',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: dateController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Masukan tanggal pengumuman';
-                  }
-                  return null;
-                },
-                readOnly: true,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    focusColor: Colors.blue,
-                    suffixIcon: Datepicker(controller: dateController, type: 'normal', color: Colors.black)),
-              ),
-            ],
-          ),
+          FormPickerField(
+              title: 'Tanggal Pengumuman',
+              picker: Datepicker(controller: dateController, type: 'normal', color: Colors.black),
+              controller: dateController),
           const SizedBox(
             height: 16,
           ),
-          Column(
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Jam Pengumuman',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              TextFormField(
-                controller: timeController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Masukan jam pengumuman';
-                  }
-                  return null;
-                },
-                readOnly: true,
-                decoration: InputDecoration(
-                    border: const OutlineInputBorder(),
-                    filled: true,
-                    fillColor: Colors.white,
-                    focusColor: Colors.blue,
-                    suffixIcon: Timepicker(controller: timeController, color: Colors.black)),
-              ),
-            ],
-          ),
+          FormPickerField(
+              title: 'Jam Pengumuman',
+              picker: Timepicker(controller: timeController, color: Colors.black),
+              controller: timeController),
           const SizedBox(
             height: 16,
           ),
-          Column(
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Kirim Nanti?',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Switch(
-                  value: postLater,
-                  activeColor: Colors.blue,
-                  onChanged: (bool value) {
-                    setState(() {
-                      postLater = value;
-                    });
-                  },
-                ),
-              )
-            ],
-          ),
+          FormSwitchField(
+              title: 'Kirim Nanti',
+              value: postLater,
+              onChanged: (value) {
+                setState(() {
+                  postLater = value;
+                });
+              }),
           const SizedBox(
             height: 32,
           ),
@@ -293,7 +154,8 @@ class _AnnouncementCreateFormState extends State<AnnouncementCreateForm> {
                 });
 
                 _announcementViewModel
-                    .storeAnnouncement(selectedCategory!, titleController.text, contentController.text, postLater, dateController.text, timeController.text)
+                    .storeAnnouncement(selectedCategory!, titleController.text, contentController.text, postLater,
+                        dateController.text, timeController.text)
                     .then((value) {
                   setState(() {
                     _isLoading = false;

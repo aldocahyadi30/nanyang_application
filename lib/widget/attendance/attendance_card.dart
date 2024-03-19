@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/model/attendance_worker.dart';
 import 'package:nanyang_application/model/attendance_labor.dart';
+import 'package:nanyang_application/screen/mobile/attendance/attendance_labor_detail.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -23,15 +24,11 @@ class _AttendanceCardState extends State<AttendanceCard> {
     late String employeeName;
 
     if (widget.worker != null) {
-      avatarText = Provider.of<AttendanceViewModel>(context)
-          .getAvatarInitials(widget.worker!.employeeName);
-      employeeName = Provider.of<AttendanceViewModel>(context)
-          .getShortenedName(widget.worker!.employeeName);
+      avatarText = Provider.of<AttendanceViewModel>(context).getAvatarInitials(widget.worker!.employeeName);
+      employeeName = Provider.of<AttendanceViewModel>(context).getShortenedName(widget.worker!.employeeName);
     } else {
-      avatarText = Provider.of<AttendanceViewModel>(context)
-          .getAvatarInitials(widget.labor!.employeeName);
-      employeeName = Provider.of<AttendanceViewModel>(context)
-          .getShortenedName(widget.labor!.employeeName);
+      avatarText = Provider.of<AttendanceViewModel>(context).getAvatarInitials(widget.labor!.employeeName);
+      employeeName = Provider.of<AttendanceViewModel>(context).getShortenedName(widget.labor!.employeeName);
     }
     return Card(
       color: Colors.white,
@@ -43,8 +40,7 @@ class _AttendanceCardState extends State<AttendanceCard> {
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor:
-              Colors.primaries[Random().nextInt(Colors.primaries.length)],
+          backgroundColor: Colors.primaries[Random().nextInt(Colors.primaries.length)],
           child: Text(
             avatarText,
             style: const TextStyle(color: Colors.white),
@@ -135,6 +131,18 @@ class _AttendanceCardState extends State<AttendanceCard> {
                       color: Colors.red,
                     ),
                   ),
+        onTap: () {
+          if (widget.worker == null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AbsensiDetailScreen(
+                  model: widget.labor!,
+                ),
+              ),
+            );
+          }
+        },
       ),
     );
   }

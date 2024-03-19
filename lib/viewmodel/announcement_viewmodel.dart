@@ -10,19 +10,23 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AnnouncementViewModel extends ChangeNotifier {
   final AnnouncementService _announcementService;
+  final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
 
-  AnnouncementViewModel({required AnnouncementService announcementService}) : _announcementService = announcementService;
+  AnnouncementViewModel({required AnnouncementService announcementService})
+      : _announcementService = announcementService;
 
-  Future<List<AnnouncementModel>?> getDashboardAnnouncement() async {
+  Future<List<AnnouncementModel>> getDashboardAnnouncement() async {
     try {
-      List<AnnouncementModel> announcement = await _announcementService.getDashboardAnnouncement();
-      return announcement;
+      List<Map<String,dynamic>> data = await _announcementService.getDashboardAnnouncement();
+      return AnnouncementModel.fromSupabaseList(data);
     } catch (e) {
       List<AnnouncementModel> announcement = [];
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        debugPrint('Announcement error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        debugPrint('Announcement error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
       return announcement;
     }
@@ -30,14 +34,16 @@ class AnnouncementViewModel extends ChangeNotifier {
 
   Future<List<AnnouncementModel>?> getAnnouncement() async {
     try {
-      List<AnnouncementModel> announcement = await _announcementService.getAnnouncement();
-      return announcement;
+      List<Map<String,dynamic>> data = await _announcementService.getAnnouncement();
+      return AnnouncementModel.fromSupabaseList(data);
     } catch (e) {
       List<AnnouncementModel> announcement = [];
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        debugPrint('Announcement error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        debugPrint('Announcement error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
       return announcement;
     }
@@ -45,33 +51,40 @@ class AnnouncementViewModel extends ChangeNotifier {
 
   Future<List<AnnouncementCategoryModel>?> getAnnouncementCategory() async {
     try {
-      List<AnnouncementCategoryModel> category = await _announcementService.getAnnouncementCategory();
-      return category;
+      List<Map<String,dynamic>> data = await _announcementService.getAnnouncementCategory();
+      return AnnouncementCategoryModel.fromSupabaseList(data);
     } catch (e) {
       List<AnnouncementCategoryModel> category = [];
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        debugPrint('Announcement error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        debugPrint('Announcement error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
       return category;
     }
   }
 
-  Future<void> storeAnnouncement(int categoryId, String title, String content, bool postLater, String date, String time) async {
+  Future<void> storeAnnouncement(
+      int categoryId, String title, String content, bool postLater, String date, String time) async {
     try {
       DateTime tempDate = DateFormat('dd-MM-yyyy').parse(date);
       DateTime tempTime = DateFormat('HH:mm').parse(time);
       DateTime dateTime = DateTime(tempDate.year, tempDate.month, tempDate.day, tempTime.hour, tempTime.minute);
 
       await _announcementService.storeAnnouncement(categoryId, title, content, postLater, dateTime);
-      Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Berhasil menambahkan pengumuman!', 'success');
+      _toastProvider.showToast('Berhasil menambahkan pengumuman!', 'success');
     } catch (e) {
       if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        debugPrint('Announcement error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false).showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        debugPrint('Announcement error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
     }
   }
+
+
 }

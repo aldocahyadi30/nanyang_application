@@ -4,21 +4,15 @@ import 'package:nanyang_application/model/attendance_labor.dart';
 import 'package:nanyang_application/widget/attendance/attendance_labor_detail_form.dart';
 
 class AbsensiDetailScreen extends StatefulWidget {
-  const AbsensiDetailScreen({super.key});
+  final AttendanceLaborModel model;
+
+  const AbsensiDetailScreen({super.key, required this.model});
 
   @override
   State<AbsensiDetailScreen> createState() => _AbsensiDetailScreenState();
 }
 
 class _AbsensiDetailScreenState extends State<AbsensiDetailScreen> {
-  late Future<AttendanceLaborModel> futureModel = initializeModel();
-
-  Future<AttendanceLaborModel> initializeModel() async {
-    AttendanceLaborModel model = ModalRoute.of(context)!.settings.arguments as AttendanceLaborModel;
-
-    return model;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,18 +51,7 @@ class _AbsensiDetailScreenState extends State<AbsensiDetailScreen> {
         height: MediaQuery.of(context).size.height,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
-          child: FutureBuilder(
-              future: futureModel,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  // handle the error
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return AttendanceLaborDetailForm(model: snapshot.data as AttendanceLaborModel);
-                }
-              }),
+          child: AttendanceLaborDetailForm(model: widget.model),
         ),
       ),
     );

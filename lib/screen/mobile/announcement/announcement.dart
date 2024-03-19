@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/screen/mobile/announcement/announcement_create.dart';
 import 'package:nanyang_application/widget/announcement/announcement_list.dart';
 import 'package:nanyang_application/widget/global/nanyang_appbar.dart';
 import 'package:nanyang_application/widget/request/request_filter.dart';
@@ -28,7 +29,12 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/announcement/create');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AnnouncementDetailScreen(),
+            ),
+          );
         },
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
@@ -47,10 +53,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
                 padding: const EdgeInsets.only(left: 16),
                 child: const Text(
                   'List Pengumuman',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500),
+                  style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
                 ),
               ),
               Container(

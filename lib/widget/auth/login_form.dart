@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/provider/isloading_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
+import 'package:nanyang_application/screen/mobile/home.dart';
 import 'package:nanyang_application/viewmodel/login_viewmodel.dart';
 import 'package:nanyang_application/widget/global/form_button.dart';
 import 'package:provider/provider.dart';
@@ -16,13 +18,19 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late LoginViewModel _loginViewModel;
+  late UserProvider _userProvider;
+  late ToastProvider _toastProvider;
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
   bool _isObscure = false;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    _loginViewModel = Provider.of<LoginViewModel>(context, listen: false);
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
+    _toastProvider = Provider.of<ToastProvider>(context, listen: false);
   }
 
   @override
@@ -33,22 +41,22 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future<void> login(email, password) async {
-    setState(() {
-      _isLoading = true;
-    });
+    Provider.of<IsLoadingProvider>(context, listen: false).setLoading(true);
     if (_formKey.currentState!.validate()) {
       final email = _emailController.text;
       final password = _passwordController.text;
-      final loginViewModel =
-          Provider.of<LoginViewModel>(context, listen: false);
-      final user = await loginViewModel.login(email, password);
+      final user = await _loginViewModel.login(email, password);
 
-      if (user?.id != null || user?.id != '') {
+      if (user?.id != null && user?.id != '') {
         if (mounted) {
-          Provider.of<ToastProvider>(context, listen: false)
-              .showToast('Login berhasil!', 'success');
-          Provider.of<UserProvider>(context, listen: false).setUser(user!);
-          Navigator.of(context).pushReplacementNamed('/home');
+          _toastProvider.showToast('Login berhasil!', 'success');
+          _userProvider.setUser(user!);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ),
+          );
         }
       } else {
         setState(() {
@@ -56,8 +64,7 @@ class _LoginFormState extends State<LoginForm> {
         });
       }
     } else {
-      Provider.of<ToastProvider>(context, listen: false)
-          .showToast('Cek kembali inputan anda!', 'error');
+      _toastProvider.showToast('Cek kembali inputan anda!', 'error');
       setState(() {
         _isLoading = false;
       });
@@ -147,10 +154,7 @@ class _LoginFormState extends State<LoginForm> {
               ),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  Navigator.pushNamed(
-                    context,
-                    '/register',
-                  );
+                  //TODO Add navigation to forgot password screen
                 },
             ),
           ),

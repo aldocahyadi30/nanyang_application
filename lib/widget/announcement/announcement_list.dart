@@ -38,7 +38,10 @@ class _AnnouncementListState extends State<AnnouncementList> {
                 shrinkWrap: true,
                 itemCount: snapshot.data?.length,
                 itemBuilder: (context, index) {
-                  return Padding(padding: const EdgeInsets.symmetric(horizontal: 8.0), child: AnnouncementListtile(model: snapshot.data![index]),);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: AnnouncementListtile(model: snapshot.data![index]),
+                  );
                 },
               );
             }

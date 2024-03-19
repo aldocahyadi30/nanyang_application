@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/screen/mobile/announcement/announcement.dart';
+import 'package:nanyang_application/screen/mobile/attendance/attendance.dart';
+import 'package:nanyang_application/screen/mobile/request/request.dart';
 import 'package:nanyang_application/widget/dashboard/dashboard_menu_icon.dart';
 
 import '../../widget/global/nanyang_appbar.dart';
@@ -11,7 +14,7 @@ class MenuScreen extends StatelessWidget {
     return const Scaffold(
       appBar: NanyangAppbar(
         title: 'Menu',
-        isBackButton: false,
+        isBackButton:true,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -21,16 +24,12 @@ class MenuScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               DashboardMenuIcon(
-                  image: 'assets/image/icon/menu/absensi.png',
-                  route: '/absensi',
-                  title: 'Absensi'),
+                  image: 'assets/image/icon/menu/absensi.png', route: AttendanceScreen(), title: 'Absensi'),
               DashboardMenuIcon(
-                  image: 'assets/image/icon/menu/perizinan.png',
-                  route: '/perizinan',
-                  title: 'Perizinan'),
+                  image: 'assets/image/icon/menu/perizinan.png', route: RequestScreen(), title: 'Perizinan'),
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/manajemen.png',
-                  route: '/manajemen',
+                  route: AttendanceScreen(), //TODO : Temporarily using attendance screen
                   title: 'Manajemen'),
             ],
           ),
@@ -39,15 +38,15 @@ class MenuScreen extends StatelessWidget {
             children: [
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/peformance.png',
-                  route: '/peformance',
+                  route: AttendanceScreen(), //TODO : Temporarily using attendance screen
                   title: 'Peformance'),
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/gaji.png',
-                  route: '/gaji',
+                  route: AttendanceScreen(), //TODO : Temporarily using attendance screen
                   title: 'Gaji'),
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/kalender.png',
-                  route: '/kalender',
+                  route: AttendanceScreen(), //TODO : Temporarily using attendance screen
                   title: 'Kalender'),
             ],
           ),
@@ -55,16 +54,14 @@ class MenuScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               DashboardMenuIcon(
-                  image: 'assets/image/icon/menu/pengumuman.png',
-                  route: '/pengumuman',
-                  title: 'Pengumuman'),
+                  image: 'assets/image/icon/menu/pengumuman.png', route: AnnouncementScreen(), title: 'Pengumuman'),
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/chat.png',
-                  route: '/chat',
+                  route: AttendanceScreen(), //TODO : Temporarily using attendance screen
                   title: 'Help Chat'),
               DashboardMenuIcon(
                   image: 'assets/image/icon/menu/guidebook.png',
-                  route: '/guidebook',
+                  route: AttendanceScreen(), //TODO : Temporarily using attendance screen
                   title: 'Guidebook'),
             ],
           ),

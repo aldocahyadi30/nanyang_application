@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/service/request_service.dart';
+import 'package:nanyang_application/size.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 
 class DashboardRequest extends StatefulWidget {
@@ -22,15 +24,15 @@ class _DashboardRequestState extends State<DashboardRequest> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: dynamicPadding(0, 0, 20, 20, context),
       child: Column(
         children: [
           Row(
             children: [
-              const Text(
+               Text(
                 'Permintaan',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: dynamicFontSize(20, context),
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -40,14 +42,14 @@ class _DashboardRequestState extends State<DashboardRequest> {
                 child: const Text(
                   'Lihat Semua',
                   style: TextStyle(
-                    color: Colors.blue,
+                    color: ColorTemplate.primaryColor,
                   ),
                 ),
               ),
             ],
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height * 0.15,
+            height: MediaQuery.of(context).size.height * 0.2,
             child: FutureBuilder(
               future: _requestViewModel.getDashboardRequest(),
               builder: (context, snapshot) {

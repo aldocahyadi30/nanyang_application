@@ -7,12 +7,13 @@ class Datepicker extends StatefulWidget {
   final TextEditingController controller;
   final String type;
   final Color color;
-  const Datepicker(
-      {Key? key,
-      required this.controller,
-      required this.type,
-      this.color = Colors.blue})
-      : super(key: key);
+
+  const Datepicker({
+    Key? key,
+    required this.controller,
+    required this.type,
+    this.color = Colors.blue,
+  }) : super(key: key);
 
   @override
   State<Datepicker> createState() => _DatePickerState();
@@ -26,15 +27,12 @@ class _DatePickerState extends State<Datepicker> {
     super.initState();
     Future.delayed(Duration.zero, () {
       if (widget.type == 'attendance-worker') {
-        selectedDate = Provider.of<DateProvider>(context, listen: false)
-            .attendanceWorkerDate;
+        selectedDate = Provider.of<DateProvider>(context, listen: false).attendanceWorkerDate;
       } else if (widget.type == 'attendance-labor') {
-        selectedDate = Provider.of<DateProvider>(context, listen: false)
-            .attendanceLaborDate;
+        selectedDate = Provider.of<DateProvider>(context, listen: false).attendanceLaborDate;
       } else if (widget.type == 'request') {
-        selectedDate =
-            Provider.of<DateProvider>(context, listen: false).requestDate;
-      } else if (widget.type == 'normal') {
+        selectedDate = Provider.of<DateProvider>(context, listen: false).requestDate;
+      } else {
         selectedDate = DateTime.now();
       }
       widget.controller.text = DateFormat('dd-MM-yyyy').format(selectedDate);
@@ -64,14 +62,11 @@ class _DatePickerState extends State<Datepicker> {
         selectedDate = picked;
         widget.controller.text = DateFormat('dd-MM-yyyy').format(selectedDate);
         if (widget.type == 'attendance-worker') {
-          Provider.of<DateProvider>(context, listen: false)
-              .setAttendanceWorkerDate(selectedDate);
+          Provider.of<DateProvider>(context, listen: false).setAttendanceWorkerDate(selectedDate);
         } else if (widget.type == 'attendance-labor') {
-          Provider.of<DateProvider>(context, listen: false)
-              .setAttendanceLaborDate(selectedDate);
+          Provider.of<DateProvider>(context, listen: false).setAttendanceLaborDate(selectedDate);
         } else if (widget.type == 'request') {
-          Provider.of<DateProvider>(context, listen: false)
-              .setRequestDate(selectedDate);
+          Provider.of<DateProvider>(context, listen: false).setRequestDate(selectedDate);
         }
       });
     }

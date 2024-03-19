@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthenticationService _authenticationService;
+  final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
 
   LoginViewModel({required AuthenticationService authenticationService})
       : _authenticationService = authenticationService;
@@ -19,16 +20,12 @@ class LoginViewModel extends ChangeNotifier {
     } catch (e) {
       UserModel user = UserModel.empty();
       if (e is AuthException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
-            .showToast('Akun tidak ditemukan!', 'error');
+        _toastProvider.showToast('Akun tidak ditemukan!', 'error');
       } else if (e is PostgrestException) {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
-            .showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false)
-            .showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
-
       return user;
     }
   }

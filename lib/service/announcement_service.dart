@@ -9,14 +9,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AnnouncementService {
   SupabaseClient supabase = Supabase.instance.client;
 
-  Future<List<AnnouncementModel>> getDashboardAnnouncement() async {
+  Future<List<Map<String,dynamic>>> getDashboardAnnouncement() async {
     try {
       final data = await supabase.from('Announcement').select('''
         *,
         AnnouncementCategory!inner(*)
       ''').order('post_date', ascending: false).limit(2);
 
-      return AnnouncementModel.fromSupabaseList(data);
+      return data;
     } on PostgrestException catch (error) {
       debugPrint('Announcement error: ${error.message}');
       throw PostgrestException(message: error.message);
@@ -26,14 +26,14 @@ class AnnouncementService {
     }
   }
 
-  Future<List<AnnouncementModel>> getAnnouncement() async {
+  Future<List<Map<String,dynamic>>> getAnnouncement() async {
     try {
       final data = await supabase.from('Announcement').select('''
         *,
         AnnouncementCategory!inner(*)
       ''').order('post_date', ascending: false);
 
-      return AnnouncementModel.fromSupabaseList(data);
+      return data;
     } on PostgrestException catch (error) {
       debugPrint('Announcement error: ${error.message}');
       throw PostgrestException(message: error.message);
@@ -43,13 +43,11 @@ class AnnouncementService {
     }
   }
 
-  Future<List<AnnouncementCategoryModel>> getAnnouncementCategory() async {
+  Future<List<Map<String,dynamic>>> getAnnouncementCategory() async {
     try {
-      final data = await supabase.from('AnnouncementCategory').select('''
-        category_id,
-        name
-        ''');
-      return AnnouncementCategoryModel.fromSupabaseList(data);
+      final data = await supabase.from('AnnouncementCategory').select('*');
+
+      return data;
     } on PostgrestException catch (error) {
       debugPrint('Announcement error: ${error.message}');
       throw PostgrestException(message: error.message);
@@ -59,7 +57,8 @@ class AnnouncementService {
     }
   }
 
-  Future<void> storeAnnouncement(int categoryId, String title, String content, bool postLater, DateTime dateTime) async {
+  Future<void> storeAnnouncement(
+      int categoryId, String title, String content, bool postLater, DateTime dateTime) async {
     try {
       await supabase.from('Announcement').insert({
         'category_id': categoryId,
@@ -77,4 +76,18 @@ class AnnouncementService {
       throw Exception(e.toString());
     }
   }
+
+// Future<List<Map<String, dynamic>>> getAnnouncementCategory() async{
+//   try {
+//    final data =  await supabase.from('AnnouncementCategory').select('*');
+//
+//     return data;
+//   }on PostgrestException catch (error) {
+//     debugPrint('Announcement error: ${error.message}');
+//     throw PostgrestException(message: error.message);
+//   } catch (e) {
+//     debugPrint('Announcement error: ${e.toString()}');
+//     throw Exception(e.toString());
+//   }
+// }
 }

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:nanyang_application/screen/login.dart';
+import 'package:nanyang_application/screen/mobile/home.dart';
 import 'package:nanyang_application/service/user_service.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -26,7 +27,6 @@ class _SplashScreenState extends State<SplashScreen> {
         _opacity = 1.0; // Set opacity to fully visible
       });
     });
-
     _redirect();
   }
 
@@ -54,7 +54,19 @@ class _SplashScreenState extends State<SplashScreen> {
           .then((userData) {
         if (mounted) {
           Provider.of<UserProvider>(context, listen: false).setUser(userData);
-          Navigator.of(context).pushReplacementNamed('/home');
+          Navigator.pushReplacement(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation1, animation2) => const HomeScreen(),
+              transitionDuration: const Duration(seconds: 3),
+              transitionsBuilder: (context, animation, animation2, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+            ),
+          );
         }
       }).catchError((error) {
         debugPrint(error.toString());

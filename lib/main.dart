@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:nanyang_application/provider/color_provider.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
+import 'package:nanyang_application/provider/isloading_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/provider/user_provider.dart';
 import 'package:nanyang_application/screen/login.dart';
@@ -11,9 +13,9 @@ import 'package:nanyang_application/screen/mobile/attendance/attendance.dart';
 import 'package:nanyang_application/screen/mobile/attendance/attendance_labor_detail.dart';
 import 'package:nanyang_application/screen/mobile/home.dart';
 import 'package:nanyang_application/screen/mobile/menu.dart';
+import 'package:nanyang_application/screen/mobile/setting/configuration/configuration_announcement_category.dart';
 import 'package:nanyang_application/screen/mobile/setting/setting.dart';
-import 'package:nanyang_application/screen/mobile/setting/setting_configuration.dart';
-import 'package:nanyang_application/screen/mobile/setting/setting_configuration_detail.dart';
+import 'package:nanyang_application/screen/mobile/setting/configuration/configuration.dart';
 import 'package:nanyang_application/screen/splash.dart';
 import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
@@ -61,6 +63,12 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (context) => DateProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => IsLoadingProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ColorProvider(),
+        ),
       ],
       child: MaterialApp(
         builder: (context, child) {
@@ -81,27 +89,14 @@ Future<void> main() async {
           navigationBarTheme: NavigationBarThemeData(
             labelTextStyle: MaterialStateProperty.all(
               const TextStyle(
-                color: Colors.blue,
+                color: Colors.white,
                 fontSize: 12,
               ),
             ),
           ),
         ),
         navigatorKey: navigatorKey,
-        initialRoute: '/',
-        routes: {
-          '/': (context) => const SplashScreen(),
-          '/login': (context) => const LoginScreen(),
-          '/home': (context) => const HomeScreen(),
-          '/menu': (context) => const MenuScreen(),
-          '/attendance': (context) => const AttendanceScreen(),
-          '/attendance/detail': (context) => const AbsensiDetailScreen(),
-          '/announcement': (context) => const AnnouncementScreen(),
-          '/announcement/create': (context) => const AnnouncementDetailScreen(),
-          '/setting' : (context) => const SettingScreen(),
-          '/setting/configuration': (context) => const SettingConfigurationScreen(),
-          '/setting/configuration/detail': (context) => const SettingConfigurationDetailScreen(),
-        },
+        home: const SplashScreen(),
       ),
     ),
   );

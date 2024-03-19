@@ -67,7 +67,7 @@ class _AttendanceWorkerScreenState extends State<AttendanceWorkerScreen> {
           ),
           const Expanded(
               child: AttendanceList(
-            mode: 'karyawan',
+            mode: 'worker',
           ))
         ],
       ),
