@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "841268275695",
+    "project_id": "nanyang-mobile",
+    "storage_bucket": "nanyang-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841268275695:android:a847ed4d1c1f34104bae1a",
+        "android_client_info": {
+          "package_name": "com.example.nanyang_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbFO24WxX73awiHqanLeROmUv9ZiC_gpw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
