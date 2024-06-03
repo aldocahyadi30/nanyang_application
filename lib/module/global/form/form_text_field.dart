@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nanyang_application/color_template.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class FormTextField extends StatefulWidget {
   final String title;

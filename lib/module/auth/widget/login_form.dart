@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:provider/provider.dart';

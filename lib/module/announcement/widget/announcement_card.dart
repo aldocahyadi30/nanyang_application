@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/model/announcement.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class AnnouncementCard extends StatelessWidget {
   final AnnouncementModel model;

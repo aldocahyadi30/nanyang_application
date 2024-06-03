@@ -5,7 +5,7 @@ import 'package:nanyang_application/module/global/other/nanyang_empty_placeholde
 import 'package:nanyang_application/module/global/other/nanyang_no_access_placeholder.dart';
 import 'package:nanyang_application/module/management/widget/management_user_card.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 

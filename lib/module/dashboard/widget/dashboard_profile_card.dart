@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_menu_card.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:provider/provider.dart';
 
 class DashboardProfileCard extends StatelessWidget {

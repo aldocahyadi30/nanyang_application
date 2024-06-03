@@ -36,16 +36,7 @@ class _DatePickerState extends State<NanyangTimePicker> {
       context: context,
       initialTime: TimeOfDay.now(),
       builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(
-              surface: ColorTemplate.periwinkle,
-              onSurface: Colors.white,
-              primary: ColorTemplate.violetBlue,
-            ),
-          ),
-          child: child!,
-        );
+        return child!;
       },
     );
     if (picked != null) {

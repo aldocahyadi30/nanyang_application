@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 const double referenceWidth = 448.0; // Pixel 8 Pro Width
 const double referenceHeight = 973.3333333333334; // Pixel 8 Pro Height
 
+
+
 // Create a function that will help us to get the dynamic height
 double dynamicHeight(double value, BuildContext context) {
   return value * (MediaQuery.of(context).size.height / referenceHeight);

@@ -119,8 +119,7 @@ class RequestService {
     }
   }
 
-  Future<void> store(int employeeID, int type, String reason,
-      {File? file, String? startTime, String? endTime}) async {
+  Future<void> store(int employeeID, int type, String reason, {File? file, String? startTime, String? endTime}) async {
     try {
       String path = '';
       if (file != null) {
@@ -147,8 +146,7 @@ class RequestService {
     }
   }
 
-  Future<void> update(int id, int employeeID, int type, String reason,
-      {File? file, String? startTime, String? endTime}) async {
+  Future<void> update(int id, int employeeID, int type, String reason, {File? file, String? startTime, String? endTime}) async {
     try {
       String path = '';
       if (file != null) {
@@ -190,11 +188,10 @@ class RequestService {
       await supabase.from('izin').update({
         'id_approver': employeeID,
         'komentar': comment,
-        'status' : 1,
+        'status': 1,
         'waktu_approve': DateTime.now().toIso8601String(),
         'update_oleh': employeeID,
       }).eq('id_izin', id);
-
     } on PostgrestException catch (error) {
       throw PostgrestException(message: error.message);
     } catch (e) {
@@ -207,7 +204,7 @@ class RequestService {
       await supabase.from('izin').update({
         'id_penolak': employeeID,
         'komentar': comment,
-        'status' : 2,
+        'status': 2,
         'waktu_tolak': DateTime.now().toIso8601String(),
         'update_oleh': employeeID,
       }).eq('id_izin', id);

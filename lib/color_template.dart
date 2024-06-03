@@ -10,4 +10,5 @@ class ColorTemplate {
   static const periwinkle = Color(0xFFC0C9FF);
   static const darkPeriwinkle = Color(0xFFAEBAFF);
   static const lavender = Color(0xFFDBE1FF);
+  static const neonBlue = Color(0xFF4F6AFF);
 }

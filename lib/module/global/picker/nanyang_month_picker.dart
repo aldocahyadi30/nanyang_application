@@ -42,7 +42,6 @@ class _NanyangMonthPickerState extends State<NanyangMonthPicker> {
       initialDate: selectedDate,
       firstDate: DateTime(2015, 8),
       lastDate: DateTime(2101),
-      backgroundColor: ColorTemplate.periwinkle,
     );
     if (picked != null) {
       setState(() {

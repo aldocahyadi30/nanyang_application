@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nanyang_application/color_template.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class NanyangAppbar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -24,7 +24,14 @@ class NanyangAppbar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       automaticallyImplyLeading: isBackButton,
       centerTitle: isCenter,
-      actions: actions,
+      actions: [
+        Container(
+          margin: dynamicMargin(0, 0, 8, 8, context),
+          child: Row(
+            children: actions,
+          ),
+        )
+      ],
     );
   }
 

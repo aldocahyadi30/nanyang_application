@@ -3,7 +3,7 @@ import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/module/attendance/widget/attendance_user_list.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_date_range_picker.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class AttendanceUserScreen extends StatefulWidget {
   const AttendanceUserScreen({super.key});

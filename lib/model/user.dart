@@ -9,6 +9,7 @@ class UserModel {
   final int positionId;
   final String positionName;
   final int positionType;
+  final int? userChatId;
 
   UserModel({
     required this.id,
@@ -21,6 +22,7 @@ class UserModel {
     required this.positionId,
     required this.positionName,
     required this.positionType,
+    this.userChatId,
   });
 
   factory UserModel.fromSupabase(Map<String, dynamic> user) {
@@ -28,6 +30,7 @@ class UserModel {
     List<String> nameParts = name.split(' ');
     String shortedName = '';
     String initials = '';
+    int? userChatId;
 
     if (nameParts.length == 1) {
       shortedName = nameParts[0];
@@ -41,6 +44,10 @@ class UserModel {
         ((nameParts.isNotEmpty && nameParts[0].isNotEmpty ? nameParts[0][0] : '') + (nameParts.length > 1 && nameParts[1].isNotEmpty ? nameParts[1][0] : ''))
             .toUpperCase();
 
+    if (user['level'] == 1 && user['id_chat'] != null) {
+      userChatId = user['id_chat'];
+    }
+
     return UserModel(
       id: user['id_user'],
       email: user['email'],
@@ -52,6 +59,7 @@ class UserModel {
       positionId: user['karyawan']['posisi']['id_posisi'],
       positionName: user['karyawan']['posisi']['nama'],
       positionType: user['karyawan']['posisi']['tipe'],
+      userChatId: userChatId,
     );
   }
 

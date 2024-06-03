@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class DashboardMenuIcon extends StatelessWidget {
   final String image;

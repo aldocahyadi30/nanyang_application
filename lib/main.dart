@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -27,6 +29,7 @@ import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'firebase_options.dart';
 
@@ -34,6 +37,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await initializeDateFormatting('id_ID', null);
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(
@@ -44,6 +48,24 @@ Future<void> main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    await windowManager.ensureInitialized();
+
+    WindowOptions windowOptions = const WindowOptions(
+      title: 'Nanyang App',
+      size: Size(1024, 640),
+      minimumSize: Size(1024, 640),
+      center: true,
+      backgroundColor: Colors.transparent,
+      skipTaskbar: false,
+    );
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.setAspectRatio(1024 / 640);
+      await windowManager.show();
+      await windowManager.focus();
+    });
+  }
 
   runApp(
     MultiProvider(

@@ -49,6 +49,7 @@ dependencies:
   flutter_local_notifications: ^17.1.2
   flutter_dotenv: ^5.1.0
   month_picker_dialog: ^3.0.0
+  window_manager: ^0.3.9
 
 dev_dependencies:
   flutter_test:
@@ -96,6 +97,7 @@ flutter:
     - assets/svg/empty_1.svg
     - assets/svg/empty_2.svg
     - assets/svg/no_access.svg
+    - assets/svg/door.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

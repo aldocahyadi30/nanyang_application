@@ -5,7 +5,7 @@ import 'package:nanyang_application/module/dashboard/widget/dashboard_announceme
 import 'package:nanyang_application/module/dashboard/widget/dashboard_profile_card.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_request.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
@@ -27,15 +27,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     config = context.read<ConfigurationProvider>();
 
-    if (config.isAdmin){
+    if (config.isAdmin) {
       context.read<EmployeeViewModel>().getCount();
       context.read<AttendanceViewModel>().getCount();
-    }else{
+    } else {
       context.read<AnnouncementViewModel>().getDashboardAnnouncement();
     }
     context.read<RequestViewModel>().getDashboardRequest();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +42,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       backgroundColor: ColorTemplate.periwinkle,
       body: RefreshIndicator(
         onRefresh: () async {
-          if (config.isAdmin){
+          if (config.isAdmin) {
             context.read<EmployeeViewModel>().getCount();
             context.read<AttendanceViewModel>().getCount();
-          }else{
+          } else {
             context.read<AnnouncementViewModel>().getDashboardAnnouncement();
           }
           context.read<RequestViewModel>().getDashboardRequest();
+
+          print(config.user.userChatId);
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

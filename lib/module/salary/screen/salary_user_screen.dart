@@ -4,7 +4,7 @@ import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_month_picker.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:provider/provider.dart';
 
 class SalaryUserScreen extends StatefulWidget {

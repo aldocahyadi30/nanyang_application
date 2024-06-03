@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/model/request.dart';
 import 'package:nanyang_application/module/global/other/nanyang_empty_placeholder.dart';
 import 'package:nanyang_application/module/request/widget/request_card.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 

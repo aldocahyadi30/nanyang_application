@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/model/user.dart';
+import 'package:nanyang_application/module/management/screen/management_user_detail_screen.dart';
 import 'package:nanyang_application/module/management/screen/management_user_screen.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:provider/provider.dart';
 
 class ManagementUserCard extends StatelessWidget {
@@ -57,8 +58,7 @@ class ManagementUserCard extends StatelessWidget {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ManagementUserScreen(
-                          type: 'form',
+                    builder: (context) => ManagementUserDetailScreen(
                           model: model,
                         )));
           } else {

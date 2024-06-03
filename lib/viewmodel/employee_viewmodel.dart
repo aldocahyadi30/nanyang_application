@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:nanyang_application/main.dart';
 import 'package:nanyang_application/model/employee.dart';
@@ -17,7 +15,7 @@ class EmployeeViewModel extends ChangeNotifier {
 
   EmployeeViewModel({required EmployeeService employeeService}) : _employeeService = employeeService;
 
-  Future<void> getEmployee() async{
+  Future<void> getEmployee() async {
     try {
       List<Map<String, dynamic>> data = await _employeeService.getEmployee();
 
@@ -34,14 +32,14 @@ class EmployeeViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> getCount() async{
-    try{
+  Future<void> getCount() async {
+    try {
       List<int> countData = await _employeeService.getEmployeeCount();
 
       workerCount = countData[0];
       laborCount = countData[1];
       notifyListeners();
-    }catch(e){
+    } catch (e) {
       if (e is PostgrestException) {
         debugPrint('Employee error: ${e.message}');
         _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
@@ -67,7 +65,6 @@ class EmployeeViewModel extends ChangeNotifier {
   String getAvatarInitials(String name) {
     List<String> nameParts = name.split(' ');
 
-    return ((nameParts.isNotEmpty ? nameParts[0][0] : '') + (nameParts.length > 1 ? nameParts[1][0] : ''))
-        .toUpperCase();
+    return ((nameParts.isNotEmpty ? nameParts[0][0] : '') + (nameParts.length > 1 ? nameParts[1][0] : '')).toUpperCase();
   }
 }

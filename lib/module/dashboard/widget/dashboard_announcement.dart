@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/model/announcement.dart';
 import 'package:nanyang_application/module/announcement/widget/announcement_card.dart';
 import 'package:nanyang_application/module/global/other/nanyang_empty_placeholder.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:provider/provider.dart';
 

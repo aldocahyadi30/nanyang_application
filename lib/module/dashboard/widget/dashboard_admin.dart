@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:provider/provider.dart';

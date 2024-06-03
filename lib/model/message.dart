@@ -3,6 +3,7 @@ class MessageModel {
   final String userId;
   final String? message;
   final String? file;
+  final bool isAdmin;
   final DateTime timestamp;
 
   MessageModel({
@@ -10,6 +11,7 @@ class MessageModel {
     required this.userId,
     this.message,
     this.file,
+    required this.isAdmin,
     required this.timestamp,
   });
 
@@ -17,8 +19,9 @@ class MessageModel {
     return MessageModel(
       id: message['id_pesan'],
       userId: message['id_user'],
-      message: message['pesan'],
+    message: message['pesan'],
       file: message['file'],
+      isAdmin: message['is_admin'],
       timestamp: DateTime.parse(message['waktu_kirim']),
     );
   }

@@ -32,12 +32,12 @@ class _NanyangDatePickerState extends State<NanyangDatePicker> {
   @override
   void initState() {
     super.initState();
-    if (widget.selectedDate != null){
+    if (widget.selectedDate != null) {
       Future.delayed(Duration.zero, () {
         selectedDate = widget.selectedDate!;
         widget.controller!.text = DateFormat('dd/MM/yyyy').format(selectedDate);
       });
-    }else{
+    } else {
       Future.delayed(Duration.zero, () {
         selectedDate = Provider.of<DateViewModel>(context, listen: false).initializeDateForPicker(widget.controller!, widget.type);
       });
@@ -51,16 +51,7 @@ class _NanyangDatePickerState extends State<NanyangDatePicker> {
       firstDate: DateTime(2015, 8),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(
-              surface: ColorTemplate.periwinkle,
-              onSurface: ColorTemplate.violetBlue,
-              primary: ColorTemplate.violetBlue,
-            ),
-          ),
-          child: child!,
-        );
+        return child!;
       },
     );
     if (picked != null && picked != selectedDate) {

@@ -55,7 +55,7 @@ class RequestModel {
         rejecterId: haveRejecter ? request['penolak']['id_karyawan'] : null,
         rejecterName: haveRejecter ? request['penolak']['nama'] : null,
         reason: request['alasan'] ?? '',
-        comment: haveRejecter || haveApprover ? request['komentar'] : null,
+        comment: haveRejecter || haveApprover ? request['komentar'] : '',
         file: request['file'] ?? '',
       );
     }).toList();

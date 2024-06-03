@@ -4,7 +4,7 @@ import 'package:nanyang_application/model/announcement_category.dart';
 import 'package:nanyang_application/module/announcement_category/widget/announcement_category_form.dart';
 import 'package:nanyang_application/module/announcement_category/widget/announcement_category_list.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class AnnouncementCategoryScreen extends StatefulWidget {
   final bool isForm;

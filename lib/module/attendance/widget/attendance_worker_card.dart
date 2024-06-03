@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/model/attendance_user.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class AttendanceWorkerCard extends StatefulWidget {
   final AttendanceUserModel user;

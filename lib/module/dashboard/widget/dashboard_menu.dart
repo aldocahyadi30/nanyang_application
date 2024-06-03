@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/module/announcement/screen/announcement_screen.dart';
 import 'package:nanyang_application/module/attendance/screen/attendance_admin_screen.dart';
+import 'package:nanyang_application/module/chat/screen/chat_list_screen.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_menu_icon.dart';
 import 'package:nanyang_application/module/management/screen/management_employee_screen.dart';
 import 'package:nanyang_application/module/management/screen/management_user_screen.dart';
 import 'package:nanyang_application/module/request/screen/request_screen.dart';
 import 'package:nanyang_application/module/salary/screen/salary_admin_screen.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class DashboardMenu extends StatefulWidget {
   const DashboardMenu({super.key});
@@ -45,12 +46,7 @@ class _DashboardMenuState extends State<DashboardMenu> {
                         type: 'list',
                       ),
                       title: 'Perizinan'),
-                  DashboardMenuIcon(
-                      image: 'assets/image/icon/menu/manajemen-pengguna.png',
-                      route: ManagementUserScreen(
-                        type: 'list',
-                      ),
-                      title: 'Pengguna'),
+                  DashboardMenuIcon(image: 'assets/image/icon/menu/manajemen-pengguna.png', route: ManagementUserScreen(), title: 'Pengguna'),
                 ],
               ),
               const Row(
@@ -73,7 +69,7 @@ class _DashboardMenuState extends State<DashboardMenu> {
                   DashboardMenuIcon(image: 'assets/image/icon/menu/pengumuman.png', route: AnnouncementScreen(), title: 'Pengumuman'),
                   DashboardMenuIcon(
                       image: 'assets/image/icon/menu/chat.png',
-                      route: AttendanceAdminScreen(), //TODO : Temporarily using attendance screen
+                      route: ChatListScreen(), //TODO : Temporarily using attendance screen
                       title: 'Help Chat'),
                   DashboardMenuIcon(
                       image: 'assets/image/icon/menu/guidebook.png',

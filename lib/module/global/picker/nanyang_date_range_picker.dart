@@ -48,17 +48,7 @@ class _NanyangDateRangePickerState extends State<NanyangDateRangePicker> {
       firstDate: DateTime(2015),
       lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(
-            colorScheme: const ColorScheme.light(
-              surface: ColorTemplate.periwinkle,
-              onSurface: ColorTemplate.violetBlue,
-              primary: ColorTemplate.violetBlue,
-            ),
-            dialogBackgroundColor: ColorTemplate.periwinkle,
-          ),
-          child: child!,
-        );
+        return child!;
       },
     );
     if (picked != null && picked != selectedDateRange) {

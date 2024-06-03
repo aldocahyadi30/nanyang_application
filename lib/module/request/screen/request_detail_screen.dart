@@ -8,7 +8,7 @@ import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/request/screen/request_form_screen.dart';
 import 'package:nanyang_application/module/request/screen/request_screen.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -122,6 +122,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     );
   }
 
+  Future<void> delete() async {}
+
+  Future<void> download() async {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,7 +148,12 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                   ),
                 );
               },
-              icon: const Icon(Icons.edit, color: Colors.black),
+              icon: const Icon(Icons.edit, color: ColorTemplate.vistaBlue),
+            ),
+          if (isClosed)
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.delete, color: ColorTemplate.violetBlue),
             ),
         ],
       ),
@@ -171,6 +180,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       ),
                     ),
                     SizedBox(height: dynamicHeight(16, context)),
+                    _buildNameField(context, widget.model.requesterName),
+                    SizedBox(height: dynamicHeight(8, context)),
                     _buildTypeField(context, widget.model.type),
                     SizedBox(height: dynamicHeight(8, context)),
                     if (widget.model.type == 1 || widget.model.type == 2 || widget.model.type == 3) _buildAttendanceStatus(context, widget.model.type),
@@ -259,50 +270,55 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 ),
               ),
             if (!isClosed && isAdmin)
-              Row(
+              Column(
                 children: [
-                  Expanded(
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: dynamicHeight(64, context),
-                      child: ElevatedButton(
-                          onPressed: () => response(context, 'reject'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.red,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            elevation: 8,
-                          ),
-                          child: Text(
-                            'Tolak',
-                            style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.red, fontWeight: FontWeight.bold),
-                          )),
-                    ),
-                  ),
-                  SizedBox(
-                    width: dynamicWidth(16, context),
-                  ),
-                  Expanded(
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: dynamicHeight(64, context),
-                      child: ElevatedButton(
-                          onPressed: () => response(context, 'approve'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: ColorTemplate.lightVistaBlue,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            elevation: 8,
-                          ),
-                          child: Text(
-                            'Approve',
-                            style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.white, fontWeight: FontWeight.bold),
-                          )),
-                    ),
+                  SizedBox(height: dynamicHeight(16, context)),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: dynamicHeight(64, context),
+                          child: ElevatedButton(
+                              onPressed: () => response(context, 'reject'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.red,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                elevation: 8,
+                              ),
+                              child: Text(
+                                'Tolak',
+                                style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.red, fontWeight: FontWeight.bold),
+                              )),
+                        ),
+                      ),
+                      SizedBox(
+                        width: dynamicWidth(16, context),
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: dynamicHeight(64, context),
+                          child: ElevatedButton(
+                              onPressed: () => response(context, 'approve'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: ColorTemplate.lightVistaBlue,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                elevation: 8,
+                              ),
+                              child: Text(
+                                'Approve',
+                                style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.white, fontWeight: FontWeight.bold),
+                              )),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -343,7 +359,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Komentar',
+                              'Komentar Admin',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: dynamicFontSize(20, context),
@@ -355,7 +371,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              widget.model.comment ?? 'Tidak ada komentar',
+                              widget.model.comment != null && widget.model.comment!.isNotEmpty ? widget.model.comment! : 'Tidak ada komentar',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: dynamicFontSize(16, context),
@@ -376,7 +392,46 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
   }
 }
 
-Row _buildTypeField(BuildContext context, int type) {
+Row _buildRow(BuildContext context, String title, String value) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text(
+        title,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: dynamicFontSize(16, context),
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      Text(
+        value,
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: dynamicFontSize(16, context),
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _buildNameField(BuildContext context, String name) {
+  List<String> nameParts = name.split(' ');
+  String shortedName = '';
+
+  if (nameParts.length == 1) {
+    shortedName = nameParts[0];
+  } else if (nameParts.length == 2) {
+    shortedName = nameParts.join(' ');
+  } else {
+    shortedName = nameParts.take(2).join(' ') + nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
+  }
+
+  return _buildRow(context, 'Nama', shortedName);
+}
+
+Widget _buildTypeField(BuildContext context, int type) {
   String requestType = '';
 
   if (type == 1 || type == 2 || type == 3) {
@@ -389,30 +444,10 @@ Row _buildTypeField(BuildContext context, int type) {
     requestType = 'Cuti Hamil';
   }
 
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        'Jenis Perizinan',
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: dynamicFontSize(16, context),
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      Text(
-        requestType,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: dynamicFontSize(16, context),
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    ],
-  );
+  return _buildRow(context, 'Jenis Perizinan', requestType);
 }
 
-Row _buildAttendanceStatus(BuildContext context, int type) {
+Widget _buildAttendanceStatus(BuildContext context, int type) {
   String status = '';
   if (type == 1) {
     status = 'Izin Telat';
@@ -422,169 +457,31 @@ Row _buildAttendanceStatus(BuildContext context, int type) {
     status = 'Izin Tidak Masuk';
   }
 
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(
-        'Status Kehadiran',
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: dynamicFontSize(16, context),
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      Text(
-        status,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: dynamicFontSize(16, context),
-          fontWeight: FontWeight.w400,
-        ),
-      ),
-    ],
-  );
+  return _buildRow(context, 'Status Kehadira', status);
 }
 
 Widget _buildDate(BuildContext context, RequestModel model) {
   if (model.type == 1 || model.type == 2) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Tanggal',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: dynamicFontSize(16, context),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              DateFormat('dd/MM/yyyy').format(model.startDateTime!),
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: dynamicFontSize(16, context),
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
+        _buildRow(context, 'Tanggal', DateFormat('dd/MM/yyyy').format(model.startDateTime!)),
         SizedBox(height: dynamicHeight(8, context)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              model.type == 1 ? 'Jam Masuk' : 'Jam Pulang',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: dynamicFontSize(16, context),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Text(
-              DateFormat('HH:ii').format(model.startDateTime!),
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: dynamicFontSize(16, context),
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
+        _buildRow(context, model.type == 1 ? 'Jam Masuk' : 'Jam Pulang', DateFormat('HH:mm').format(model.startDateTime!)),
       ],
     );
   } else {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'Tanggal',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: dynamicFontSize(16, context),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        Text(
-          "${DateFormat('dd/MM/yyyy').format(model.startDateTime!)} - ${DateFormat('dd/MM/yyyy').format(model.endDateTime!)}",
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: dynamicFontSize(16, context),
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      ],
-    );
+    return _buildRow(context, 'Tanggal', "${DateFormat('dd/MM/yyyy').format(model.startDateTime!)} - ${DateFormat('dd/MM/yyyy').format(model.endDateTime!)}");
   }
 }
 
 Column _buildResponseField(BuildContext context, RequestModel model) {
   return Column(
     children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Admin',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: dynamicFontSize(16, context),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(
-            model.approverId != null ? model.approverName! : model.rejecterName!,
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: dynamicFontSize(16, context),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Status',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: dynamicFontSize(16, context),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(
-            model.approverId != null ? 'Disetujui' : 'Ditolak',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: dynamicFontSize(16, context),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Waktu Respon',
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: dynamicFontSize(16, context),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(
-            DateFormat('dd/MM/yyyy HH:mm').format(model.status == 1 ? model.approvalTime! : model.rejectTime!),
-            style: TextStyle(
-              color: Colors.black,
-              fontSize: dynamicFontSize(16, context),
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ],
-      ),
+      _buildRow(context, 'Admin', model.approverId != null ? model.approverName! : model.rejecterName!),
+      SizedBox(height: dynamicHeight(8, context)),
+      _buildRow(context, 'Status', model.approverId != null ? 'Disetujui' : 'Ditolak'),
+      SizedBox(height: dynamicHeight(8, context)),
+      _buildRow(context, 'Waktu Respon', DateFormat('dd/MM/yyyy HH:mm').format(model.status == 1 ? model.approvalTime! : model.rejectTime!))
     ],
   );
 }

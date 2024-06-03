@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/model/employee.dart';
 import 'package:nanyang_application/module/salary/screen/salary_admin_screen.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class SalaryAdminCard extends StatelessWidget {
   final EmployeeModel model;

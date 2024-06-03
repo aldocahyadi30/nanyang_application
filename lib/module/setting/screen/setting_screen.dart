@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/module/setting/screen/configuration_screen.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -14,23 +15,45 @@ class SettingScreen extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: ColorTemplate.periwinkle,
-          title: const Text(
-            'Logout',
-            style: TextStyle(color: ColorTemplate.violetBlue, fontWeight: FontWeight.bold),
+          backgroundColor: Colors.white,
+          actionsPadding: EdgeInsets.zero,
+          contentPadding: dynamicPaddingSymmetric(16, 24,context),
+          actionsAlignment: MainAxisAlignment.spaceEvenly,
+          title: Center(
+            child: SvgPicture.asset(
+              'assets/svg/door.svg',
+              semanticsLabel: 'No Access Logo',
+              width: dynamicWidth(50, context),
+              height: dynamicHeight(50, context),
+            ),
           ),
-          content: const Text('Apakah anda yakin ingin logout?'),
+          content: const Text(
+            'Apakah anda yakin ingin logout?',
+            style: TextStyle(color: ColorTemplate.lightVistaBlue),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
+              child: const Text(
+                'Batalkan',
+                style: TextStyle(color: ColorTemplate.neonBlue),
+              ),
             ),
-            TextButton(
-              onPressed: () async {
-                await context.read<AuthViewModel>().logout();
-              },
-              child: const Text('Ya'),
-            ),
+
+            ElevatedButton(
+                onPressed: () async {
+                  await context.read<AuthViewModel>().logout();
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(ColorTemplate.lightVistaBlue),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(dynamicPaddingSymmetric(0, 16, context)),
+                ),
+                child: const Text('Keluar', style: TextStyle(color: Colors.white),)),
           ],
         );
       },
@@ -95,9 +118,7 @@ class SettingScreen extends StatelessWidget {
                   padding: dynamicPaddingAll(4, context),
                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(25)),
                   child: Column(
-                    children: [
-                      _buildListTile(context, 'Keluar', const Color(0xFFEB3223), Icons.logout, () => _logout(context))
-                    ],
+                    children: [_buildListTile(context, 'Keluar', const Color(0xFFEB3223), Icons.logout, () => _logout(context))],
                   ),
                 )
               ],

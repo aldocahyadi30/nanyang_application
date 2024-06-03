@@ -29,7 +29,8 @@ class AuthenticationService {
           )
           ''').eq('id_user', user.id).single();
 
-         await supabase.from('fcm').upsert({
+
+        await supabase.from('fcm').upsert({
             'id_user': user.id,
             'token': token,
             'tanggal_dibuat': DateTime.now().toIso8601String(),
@@ -55,17 +56,21 @@ class AuthenticationService {
 
   Future<void> register(String email, String password, int employeeID, int level) async {
     try {
+      Map<String, dynamic>? chatID;
       final res = await adminSupabase.auth.admin.createUser(AdminUserAttributes(
         email: email,
         password: password,
         emailConfirm: true,
       ));
 
+      if (level == 1) chatID = await supabase.from('chat').insert({}).select('id_chat').single();
+
       await supabase.from('user').insert({
         'id_user': res.user!.id,
         'email': email,
         'id_karyawan': employeeID,
         'level': level,
+        'id_chat': chatID != null ? chatID['id_chat'] : null,
       });
     } on AuthException catch (e) {
       throw AuthException(e.message);

@@ -6,7 +6,7 @@ import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/management/widget/management_employee_list.dart';
 import 'package:nanyang_application/module/salary/widget/salary_admin_detail.dart';
 import 'package:nanyang_application/module/salary/widget/salary_admin_list.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:provider/provider.dart';
 

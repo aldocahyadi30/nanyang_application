@@ -11,6 +11,8 @@ class AnnouncementModel {
   final String content;
   final DateTime? postDate;
   final int duration;
+  final bool isSend;
+  final int status;
 
   AnnouncementModel({
     required this.id,
@@ -22,18 +24,16 @@ class AnnouncementModel {
     required this.title,
     required this.content,
     this.postDate,
-    required this.duration
+    required this.duration,
+    this.isSend = false,
+    this.status = 0,
   });
 
   static List<AnnouncementModel> fromSupabaseList(List<Map<String, dynamic>> announcements) {
     return announcements.map((announcement) {
-      DateTime? postDate;
       String colorHex = announcement['pengumuman_kategori']['kode_warna'];
       Color color = Color(int.parse(colorHex));
 
-      if (announcement['waktu_kirim'] != null) {
-        postDate = DateTime.parse(announcement['tanggal_post']);
-      }
       return AnnouncementModel(
         id: announcement['id_pengumuman'],
         categoryId: announcement['pengumuman_kategori']['id_kategori'],
@@ -43,8 +43,10 @@ class AnnouncementModel {
         employeeName: announcement['karyawan']['nama'],
         title: announcement['judul'],
         content: announcement['isi'],
-        postDate: postDate,
-        duration: int.parse(announcement['durasi'])
+        postDate: announcement['waktu_kirim'] != null ? DateTime.parse(announcement['waktu_kirim']) : null,
+        duration: int.parse(announcement['durasi']),
+        isSend: announcement['sudah_kirim'],
+        status: announcement['status'],
       );
     }).toList();
   }

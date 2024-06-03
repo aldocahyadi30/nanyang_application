@@ -10,8 +10,9 @@ class NanyangFilePicker extends StatefulWidget {
   final TextEditingController? controller;
   final Color color;
   final bool isDisabled;
+  final IconData icon;
 
-  const NanyangFilePicker({super.key, this.controller, this.color = ColorTemplate.violetBlue, this.isDisabled = false});
+  const NanyangFilePicker({super.key, this.controller, this.color = ColorTemplate.violetBlue, this.isDisabled = false, this.icon = Icons.attach_file});
 
   @override
   State<NanyangFilePicker> createState() => _NanyangFilePickerState();
@@ -36,7 +37,7 @@ class _NanyangFilePickerState extends State<NanyangFilePicker> {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: widget.isDisabled ? null : () => _selectFile(context),
-      icon: Icon(Icons.attach_file, color: widget.isDisabled ? Colors.grey : widget.color),
+      icon: Icon(widget.icon, color: widget.isDisabled ? Colors.grey : widget.color),
     );
   }
 }

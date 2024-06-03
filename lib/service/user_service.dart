@@ -7,7 +7,8 @@ class UserService {
     try {
       final data = await supabase
           .from('user')
-          .select('''id_user, email, level, karyawan(*, posisi(*)) ''').order('email', ascending: true);
+          .select('''*, karyawan(*, posisi(*)) ''').order('email', ascending: true);
+          print(data);
       return data;
     } on PostgrestException catch (error) {
       throw PostgrestException(message: error.message);
@@ -19,9 +20,7 @@ class UserService {
   Future<Map<String, dynamic>> getUserByID(String id) async {
     try {
       final data = await supabase.from('user').select('''
-        id_user,
-        email,
-        level,
+        *,
         karyawan(*,
           posisi(*
           )

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/module/attendance/widget/attendance_admin_list.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_date_picker.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class AttendanceAdminScreen extends StatefulWidget {
   const AttendanceAdminScreen({super.key});

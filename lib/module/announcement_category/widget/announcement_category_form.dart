@@ -6,7 +6,7 @@ import 'package:nanyang_application/module/global/form/form_picker_field.dart';
 import 'package:nanyang_application/module/global/form/form_text_field.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_color_picker.dart';
 import 'package:nanyang_application/provider/color_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:provider/provider.dart';
 

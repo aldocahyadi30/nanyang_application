@@ -2,7 +2,7 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/provider/color_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:provider/provider.dart';
 
 class NanyangColorPicker extends StatefulWidget {
@@ -65,8 +65,6 @@ class _NanyangColorPickerState extends State<NanyangColorPicker> {
       },
     ).showPickerDialog(
       context,
-      backgroundColor: ColorTemplate.periwinkle,
-      surfaceTintColor: ColorTemplate.violetBlue,
       actionsPadding: dynamicPaddingAll(16, context),
       constraints: BoxConstraints(
           minHeight: dynamicHeight(480, context),

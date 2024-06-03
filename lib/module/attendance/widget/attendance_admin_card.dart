@@ -8,7 +8,7 @@ import 'package:nanyang_application/model/attendance_admin.dart';
 import 'package:nanyang_application/model/attendance_labor.dart';
 import 'package:nanyang_application/model/attendance_worker.dart';
 import 'package:nanyang_application/module/attendance/screen/attendance_detail_screen.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:provider/provider.dart';
 class AttendanceAdminCard extends StatefulWidget {

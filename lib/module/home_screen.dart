@@ -8,7 +8,7 @@ import 'package:nanyang_application/module/dashboard/screen/dashboard_screen.dar
 import 'package:nanyang_application/module/setting/screen/setting_screen.dart';
 import 'package:nanyang_application/module/request/screen/request_screen.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {

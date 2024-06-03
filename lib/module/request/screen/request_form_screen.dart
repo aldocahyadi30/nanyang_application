@@ -11,9 +11,7 @@ import 'package:nanyang_application/module/global/picker/nanyang_date_picker.dar
 import 'package:nanyang_application/module/global/picker/nanyang_date_range_picker.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_file_picker.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_time_picker.dart';
-import 'package:nanyang_application/module/request/screen/request_screen.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -35,27 +33,17 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
   final TextEditingController fileController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final _formResponseKey = GlobalKey<FormState>();
   late RequestViewModel _requestViewModel;
-  late ConfigurationProvider _config;
   bool isLoading = false;
-  bool isResponseLoading = false;
   bool isEdit = false;
-  bool isAdmin = false;
-  bool isDisabled = false;
-  bool isClosed = false;
   int selectedAttendance = 1;
 
   @override
   void initState() {
     super.initState();
     _requestViewModel = Provider.of<RequestViewModel>(context, listen: false);
-    _config = Provider.of<ConfigurationProvider>(context, listen: false);
     if (widget.model != null) {
-      isEdit = !_config.isAdmin;
-      isAdmin = _config.isAdmin;
-      isClosed = widget.model?.approverId != null || widget.model?.rejecterId != null;
-      isDisabled = isAdmin || isClosed;
+      isEdit = true;
       if (widget.type == 1 || widget.type == 2 || widget.type == 3) {
         selectedAttendance = widget.model!.type;
       } else {}
@@ -117,25 +105,18 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
     });
   }
 
-  Future<void> delete() async {}
-
-  Future<void> download() async {}
-
   @override
   Widget build(BuildContext context) {
+    var keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       backgroundColor: ColorTemplate.periwinkle,
-      appBar: NanyangAppbar(
+      appBar: const NanyangAppbar(
         title: 'Perizinan',
         isCenter: true,
         isBackButton: true,
-        actions: [
-          (isAdmin && isClosed) || (isEdit && !isClosed)
-              ? IconButton(onPressed: () => delete(), icon: const Icon(Icons.delete, color: ColorTemplate.violetBlue))
-              : Container(),
-        ],
       ),
       body: Container(
+        height: MediaQuery.of(context).size.height - keyboardHeight,
         padding: dynamicPaddingSymmetric(0, 16, context),
         child: Form(
           key: _formKey,
@@ -163,53 +144,38 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
                           ),
                         ],
                         value: selectedAttendance,
-                        onChanged: isDisabled
-                            ? null
-                            : (value) {
-                                setState(() {
-                                  selectedAttendance = value!;
-                                });
-                              },
+                        onChanged: (value) {
+                          setState(() {
+                            selectedAttendance = value!;
+                          });
+                        },
                       )
                     : Container(),
                 SizedBox(height: dynamicHeight(16, context)),
-                _buildDateTimeField(context, selectedAttendance, dateController, dateRangeController, timeController,
-                    isDisabled: isDisabled, model: widget.model),
+                _buildDateTimeField(context, selectedAttendance, dateController, dateRangeController, timeController, model: widget.model),
                 SizedBox(height: dynamicHeight(16, context)),
                 FormTextField(
                   title: 'Alasan',
                   controller: reasonController,
                   maxLines: 5,
-                  isReadOnly: isDisabled,
                 ),
                 SizedBox(height: dynamicHeight(16, context)),
                 FormPickerField(
                   title: widget.type == 5 || widget.type == 6 ? 'Surat Dokter' : 'File (Opsional)',
                   isRequired: widget.type == 5 || widget.type == 6 ? true : false,
-                  picker: isAdmin
-                      ? IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.download,
-                            color: ColorTemplate.violetBlue,
-                          ),
-                        )
-                      : NanyangFilePicker(
-                          controller: fileController,
-                          isDisabled: isDisabled,
-                        ),
+                  picker: NanyangFilePicker(
+                    controller: fileController,
+                  ),
                   controller: fileController,
-                  isDisabled: isDisabled,
                 ),
                 SizedBox(height: dynamicHeight(32, context)),
-                if (isEdit && !isClosed)
-                  FormButton(
-                    text: isEdit ? 'Update' : 'Buat',
-                    isLoading: isLoading,
-                    elevation: 8,
-                    onPressed: () => storeOrUpdate(context),
-                    backgroundColor: ColorTemplate.lightVistaBlue,
-                  ),
+                FormButton(
+                  text: isEdit ? 'Update' : 'Buat',
+                  isLoading: isLoading,
+                  elevation: 8,
+                  onPressed: () => storeOrUpdate(context),
+                  backgroundColor: ColorTemplate.lightVistaBlue,
+                ),
                 SizedBox(height: dynamicHeight(16, context)),
               ],
             ),
@@ -265,7 +231,7 @@ Widget _buildTypeField(BuildContext context, int type) {
 
 Widget _buildDateTimeField(BuildContext context, int selectedAttendance, TextEditingController dateController, TextEditingController dateRangeController,
     TextEditingController timeController,
-    {RequestModel? model, bool isDisabled = false}) {
+    {RequestModel? model}) {
   if (selectedAttendance == 1) {
     return Column(children: [
       FormPickerField(
@@ -274,10 +240,8 @@ Widget _buildDateTimeField(BuildContext context, int selectedAttendance, TextEdi
           type: 'normal',
           controller: dateController,
           selectedDate: model?.startDateTime,
-          isDisabled: isDisabled,
         ),
         controller: dateController,
-        isDisabled: isDisabled,
       ),
       SizedBox(height: dynamicHeight(16, context)),
       FormPickerField(
@@ -285,10 +249,8 @@ Widget _buildDateTimeField(BuildContext context, int selectedAttendance, TextEdi
         picker: NanyangTimePicker(
           controller: timeController,
           selectedTime: model != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
-          isDisabled: isDisabled,
         ),
         controller: timeController,
-        isDisabled: isDisabled,
       ),
     ]);
   } else if (selectedAttendance == 2) {
@@ -299,10 +261,8 @@ Widget _buildDateTimeField(BuildContext context, int selectedAttendance, TextEdi
           type: 'normal',
           controller: dateController,
           selectedDate: model?.startDateTime,
-          isDisabled: isDisabled,
         ),
         controller: dateController,
-        isDisabled: isDisabled,
       ),
       SizedBox(height: dynamicHeight(16, context)),
       FormPickerField(
@@ -310,10 +270,8 @@ Widget _buildDateTimeField(BuildContext context, int selectedAttendance, TextEdi
         picker: NanyangTimePicker(
           controller: timeController,
           selectedTime: model != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
-          isDisabled: isDisabled,
         ),
         controller: timeController,
-        isDisabled: isDisabled,
       ),
     ]);
   } else {
@@ -323,10 +281,8 @@ Widget _buildDateTimeField(BuildContext context, int selectedAttendance, TextEdi
         controller: dateRangeController,
         type: 'normal',
         selectedDateRange: model != null ? DateTimeRange(start: model.startDateTime!, end: model.endDateTime!) : null,
-        isDisabled: isDisabled,
       ),
       controller: dateRangeController,
-      isDisabled: isDisabled,
     );
   }
 }

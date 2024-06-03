@@ -6,7 +6,7 @@ import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:nanyang_application/module/global/form/form_dropdown.dart';
 import 'package:nanyang_application/module/global/form/form_text_field.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:provider/provider.dart';
 

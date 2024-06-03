@@ -13,10 +13,8 @@ class EmployeeService {
 
       return data;
     } on PostgrestException catch (error) {
-      debugPrint('Employee error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
-      debugPrint('Employee error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }

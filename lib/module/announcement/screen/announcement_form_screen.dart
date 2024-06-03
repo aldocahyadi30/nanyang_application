@@ -10,7 +10,7 @@ import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_date_picker.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_time_picker.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:provider/provider.dart';
 

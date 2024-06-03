@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 class NanyangEmptyPlaceholder extends StatelessWidget {
   const NanyangEmptyPlaceholder({super.key});

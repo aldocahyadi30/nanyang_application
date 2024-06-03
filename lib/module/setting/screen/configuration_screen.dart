@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/module/announcement_category/screen/announcement_category_screen.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 
 import '../../global/other/nanyang_appbar.dart';
 

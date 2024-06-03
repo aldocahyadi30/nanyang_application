@@ -5,7 +5,7 @@ import 'package:nanyang_application/module/attendance/widget/attendance_labor_ca
 import 'package:nanyang_application/module/attendance/widget/attendance_worker_card.dart';
 import 'package:nanyang_application/module/global/other/nanyang_empty_placeholder.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:provider/provider.dart';
 

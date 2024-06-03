@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/model/employee.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
+import 'package:nanyang_application/module/management/screen/management_employee_form_screen.dart';
 import 'package:nanyang_application/module/management/widget/management_employee_list.dart';
-import 'package:nanyang_application/size.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -43,10 +44,7 @@ class _ManagementEmployeeScreenState extends State<ManagementEmployeeScreen> wit
               systemOverlayStyle: SystemUiOverlayStyle.dark,
               title: Text(
                 'Karyawan',
-                style: TextStyle(
-                    color: ColorTemplate.violetBlue,
-                    fontSize: dynamicFontSize(32, context),
-                    fontWeight: FontWeight.bold),
+                style: TextStyle(color: ColorTemplate.violetBlue, fontSize: dynamicFontSize(32, context), fontWeight: FontWeight.bold),
               ),
               centerTitle: true,
               elevation: 0,
@@ -106,6 +104,16 @@ class _ManagementEmployeeScreenState extends State<ManagementEmployeeScreen> wit
                     : Container(),
               ],
             ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const ManagementEmployeeFormScreen()));
+        },
+        backgroundColor: ColorTemplate.violetBlue,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
+      ),
       body: TabBarView(
         controller: _tabController,
         children: const [
