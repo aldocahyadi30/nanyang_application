@@ -43,7 +43,7 @@ class AnnouncementDetailScreen extends StatelessWidget {
                 children: [
                   _buildRow(context, 'Judul', model.title),
                   SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Kategori', model.categoryName),
+                  _buildRow(context, 'Kategori', model.category.name),
                   SizedBox(height: dynamicHeight(8, context)),
                   _buildRow(context, 'Waktu Kirim', DateFormat('HH:mm').format(model.postDate!)),
                   SizedBox(height: dynamicHeight(8, context)),

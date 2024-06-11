@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/model/chat.dart';
+import 'package:nanyang_application/model/employee.dart';
+import 'package:nanyang_application/model/message.dart';
 import 'package:nanyang_application/module/chat/screen/chat_screen.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
@@ -141,39 +143,40 @@ class _ChatListScreenState extends State<ChatListScreen> {
               thickness: 0.5,
             ),
             StreamBuilder<List<Map<String, dynamic>>>(
-                stream: _messageStream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError || !snapshot.hasData) {
-                    return Center(
-                      child: Container(),
-                    );
-                  } else if (snapshot.hasData) {
-                    final chat = context.read<ChatViewModel>().getChat(snapshot.data!);
-                    return Expanded(
-                      child: FutureBuilder(
-                          future: chat,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return ListView.separated(
-                                itemCount: snapshot.data!.length,
-                                separatorBuilder: (context, index) => const Divider(
-                                  color: ColorTemplate.periwinkle,
-                                  thickness: 0.5,
-                                ),
-                                itemBuilder: (context, index) {
-                                  return _buildChatWidget(context, snapshot.data![index]);
-                                },
-                              );
-                            }
-                            return Container();
-                          }),
-                    );
-                  } else {
-                    return Center(
-                      child: Container(),
-                    );
-                  }
-                })
+              stream: _messageStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasError || !snapshot.hasData) {
+                  return Center(
+                    child: Container(),
+                  );
+                } else if (snapshot.hasData) {
+                  final chat = context.read<ChatViewModel>().getChat(snapshot.data!);
+                  return Expanded(
+                    child: FutureBuilder(
+                        future: chat,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return ListView.separated(
+                              itemCount: snapshot.data!.length,
+                              separatorBuilder: (context, index) => const Divider(
+                                color: ColorTemplate.periwinkle,
+                                thickness: 0.5,
+                              ),
+                              itemBuilder: (context, index) {
+                                return _buildChatWidget(context, snapshot.data![index]);
+                              },
+                            );
+                          }
+                          return Container();
+                        }),
+                  );
+                } else {
+                  return Center(
+                    child: Container(),
+                  );
+                }
+              },
+            )
           ],
         ),
       ),
@@ -182,12 +185,14 @@ class _ChatListScreenState extends State<ChatListScreen> {
 }
 
 ListTile _buildChatWidget(BuildContext context, ChatModel model) {
+  EmployeeModel employee = model.user.employee;
+  MessageModel message = model.lastMessage;
   return ListTile(
     leading: CircleAvatar(
       radius: dynamicWidth(24, context),
       backgroundColor: Colors.black,
       child: Text(
-        model.initials,
+        employee.initials!,
         style: TextStyle(
           color: Colors.white,
           fontSize: dynamicFontSize(16, context),
@@ -196,7 +201,7 @@ ListTile _buildChatWidget(BuildContext context, ChatModel model) {
       ),
     ),
     title: Text(
-      model.shortedName,
+      employee.shortedName!,
       style: TextStyle(
         color: Colors.white,
         fontSize: dynamicFontSize(16, context),
@@ -204,13 +209,13 @@ ListTile _buildChatWidget(BuildContext context, ChatModel model) {
       ),
     ),
     subtitle: Text(
-      model.lastMessage,
+      message.message!,
       style: TextStyle(
         color: Colors.white,
         fontSize: dynamicFontSize(12, context),
       ),
     ),
-    trailing: _buildTrailing(context, model.lastMessageTime, model.unreadCount),
+    trailing: _buildTrailing(context, message.timestamp, model.unreadCount),
     onTap: () {
       Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(model: model)));
     },

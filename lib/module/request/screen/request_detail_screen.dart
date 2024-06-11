@@ -35,7 +35,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
     _requestViewModel = Provider.of<RequestViewModel>(context, listen: false);
     _config = Provider.of<ConfigurationProvider>(context, listen: false);
     isAdmin = _config.isAdmin;
-    isClosed = widget.model.approverId != null || widget.model.rejecterId != null;
+    isClosed = widget.model.approver!.id != 0 || widget.model.rejecter!.id != 0;
   }
 
   Future<void> response(BuildContext context, String type) async {
@@ -91,9 +91,9 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       isLoading = true;
                     });
                     if (isTypeApproval) {
-                      await _requestViewModel.response('approve', widget.model!.id, commentController.text);
+                      await _requestViewModel.response('approve', widget.model.id, commentController.text);
                     } else {
-                      await _requestViewModel.response('reject', widget.model!.id, commentController.text);
+                      await _requestViewModel.response('reject', widget.model.id, commentController.text);
                     }
 
                     setState(() {
@@ -180,7 +180,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       ),
                     ),
                     SizedBox(height: dynamicHeight(16, context)),
-                    _buildNameField(context, widget.model.requesterName),
+                    _buildNameField(context, widget.model.requester.name),
                     SizedBox(height: dynamicHeight(8, context)),
                     _buildTypeField(context, widget.model.type),
                     SizedBox(height: dynamicHeight(8, context)),
@@ -225,7 +225,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                 ),
               ),
             ),
-            if (widget.model.file != null && widget.model.file!.isNotEmpty)
+            if (widget.model.file != null && widget.model.filePath!.isNotEmpty)
               Card(
                 elevation: 0,
                 child: Container(
@@ -257,7 +257,7 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       Align(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          widget.model.file!.split('/').last,
+                          widget.model.filePath!.split('/').last,
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: dynamicFontSize(16, context),
@@ -477,9 +477,9 @@ Widget _buildDate(BuildContext context, RequestModel model) {
 Column _buildResponseField(BuildContext context, RequestModel model) {
   return Column(
     children: [
-      _buildRow(context, 'Admin', model.approverId != null ? model.approverName! : model.rejecterName!),
+      _buildRow(context, 'Admin', model.approver!.id != 0 ? model.approver!.name : model.rejecter!.name),
       SizedBox(height: dynamicHeight(8, context)),
-      _buildRow(context, 'Status', model.approverId != null ? 'Disetujui' : 'Ditolak'),
+      _buildRow(context, 'Status', model.approver!.id != 0 ? 'Disetujui' : 'Ditolak'),
       SizedBox(height: dynamicHeight(8, context)),
       _buildRow(context, 'Waktu Respon', DateFormat('dd/MM/yyyy HH:mm').format(model.status == 1 ? model.approvalTime! : model.rejectTime!))
     ],

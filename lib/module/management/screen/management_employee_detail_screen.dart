@@ -4,81 +4,91 @@ import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/model/employee.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/other/nanyang_detail_card.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ManagementEmployeeDetailScreen extends StatelessWidget {
-  final EmployeeModel model;
-  const ManagementEmployeeDetailScreen({super.key, required this.model});
+  const ManagementEmployeeDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final ConfigurationProvider _config = context.read<ConfigurationProvider>();
-    return Scaffold(
-      backgroundColor: ColorTemplate.periwinkle,
-      appBar: const NanyangAppbar(
-        title: 'Karyawan',
-        isBackButton: true,
-        isCenter: true,
-      ),
-      body: Container(
-        padding: dynamicPaddingSymmetric(8, 16, context),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              NanyangDetailCard(
-                title: 'Detail Karyawan',
-                children: [
-                  _buildRow(context, 'Nama', model.shortedName),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Umur', model.age != null ? model.age.toString() : '-'),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Tanggal Lahir', model.birthDate != null ? DateFormat('dd MMMM yyyy').format(model.birthDate!) : '-'),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Tempat Lahir', model.birthPlace ?? '-'),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Alamat', model.address ?? '-'),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Jenis Kelamin', model.gender ?? '-'),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Agama', model.religion ?? '-'),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Nomor Telepon', model.phoneNumber ?? '-'),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Posisi', model.positionName),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'ID Absensi', model.attendanceMachineID != null ? model.attendanceMachineID.toString() : '-'),
-                  SizedBox(height: dynamicHeight(8, context)),
-                ],
-              ),
-              Card(
-                elevation: 0,
-                child: Container(
-                  width: double.infinity,
-                  padding: dynamicPaddingSymmetric(16, 16, context),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Daftar User',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: dynamicFontSize(20, context),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: dynamicHeight(16, context)),
-                    ],
-                  ),
-                ),
+    return Consumer<EmployeeViewModel>(
+      builder: (context, viewmodel, child) {
+        EmployeeModel model = viewmodel.selectedEmployee;
+
+        return Scaffold(
+          backgroundColor: ColorTemplate.periwinkle,
+          appBar: NanyangAppbar(
+            title: 'Karyawan',
+            isBackButton: true,
+            isCenter: true,
+            actions: [
+              IconButton(
+                onPressed: () => viewmodel.edit(model),
+                icon: const Icon(Icons.edit, color: ColorTemplate.vistaBlue),
               ),
             ],
           ),
-        ),
-      ),
+          body: Container(
+            padding: dynamicPaddingSymmetric(8, 16, context),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  NanyangDetailCard(
+                    title: 'Detail Karyawan',
+                    children: [
+                      _buildRow(context, 'Nama', model.shortedName!),
+                      SizedBox(height: dynamicHeight(8, context)),
+                      _buildRow(context, 'Umur', model.age != null ? model.age.toString() : '-'),
+                      SizedBox(height: dynamicHeight(8, context)),
+                      _buildRow(context, 'Tanggal Lahir', model.birthDate != null ? DateFormat('dd MMMM yyyy').format(model.birthDate!) : '-'),
+                      SizedBox(height: dynamicHeight(8, context)),
+                      _buildRow(context, 'Tempat Lahir', model.birthPlace ?? '-'),
+                      SizedBox(height: dynamicHeight(8, context)),
+                      _buildRow(context, 'Alamat', model.address ?? '-'),
+                      SizedBox(height: dynamicHeight(8, context)),
+                      _buildRow(context, 'Jenis Kelamin', model.gender ?? '-'),
+                      SizedBox(height: dynamicHeight(8, context)),
+                      _buildRow(context, 'Agama', model.religion ?? '-'),
+                      SizedBox(height: dynamicHeight(8, context)),
+                      _buildRow(context, 'Nomor Telepon', model.phoneNumber ?? '-'),
+                      SizedBox(height: dynamicHeight(8, context)),
+                      _buildRow(context, 'Posisi', model.position.name),
+                      SizedBox(height: dynamicHeight(8, context)),
+                      _buildRow(context, 'ID Absensi', model.attendanceMachineID != null ? model.attendanceMachineID.toString() : '-'),
+                      SizedBox(height: dynamicHeight(8, context)),
+                    ],
+                  ),
+                  Card(
+                    elevation: 0,
+                    child: Container(
+                      width: double.infinity,
+                      padding: dynamicPaddingSymmetric(16, 16, context),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Daftar User',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: dynamicFontSize(20, context),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: dynamicHeight(16, context)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

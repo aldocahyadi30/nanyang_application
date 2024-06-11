@@ -149,7 +149,7 @@ Column _buildProfileField(BuildContext context, ConfigurationProvider config) {
         ),
       ),
       Text(
-        config.user.positionName,
+        config.user.employee.position.name,
         style: TextStyle(
           color: Colors.black,
           fontSize: dynamicFontSize(16, context),

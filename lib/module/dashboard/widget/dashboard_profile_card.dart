@@ -10,7 +10,7 @@ class DashboardProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _config = Provider.of<ConfigurationProvider>(context);
+    final config = Provider.of<ConfigurationProvider>(context);
     return Container(
       height: MediaQuery.of(context).size.height * 0.4,
       padding: dynamicPaddingSymmetric(0, 16, context),
@@ -26,7 +26,7 @@ class DashboardProfileCard extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  _config.user.positionName,
+                  config.user.employee.position.name,
                   style: TextStyle(
                     color: ColorTemplate.periwinkle,
                     fontSize: dynamicFontSize(24, context),
@@ -40,7 +40,7 @@ class DashboardProfileCard extends StatelessWidget {
                   radius: dynamicWidth(48, context),
                   backgroundColor: Colors.black,
                   child: Text(
-                    _config.avatarInitials,
+                    config.user.employee.initials!,
                     style: TextStyle(color: Colors.white, fontSize: dynamicFontSize(24, context)),
                   ),
                 ),

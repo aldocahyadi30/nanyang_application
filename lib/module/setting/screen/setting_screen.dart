@@ -168,7 +168,7 @@ Widget _buildAccount(BuildContext context) {
             ),
           ),
           Text(
-            user.positionName,
+            user.employee.position.name,
             style: TextStyle(
               fontSize: dynamicFontSize(12, context),
               fontWeight: FontWeight.w700,

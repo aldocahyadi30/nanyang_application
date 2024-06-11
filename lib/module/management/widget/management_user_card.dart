@@ -27,14 +27,14 @@ class ManagementUserCard extends StatelessWidget {
           radius: dynamicWidth(24, context),
           backgroundColor: ColorTemplate.argentinianBlue,
           child: Text(
-            model.initials,
+            model.employee.initials!,
             style: const TextStyle(color: Colors.white),
           ),
         ),
         title: Padding(
           padding: dynamicPaddingOnly(0, 4, 0, 0, context),
           child: Text(
-            model.shortedName,
+            model.employee.shortedName!!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -52,7 +52,7 @@ class ManagementUserCard extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        trailing: _userEdit(context, isEditable),
+        trailing: const Icon(Icons.chevron_right, color: Colors.white),
         onTap: () {
           if (isEditable) {
             Navigator.push(
@@ -67,19 +67,5 @@ class ManagementUserCard extends StatelessWidget {
         },
       ),
     );
-  }
-
-  Widget _userEdit(BuildContext context, bool isEditable) {
-    if (isEditable) {
-      return const Icon(
-        Icons.edit,
-        color: Colors.white,
-      );
-    } else {
-      return const Icon(
-        Icons.lock,
-        color: Colors.grey,
-      );
-    }
   }
 }

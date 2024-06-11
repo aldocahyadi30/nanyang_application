@@ -57,7 +57,7 @@ class _ManagementUserListState extends State<ManagementUserList> {
               return context
                   .read<UserViewModel>()
                   .user
-                  .where((UserModel user) => user.name.toLowerCase().contains(query.toLowerCase()))
+                  .where((UserModel user) => user.employee.name.toLowerCase().contains(query.toLowerCase()))
                   .where((element) => element.level == widget.level)
                   .map<Widget>((request) => InkWell(
                         onTap: () {},

@@ -50,6 +50,10 @@ dependencies:
   flutter_dotenv: ^5.1.0
   month_picker_dialog: ^3.0.0
   window_manager: ^0.3.9
+  http: ^1.2.1
+  fl_chart: ^0.68.0
+  mask_text_input_formatter: ^2.9.0
+  currency_text_input_formatter: ^2.2.3
 
 dev_dependencies:
   flutter_test:

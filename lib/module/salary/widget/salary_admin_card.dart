@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/model/employee.dart';
-import 'package:nanyang_application/module/salary/screen/salary_admin_screen.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/salary_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class SalaryAdminCard extends StatelessWidget {
   final EmployeeModel model;
@@ -21,14 +22,14 @@ class SalaryAdminCard extends StatelessWidget {
           radius: dynamicWidth(24, context),
           backgroundColor: ColorTemplate.argentinianBlue,
           child: Text(
-            model.initials,
+            model.initials!,
             style: const TextStyle(color: Colors.white),
           ),
         ),
         title: Padding(
           padding: dynamicPaddingOnly(0, 4, 0, 0, context),
           child: Text(
-            model.shortedName,
+            model.shortedName!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -39,24 +40,32 @@ class SalaryAdminCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          model.positionName,
+          model.position.name,
           style: TextStyle(
             fontSize: dynamicFontSize(12, context),
             color: ColorTemplate.periwinkle,
             fontWeight: FontWeight.w500,
           ),
         ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SalaryAdminScreen(
-                model: model,
-              ),
-            ),
-          );
+        trailing: _buildTrailing(context, model.thisMonthSalary != null),
+        onTap: () async{
+          if (model.thisMonthSalary != null) {
+            await context.read<SalaryViewModel>().detail(model);
+          } else {
+            await context.read<SalaryViewModel>().create(model);
+          }
         },
       ),
     );
   }
+}
+
+CircleAvatar _buildTrailing(BuildContext context, bool isSalaryExist) {
+  return CircleAvatar(
+    backgroundColor: isSalaryExist ? Colors.green : Colors.red,
+    child: Icon(
+      isSalaryExist ? Icons.check : Icons.close,
+      color: Colors.white,
+    ),
+  );
 }

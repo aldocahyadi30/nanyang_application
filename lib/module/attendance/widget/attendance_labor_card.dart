@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/model/attendance_detail.dart';
 import 'package:nanyang_application/model/attendance_user.dart';
 import 'package:nanyang_application/helper.dart';
 
@@ -23,7 +24,7 @@ class _AttendanceLaborCardState extends State<AttendanceLaborCard> {
     if (widget.user.laborDetail == null) {
       _height = dynamicHeight(100, context);
     } else {
-      if (widget.user.laborDetail?['status'] == 'Memulai Tugas Baru') {
+      if (widget.user.laborDetail!.status == 1) {
         _height = dynamicHeight(200, context);
       } else {
         _height = dynamicHeight(100, context);
@@ -75,7 +76,7 @@ class _AttendanceLaborCardState extends State<AttendanceLaborCard> {
               color: ColorTemplate.lavender,
               borderRadius: BorderRadius.circular(25),
             ),
-            child: _buildDetail(context, widget.user),
+            child: _buildDetail(context, widget.user.laborDetail!),
           ),
         ),
         SizedBox(
@@ -87,7 +88,7 @@ class _AttendanceLaborCardState extends State<AttendanceLaborCard> {
 }
 
 Widget _buildListTile(BuildContext context, AttendanceUserModel data, bool isExpanded) {
-  int status = data.attendance?['inStatus'];
+  int status = data.attendance!.inStatus!;
 
   return ListTile(
     contentPadding: dynamicPaddingSymmetric(0, 16, context),
@@ -130,59 +131,43 @@ Widget _buildListTile(BuildContext context, AttendanceUserModel data, bool isExp
   );
 }
 
-Widget _buildDetail(BuildContext context, AttendanceUserModel data) {
-  if (data.laborDetail != null) {
-    Map<String, dynamic> detail = data.laborDetail!;
+Widget _buildDetail(BuildContext context, AttendanceDetailModel data) {
+  if (data.id != 0) {
     return Column(
       children: [
-        detail['status'] == 'Tidak Hadir'
-            ? Container(
-                decoration: BoxDecoration(
-                  color: ColorTemplate.darkVistaBlue,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Text(
-                  detail['status'],
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: dynamicFontSize(16, context),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              )
-            : Row(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: ColorTemplate.darkVistaBlue,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Text(
-                      detail['type'],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: dynamicFontSize(16, context),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: ColorTemplate.darkVistaBlue,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Text(
-                      detail['status'],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: dynamicFontSize(16, context),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  )
-                ],
+        Row(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: ColorTemplate.darkVistaBlue,
+                borderRadius: BorderRadius.circular(25),
               ),
-        detail['status'] == 'Memulai Tugas Baru'
+              child: Text(
+                '',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: dynamicFontSize(16, context),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: ColorTemplate.darkVistaBlue,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Text(
+                data.statusName!,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: dynamicFontSize(16, context),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            )
+          ],
+        ),
+        data.status == 1
             ? Column(
                 children: [
                   Row(
@@ -202,7 +187,7 @@ Widget _buildDetail(BuildContext context, AttendanceUserModel data) {
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                text: detail['initialQty'],
+                                text: data.initialQty!.toString(),
                                 style: TextStyle(
                                   color: ColorTemplate.violetBlue,
                                   fontSize: dynamicFontSize(16, context),
@@ -228,7 +213,7 @@ Widget _buildDetail(BuildContext context, AttendanceUserModel data) {
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                text: detail['finalQty'],
+                                text: data.finalQty!.toString(),
                                 style: TextStyle(
                                   color: ColorTemplate.violetBlue,
                                   fontSize: dynamicFontSize(16, context),
@@ -258,7 +243,7 @@ Widget _buildDetail(BuildContext context, AttendanceUserModel data) {
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                text: detail['initialWeight'],
+                                text: data.initialWeight!.toString(),
                                 style: TextStyle(
                                   color: ColorTemplate.violetBlue,
                                   fontSize: dynamicFontSize(16, context),
@@ -292,7 +277,7 @@ Widget _buildDetail(BuildContext context, AttendanceUserModel data) {
                             ),
                             children: <TextSpan>[
                               TextSpan(
-                                text: detail['finalWeight'],
+                                text: data.finalWeight!.toString(),
                                 style: TextStyle(
                                   color: ColorTemplate.violetBlue,
                                   fontSize: dynamicFontSize(16, context),
@@ -311,40 +296,6 @@ Widget _buildDetail(BuildContext context, AttendanceUserModel data) {
                           ),
                         ),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: ColorTemplate.darkVistaBlue,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: RichText(
-                          text: TextSpan(
-                            text: 'Nilai Kebersihan: ',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: dynamicFontSize(16, context),
-                              fontWeight: FontWeight.w600,
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: detail['cleanScore'],
-                                style: TextStyle(
-                                  color: ColorTemplate.violetBlue,
-                                  fontSize: dynamicFontSize(16, context),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              TextSpan(
-                                text: ' %',
-                                style: TextStyle(
-                                  color: ColorTemplate.violetBlue,
-                                  fontSize: dynamicFontSize(16, context),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
                     ],
                   )
                 ],

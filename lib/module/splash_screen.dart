@@ -4,6 +4,7 @@ import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/module/auth/screen/login_screen.dart';
 import 'package:nanyang_application/module/home_screen.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,6 +21,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     context.read<AnnouncementViewModel>().getAnnouncementCategory();
+    context.read<ConfigurationViewModel>().getConfiguration();
+    context.read<ConfigurationViewModel>().getPosition();
     _redirect();
   }
 

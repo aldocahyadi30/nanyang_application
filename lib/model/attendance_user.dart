@@ -1,26 +1,33 @@
+import 'package:nanyang_application/model/attendance.dart';
+import 'package:nanyang_application/model/attendance_detail.dart';
+
 class AttendanceUserModel {
   final DateTime date;
-  final Map<String, dynamic>? attendance;
-  final Map<String, dynamic>? laborDetail;
+  final AttendanceModel? attendance;
+  final AttendanceDetailModel? laborDetail;
 
   AttendanceUserModel({
     required this.date,
-    this.attendance,
-    this.laborDetail,
+    // this.attendance,
+    // this.laborDetail,
+    required this.attendance,
+    required this.laborDetail,
   });
 
   factory AttendanceUserModel.fromSupabase(List<Map<String, dynamic>> attendances, DateTime date) {
+    AttendanceModel? attendance;
+    AttendanceDetailModel? laborDetail;
     if (attendances[0]['absensi'].isNotEmpty) {
-      List<dynamic> data = attendances[0]['absensi'];
+      List<dynamic> attendanceData = attendances[0]['absensi'];
 
-      for (var i = 0; i < data.length; i++) {
-        Map<String, dynamic> attendance = data[i];
-        Map<String, dynamic>? laborDetail;
-        DateTime checkIn = DateTime.parse(attendance['waktu_masuk']);
+      for (var i = 0; i < attendanceData.length; i++) {
+        Map<String, dynamic> data = attendanceData[i];
+        // Map<String, dynamic>? laborDetail;
+        DateTime checkIn = DateTime.parse(data['waktu_masuk']);
         DateTime? checkOut;
 
-        if (attendance['waktu_pulang'] != null) {
-          checkOut = DateTime.parse(attendance['waktu_pulang']);
+        if (data['waktu_pulang'] != null) {
+          checkOut = DateTime.parse(data['waktu_pulang']);
         }
 
         if (checkIn.year == date.year && checkIn.month == date.month && checkIn.day == date.day) {
@@ -36,46 +43,44 @@ class AttendanceUserModel {
           if (checkOut != null) {
             outStatus = 1;
           }
+          attendance = AttendanceModel(
+            id: data['id_absensi'],
+            checkIn: checkIn,
+            checkOut: checkOut,
+            inStatus: inStatus,
+            outStatus: outStatus,
+          );
 
-          Map<String, dynamic> attendanceDetail = {
-            'inStatus': inStatus,
-            'outStatus': outStatus,
-            'checkIn': checkIn,
-            'checkOut': checkOut,
-          };
-
-          if (attendance['absensi_detail'].isNotEmpty) {
+          if (data['absensi_detail'].isNotEmpty) {
             // laborDetail = attendance['absensi_detail'][0]
-            String type = '';
-            if (attendance['absensi_detail'][0]['tipe_pekerjaan'] == 1) {
-              type = 'Cabut Sarang';
-            } else {
-              type = 'Bentuk Sarang';
-            }
+            Map<String, dynamic> laborData = attendanceData[0]['absensi_detail'][0];
+
 
             String status = '';
-            if (attendance['absensi_detail'][0]['status_pekerjaan'] == 'tugasBaru') {
+            if (data['absensi_detail'][0]['status'] == 1) {
               status = 'Memulai Tugas Baru';
-            } else if (attendance['absensi_detail'][0]['status_pekerjaan'] == 'tugasLanjut') {
+            } else {
               status = 'Melanjutkan Tugas';
-            } else{
-              status = 'Tidak Hadir';
             }
+            
 
-            laborDetail = {
-              'type': type,
-              'status': status,
-              'initialQty': attendance['absensi_detail'][0]['jumlah_awal'],
-              'finalQty': attendance['absensi_detail'][0]['jumlah_akhir'],
-              'initialWeight': attendance['absensi_detail'][0]['berat_awal'],
-              'finalWeight': attendance['absensi_detail'][0]['berat_akhir'],
-              'cleanScore': attendance['absensi_detail'][0]['nilai_kebersihan'],
-            };
+            laborDetail = AttendanceDetailModel(
+              id: laborData['id_detail'],
+              status: laborData['status'].toInt(),
+              statusName: status,
+              featherType: laborData['jenis_bulu'].toInt(),
+              initialQty: laborData['qty_awal'].toInt(),
+              finalQty: laborData['qty_akhir'].toInt(),
+              initialWeight: laborData['berat_awal'].toDouble(),
+              finalWeight: laborData['berat_akhir'].toDouble(),
+              minDepreciation: laborData['min_susut'].toInt(),
+              performanceScore: laborData['nilai_performa'].toDouble(),
+            );
           }
 
           return AttendanceUserModel(
             date: date,
-            attendance: attendanceDetail,
+            attendance: attendance,
             laborDetail: laborDetail,
           );
         }
@@ -83,13 +88,8 @@ class AttendanceUserModel {
     }
     return AttendanceUserModel(
       date: date,
-      attendance: {
-        'inStatus': 0,
-        'outStatus': 0,
-        'checkIn': null,
-        'checkOut': null,
-      },
-      laborDetail: null,
+      attendance: AttendanceModel.empty(),
+      laborDetail: AttendanceDetailModel.empty(),
     );
   }
 

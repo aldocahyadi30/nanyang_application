@@ -111,7 +111,7 @@ class ManagementUserDetailScreen extends StatelessWidget {
               NanyangDetailCard(
                 title: 'Detail User',
                 children: [
-                  _buildRow(context, 'Nama', model.shortedName),
+                  _buildRow(context, 'Nama', model.employee.name),
                   SizedBox(height: dynamicHeight(8, context)),
                   _buildRow(context, 'Email', model.email),
                   SizedBox(height: dynamicHeight(8, context)),

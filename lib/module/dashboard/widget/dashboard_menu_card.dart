@@ -6,6 +6,7 @@ import 'package:nanyang_application/module/chat/screen/chat_screen.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_menu.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_menu_icon.dart';
 import 'package:nanyang_application/module/management/screen/management_user_screen.dart';
+import 'package:nanyang_application/module/performance/screen/performance_admin_screen.dart';
 import 'package:nanyang_application/module/salary/screen/salary_admin_screen.dart';
 import 'package:nanyang_application/module/salary/screen/salary_user_screen.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
@@ -72,7 +73,7 @@ class DashboardMenuCard extends StatelessWidget {
 
   Widget _adminMenu() {
     return _buildMenu([
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/peformance.png', route: AttendanceAdminScreen(), title: 'Performance'),
+      const DashboardMenuIcon(image: 'assets/image/icon/menu/peformance.png', route: PerformanceAdminScreen(), title: 'Performance'),
       const DashboardMenuIcon(image: 'assets/image/icon/menu/gaji.png', route: SalaryAdminScreen(), title: 'Gaji'),
       const DashboardMenuIcon(image: 'assets/image/icon/menu/manajemen-pengguna.png', route: ManagementUserScreen(), title: 'Pengguna'),
       const DashboardMenuIcon(image: 'assets/image/icon/menu/pengumuman.png', route: AnnouncementScreen(), title: 'Pengumuman'),

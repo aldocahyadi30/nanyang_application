@@ -7,6 +7,7 @@ import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/auth_service.dart';
 import 'package:nanyang_application/service/firebase_service.dart';
+import 'package:nanyang_application/service/navigation_service.dart';
 import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,11 +15,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class AuthViewModel extends ChangeNotifier {
   final AuthenticationService _authenticationService;
   final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
+  final NavigationService _navigationService = Provider.of<NavigationService>(navigatorKey.currentContext!, listen: false);
+
   final userViewModel = Provider.of<UserViewModel>(navigatorKey.currentContext!, listen: false);
+  final config = Provider.of<ConfigurationProvider>(navigatorKey.currentContext!, listen: false);
   final firebaseService = FirebaseService();
 
-  AuthViewModel({required AuthenticationService authenticationService})
-      : _authenticationService = authenticationService;
+  AuthViewModel({required AuthenticationService authenticationService}) : _authenticationService = authenticationService;
 
   Future<void> login(String email, String password) async {
     try {
@@ -27,12 +30,10 @@ class AuthViewModel extends ChangeNotifier {
       final Map<String, dynamic> user = await _authenticationService.login(email, password, token);
 
       if (user['id'] != '') {
-        navigatorKey.currentContext!.read<ConfigurationProvider>().setUser(UserModel.fromSupabase(user));
+        config.setUser(UserModel.fromSupabase(user));
 
         _toastProvider.showToast('Login berhasil!', 'success');
-        redirect(const HomeScreen(), true);
-      } else {
-        return;
+        _navigationService.navigateToReplace(const HomeScreen());
       }
     } catch (e) {
       if (e is AuthException) {
@@ -114,7 +115,7 @@ class AuthViewModel extends ChangeNotifier {
     try {
       await _authenticationService.logout();
       _toastProvider.showToast('Logout berhasil!', 'success');
-      redirect(const LoginScreen(), true);
+      _navigationService.navigateToReplace(const LoginScreen());
     } catch (e) {
       if (e is AuthException) {
         debugPrint('Logout error: ${e.message}');
@@ -126,24 +127,6 @@ class AuthViewModel extends ChangeNotifier {
         debugPrint('Logout error: ${e.toString()}');
         _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
-    }
-  }
-
-  void redirect(Widget screen, bool isReplace) {
-    if (isReplace) {
-      Navigator.pushReplacement(
-        navigatorKey.currentContext!,
-        MaterialPageRoute(
-          builder: (context) => screen,
-        ),
-      );
-    } else {
-      Navigator.push(
-        navigatorKey.currentContext!,
-        MaterialPageRoute(
-          builder: (context) => screen,
-        ),
-      );
     }
   }
 }

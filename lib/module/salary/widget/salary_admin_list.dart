@@ -5,6 +5,7 @@ import 'package:nanyang_application/module/global/other/nanyang_empty_placeholde
 import 'package:nanyang_application/module/salary/widget/salary_admin_card.dart';
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/salary_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class SalaryAdminList extends StatefulWidget {
@@ -25,7 +26,7 @@ class _SalaryAdminListState extends State<SalaryAdminList> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: dynamicPaddingSymmetric(16, 16, context),
+      padding: dynamicPaddingOnly(16, 0, 16, 16, context),
       child: Column(
         children: [
           SearchAnchor(
@@ -36,10 +37,10 @@ class _SalaryAdminListState extends State<SalaryAdminList> {
               return SizedBox(
                 height: dynamicHeight(52, context),
                 child: SearchBar(
-                    elevation: MaterialStateProperty.all<double>(0),
+                    elevation: WidgetStateProperty.all<double>(0),
                     hintText: 'Cari...',
-                    backgroundColor: MaterialStateProperty.all<Color>(ColorTemplate.periwinkle),
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                    backgroundColor: WidgetStateProperty.all<Color>(ColorTemplate.periwinkle),
+                    shape: WidgetStateProperty.all<OutlinedBorder>(
                         RoundedRectangleBorder(borderRadius: BorderRadius.circular(dynamicWidth(20, context)))),
                     onTap: () {
                       controller.openView();
@@ -58,10 +59,10 @@ class _SalaryAdminListState extends State<SalaryAdminList> {
             suggestionsBuilder: (BuildContext context, SearchController controller) {
               String query = controller.text;
               return context
-                  .read<EmployeeViewModel>()
-                  .employee
+                  .read<SalaryViewModel>()
+                  .employeeList
                   .where((EmployeeModel employee) => employee.name.toLowerCase().contains(query.toLowerCase()))
-                  .where((element) => element.positionType == widget.type)
+                  .where((element) => element.position.type == widget.type)
                   .map<Widget>((employee) => InkWell(
                 onTap: () {},
                 child: Container(
@@ -77,13 +78,13 @@ class _SalaryAdminListState extends State<SalaryAdminList> {
             height: dynamicHeight(16, context),
           ),
           Expanded(
-            child: Selector<EmployeeViewModel, List<EmployeeModel>>(
+            child: Selector<SalaryViewModel, List<EmployeeModel>>(
               selector: (context, viewmodel) =>
-                  viewmodel.employee.where((element) => element.positionType == widget.type).toList(),
+                  viewmodel.employeeList.where((element) => element.position.type == widget.type).toList(),
               builder: (context, employee, child) {
                 return RefreshIndicator(
                   onRefresh: () async {
-                    await context.read<EmployeeViewModel>().getEmployee();
+                    await context.read<SalaryViewModel>().getEmployee();
                   },
                   child: employee.isEmpty
                       ? const Center(child: NanyangEmptyPlaceholder())

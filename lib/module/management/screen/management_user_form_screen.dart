@@ -42,7 +42,7 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
     if (widget.model != null) {
       isEdit = true;
       _emailController.text = widget.model!.email;
-      selectedEmployee = widget.model!.employeeId;
+      selectedEmployee = widget.model!.employee.id;
       selectedLevel = widget.model!.level;
     }
   }

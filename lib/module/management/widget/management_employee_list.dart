@@ -62,7 +62,7 @@ class _ManagementEmployeeListState extends State<ManagementEmployeeList> {
                   .read<EmployeeViewModel>()
                   .employee
                   .where((EmployeeModel employee) => employee.name.toLowerCase().contains(query.toLowerCase()))
-                  .where((element) => element.positionType == widget.type)
+                  .where((element) => element.position.type == widget.type)
                   .map<Widget>((employee) => InkWell(
                 onTap: () {},
                 child: Container(
@@ -80,7 +80,7 @@ class _ManagementEmployeeListState extends State<ManagementEmployeeList> {
           Expanded(
             child: Selector<EmployeeViewModel, List<EmployeeModel>>(
               selector: (context, viewmodel) =>
-                  viewmodel.employee.where((element) => element.positionType == widget.type).toList(),
+                  viewmodel.employee.where((element) => element.position.type == widget.type).toList(),
               builder: (context, employee, child) {
                 return RefreshIndicator(
                   onRefresh: () async {

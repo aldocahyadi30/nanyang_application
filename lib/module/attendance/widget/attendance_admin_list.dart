@@ -27,7 +27,7 @@ class _AttendanceAdminListState extends State<AttendanceAdminList> {
     return Padding(
       padding: dynamicPaddingSymmetric(0, 16, context),
       child: Selector<AttendanceViewModel, List<AttendanceAdminModel>>(
-        selector: (context, viewmodel) => viewmodel.attendanceAdmin.where((element) => element.positionType == widget.type).toList(),
+        selector: (context, viewmodel) => viewmodel.attendanceAdmin.where((element) => element.employee.position.type == widget.type).toList(),
         builder: (context, attendanceAdmin, child) {
           return RefreshIndicator(
             onRefresh: () async {

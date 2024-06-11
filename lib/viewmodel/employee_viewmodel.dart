@@ -1,19 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:nanyang_application/main.dart';
 import 'package:nanyang_application/model/employee.dart';
+import 'package:nanyang_application/module/management/screen/management_employee_detail_screen.dart';
+import 'package:nanyang_application/module/management/screen/management_employee_form_screen.dart';
+import 'package:nanyang_application/module/management/screen/management_employee_screen.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/employee_service.dart';
+import 'package:nanyang_application/service/navigation_service.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class EmployeeViewModel extends ChangeNotifier {
   final EmployeeService _employeeService;
   final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
+  final NavigationService _navigationService = Provider.of<NavigationService>(navigatorKey.currentContext!, listen: false);
   int workerCount = 0;
   int laborCount = 0;
   List<EmployeeModel> employee = [];
+  EmployeeModel _selectedEmployee = EmployeeModel.empty();
 
   EmployeeViewModel({required EmployeeService employeeService}) : _employeeService = employeeService;
+
+  EmployeeModel get selectedEmployee => _selectedEmployee;
+
+  void setEmployee(EmployeeModel employee) {
+    _selectedEmployee = employee;
+    notifyListeners();
+  }
 
   Future<void> getEmployee() async {
     try {
@@ -23,10 +36,10 @@ class EmployeeViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       if (e is PostgrestException) {
-        debugPrint('Employee error: ${e.message}');
+        debugPrint('Employee Get error: ${e.message}');
         _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        debugPrint('Employee error: ${e.toString()}');
+        debugPrint('Employee Get error: ${e.toString()}');
         _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
     }
@@ -41,30 +54,67 @@ class EmployeeViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       if (e is PostgrestException) {
-        debugPrint('Employee error: ${e.message}');
+        debugPrint('Employee Count error: ${e.message}');
         _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        debugPrint('Employee error: ${e.toString()}');
+        debugPrint('Employee Count error: ${e.toString()}');
         _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
     }
   }
 
-  String getShortenedName(String name) {
-    List<String> nameParts = name.split(' ');
+  void create() {
+    setEmployee(EmployeeModel.empty());
+    _navigationService.navigateTo(const ManagementEmployeeFormScreen(type: 'create'));
+  }
 
-    if (nameParts.length == 1) {
-      return nameParts[0];
-    } else if (nameParts.length == 2) {
-      return nameParts.join(' ');
-    } else {
-      return nameParts.take(2).join(' ') + nameParts.skip(2).map((name) => ' ${name[0]}.').join('');
+  Future<void> store() async {
+    try {
+      await _employeeService.store(_selectedEmployee);
+      _toastProvider.showToast('Data karyawan berhasil ditambahkan', 'success');
+      getEmployee();
+      _navigationService.goBack();
+    } catch (e) {
+      if (e is PostgrestException) {
+        debugPrint('Employee Store error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+      } else {
+        debugPrint('Employee Store error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+      }
+      getEmployee();
+      _navigationService.goBack();
     }
   }
 
-  String getAvatarInitials(String name) {
-    List<String> nameParts = name.split(' ');
+  Future<void> update() async {
+    try {
+      await _employeeService.update(_selectedEmployee);
+      _toastProvider.showToast('Data karyawan berhasil diperbarui', 'success');
+      getEmployee();
+      _navigationService.pushAndRemoveUntil(const ManagementEmployeeScreen());
+    } catch (e) {
+      if (e is PostgrestException) {
+        debugPrint('Employee Update error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+      } else {
+        debugPrint('Employee Update error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+      }
+      getEmployee();
+      _navigationService.pushAndRemoveUntil((const ManagementEmployeeScreen()));
+    }
+  }
 
-    return ((nameParts.isNotEmpty ? nameParts[0][0] : '') + (nameParts.length > 1 ? nameParts[1][0] : '')).toUpperCase();
+  void detail(EmployeeModel model) {
+    setEmployee(model);
+    _navigationService.navigateTo(const ManagementEmployeeDetailScreen());
+  }
+
+  void edit(EmployeeModel model) {
+    setEmployee(model);
+    _navigationService.navigateTo(const ManagementEmployeeFormScreen(
+      type: 'edit',
+    ));
   }
 }

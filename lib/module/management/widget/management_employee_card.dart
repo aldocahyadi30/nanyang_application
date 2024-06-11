@@ -12,7 +12,6 @@ class ManagementEmployeeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Card(
       color: ColorTemplate.violetBlue,
       shape: RoundedRectangleBorder(
@@ -24,14 +23,14 @@ class ManagementEmployeeCard extends StatelessWidget {
           radius: dynamicWidth(24, context),
           backgroundColor: ColorTemplate.argentinianBlue,
           child: Text(
-            model.initials,
+            model.initials!,
             style: const TextStyle(color: Colors.white),
           ),
         ),
         title: Padding(
           padding: dynamicPaddingOnly(0, 4, 0, 0, context),
           child: Text(
-            model.shortedName,
+            model.shortedName!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -42,14 +41,14 @@ class ManagementEmployeeCard extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          model.positionName,
+          model.position.name,
           style: TextStyle(
             fontSize: dynamicFontSize(12, context),
             color: ColorTemplate.periwinkle,
             fontWeight: FontWeight.w500,
           ),
         ),
-        onTap: onTap,
+        onTap: () => context.read<EmployeeViewModel>().detail(model),
       ),
     );
   }

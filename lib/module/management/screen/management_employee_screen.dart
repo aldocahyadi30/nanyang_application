@@ -105,9 +105,7 @@ class _ManagementEmployeeScreenState extends State<ManagementEmployeeScreen> wit
               ],
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const ManagementEmployeeFormScreen()));
-        },
+        onPressed: () => context.read<EmployeeViewModel>().create(),
         backgroundColor: ColorTemplate.violetBlue,
         child: const Icon(
           Icons.add,

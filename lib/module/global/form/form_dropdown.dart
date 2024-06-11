@@ -8,6 +8,7 @@ class FormDropdown<T> extends StatefulWidget {
   final Color fillColor;
   final Color menuColor;
   final bool isRequired;
+  final bool isReadOnly;
   final List<DropdownMenuItem<T?>> items;
   final T? value;
   final dynamic Function(dynamic)? onChanged;
@@ -20,6 +21,7 @@ class FormDropdown<T> extends StatefulWidget {
     this.fillColor = ColorTemplate.lavender,
     this.menuColor = ColorTemplate.lavender,
     this.isRequired = true,
+    this.isReadOnly = false,
     required this.items,
     required this.value,
     required this.onChanged,
@@ -74,7 +76,7 @@ class _FormDropdownState extends State<FormDropdown> {
         DropdownButtonFormField(
           items: widget.items,
           value: widget.value,
-          onChanged: widget.onChanged,
+          onChanged: widget.isReadOnly ? null : widget.onChanged,
           validator: widget.isRequired ? widget.validator : null,
           menuMaxHeight: dynamicHeight(200, context),
           dropdownColor: widget.menuColor,

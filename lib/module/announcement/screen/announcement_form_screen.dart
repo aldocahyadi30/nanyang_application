@@ -62,7 +62,7 @@ class _AnnouncementFormScreenState extends State<AnnouncementFormScreen> {
                                 child: Text(category.name),
                               );
                             }).toList(),
-                      value: widget.model?.categoryName,
+                      value: widget.model?.category.name,
                       onChanged: (value) {
                         setState(() {
                           selectedCategory = value!;
@@ -107,7 +107,7 @@ class _AnnouncementFormScreenState extends State<AnnouncementFormScreen> {
                 FormTextField(
                   title: 'Durasi Pengumuman',
                   controller: durationController,
-                  type: TextInputType.number,
+                  keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: dynamicHeight(32, context)),
                 Row(

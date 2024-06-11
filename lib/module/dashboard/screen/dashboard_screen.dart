@@ -50,7 +50,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           }
           context.read<RequestViewModel>().getDashboardRequest();
 
-          print(config.user.userChatId);
         },
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

@@ -16,9 +16,7 @@ class AnnouncementViewModel extends ChangeNotifier {
   List<AnnouncementCategoryModel> _announcementCategory = [];
   List<int> selectedCategory = [];
 
-
-  AnnouncementViewModel({required AnnouncementService announcementService})
-      : _announcementService = announcementService;
+  AnnouncementViewModel({required AnnouncementService announcementService}) : _announcementService = announcementService;
 
   get announcement => _announcement;
   get announcementDashboard => _announcementDashboard;
@@ -26,7 +24,7 @@ class AnnouncementViewModel extends ChangeNotifier {
 
   Future<void> getDashboardAnnouncement() async {
     try {
-      List<Map<String,dynamic>> data = await _announcementService.getDashboardAnnouncement();
+      List<Map<String, dynamic>> data = await _announcementService.getDashboardAnnouncement();
       _announcementDashboard = AnnouncementModel.fromSupabaseList(data);
 
       notifyListeners();
@@ -43,7 +41,7 @@ class AnnouncementViewModel extends ChangeNotifier {
 
   Future<void> getAnnouncement({List<int> categoryID = const []}) async {
     try {
-      List<Map<String,dynamic>> data = [];
+      List<Map<String, dynamic>> data = [];
       if (categoryID.isEmpty) {
         data = await _announcementService.getAnnouncement();
       } else {
@@ -65,7 +63,7 @@ class AnnouncementViewModel extends ChangeNotifier {
 
   Future<void> getAnnouncementCategory() async {
     try {
-      List<Map<String,dynamic>> data = await _announcementService.getAnnouncementCategory();
+      List<Map<String, dynamic>> data = await _announcementService.getAnnouncementCategory();
       _announcementCategory = AnnouncementCategoryModel.fromSupabaseList(data);
 
       notifyListeners();
@@ -80,8 +78,7 @@ class AnnouncementViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> store(
-      int categoryId, String title, String content, String date, String time, int duration, bool isPosted) async {
+  Future<void> store(int categoryId, String title, String content, String date, String time, int duration, bool isPosted) async {
     try {
       DateTime tempDate = DateFormat('dd-MM-yyyy').parse(date);
       DateTime tempTime = DateFormat('HH:mm').parse(time);
@@ -135,6 +132,4 @@ class AnnouncementViewModel extends ChangeNotifier {
       }
     }
   }
-
-
 }

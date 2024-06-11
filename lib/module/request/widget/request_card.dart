@@ -16,8 +16,6 @@ class RequestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final EmployeeViewModel employeeViewModel = Provider.of<EmployeeViewModel>(context, listen: false);
-    final String avatarText = employeeViewModel.getAvatarInitials(model.requesterName);
-    final String employeeName = employeeViewModel.getShortenedName(model.requesterName);
 
     return Card(
         child: ListTile(
@@ -26,12 +24,12 @@ class RequestCard extends StatelessWidget {
             radius: dynamicWidth(30, context),
             backgroundColor: Colors.black,
             child: Text(
-              avatarText,
+              model.requester.initials!,
               style: const TextStyle(color: Colors.white),
             ),
           ),
           title: Text(
-            employeeName,
+            model.requester.shortedName!,
             style:  TextStyle(
               color: Colors.black,
               fontSize: dynamicFontSize(16, context),

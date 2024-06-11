@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nanyang_application/model/attendance_labor.dart';
+import 'package:nanyang_application/model/attendance_admin.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AttendanceService {
@@ -50,11 +50,18 @@ class AttendanceService {
       final startTime = '$date 01:00:00';
       final endTime = '$date 23:59:59';
 
-      final data = await Supabase.instance.client.from('karyawan').select('''
+      final data = await Supabase.instance.client
+          .from('karyawan')
+          .select('''
           *,
           posisi!inner(*),
           absensi!left(*, absensi_detail(*))
-          ''').eq('posisi.tipe', type).gte('absensi.waktu_masuk', startTime).lte('absensi.waktu_masuk', endTime).limit(1, referencedTable: 'absensi').order('nama', ascending: true);
+          ''')
+          .eq('posisi.tipe', type)
+          .gte('absensi.waktu_masuk', startTime)
+          .lte('absensi.waktu_masuk', endTime)
+          .limit(1, referencedTable: 'absensi')
+          .order('nama', ascending: true);
 
       return data;
     } on PostgrestException catch (error) {
@@ -70,7 +77,7 @@ class AttendanceService {
       final endTime = '$endDate 23:59:59';
 
       final data = await supabase.from('karyawan').select('''
-          id_karyawan,
+          *,
           absensi!left(*, absensi_detail!left(*))
           ''').gte('absensi.waktu_masuk', startTime).lte('absensi.waktu_masuk', endTime).eq('id_karyawan', employeeID);
 
@@ -111,51 +118,45 @@ class AttendanceService {
     }
   }
 
-  Future<AttendanceLaborModel> getLaborAttendanceByID(int id) async {
+  Future<void> storeWorkerAttendance(AttendanceAdminModel model) async {
     try {
-      final attendance = await supabase.from('karyawan').select('''
-          *,
-          posisi!inner(*),
-          absensi!left(*, absensi_detail(*))
-          ''').eq('id_karyawan', id).single();
-
-      return AttendanceLaborModel.fromSupabase(attendance);
+      if (model.attendance!.id != 0) {
+        await supabase
+            .from('absensi')
+            .update({'waktu_masuk': model.attendance!.checkIn!.toIso8601String(), 'waktu_keluar': model.attendance!.checkOut!.toIso8601String()})
+            .eq('id_absensi', model.attendance!.id)
+            .eq('id_karyawan', model.employee.id);
+      } else {
+        await supabase.from('absensi').insert({
+          'waktu_masuk': model.attendance!.checkIn!.toIso8601String(),
+          'waktu_keluar': model.attendance!.checkOut!.toIso8601String(),
+          'id_karyawan': model.employee.id
+        });
+      }
     } on PostgrestException catch (error) {
+      debugPrint('Attendance error: ${error.message}');
       throw PostgrestException(message: error.message);
     } catch (e) {
+      debugPrint('Attendance error: ${e.toString()}');
       throw Exception(e.toString());
     }
   }
 
-  Future<void> storeLaborAttendance(AttendanceLaborModel model, String date, String status, int type, int? initialQty, int? finalQty, double? initialWeight,
-      double? finalWeight, int? cleanScore) async {
+  Future<void> storeLaborAttendance(AttendanceAdminModel model) async {
     try {
-      double weightScore = (1 - (finalWeight! / initialWeight!)) * 100;
-      double qtyScore = (finalQty! / initialQty!) * 100;
-      DateTime parsedDate = DateFormat('dd-MM-yyyy').parse(date);
-      DateTime now = DateTime.now();
-      DateTime currentDateTime = DateTime(parsedDate.year, parsedDate.month, parsedDate.day, now.hour, now.minute, now.second);
-      String parsedCurrentDate = currentDateTime.toIso8601String();
-
       final List<Map<String, dynamic>> attendance =
-          await supabase.from('absensi').insert({'waktu_masuk': parsedCurrentDate, 'id_karyawan': model.employeeId}).select();
+          await supabase.from('absensi').insert({'waktu_masuk': model.attendance!.checkIn!.toIso8601String(), 'id_karyawan': model.employee.id}).select();
 
-      List<Map<String, dynamic>> detail = await supabase.from('absensi_detail').insert({
+      await supabase.from('absensi_detail').insert({
         'id_absensi': attendance[0]['id_absensi'],
-        'jenis_pekerjaan': type,
-        'status_pekerjaan': status,
-        'qty_awal': initialQty,
-        'qty_akhir': finalQty,
-        'berat_awal': initialWeight,
-        'berat_akhir': finalWeight
-      }).select('id_detail');
-
-      await supabase.from('performa_harian').insert({
-        'id_detail': detail[0]['id_detail'],
-        'nilai_kebersihan': cleanScore,
-        'nilai_depresiasi': weightScore,
-        'nilai_bentuk': qtyScore,
-        'nilai_performa': 0
+        'jenis_bulu': model.laborDetail!.featherType,
+        'status': model.laborDetail!.status,
+        'qty_awal': model.laborDetail!.initialQty,
+        'qty_akhir': model.laborDetail!.finalQty,
+        'berat_awal': model.laborDetail!.initialWeight,
+        'berat_akhir': model.laborDetail!.finalWeight,
+        'min_susut': model.laborDetail!.minDepreciation,
+        'nilai_performa': model.laborDetail!.performanceScore
       });
     } on PostgrestException catch (error) {
       debugPrint('Attendance error: ${error.message}');

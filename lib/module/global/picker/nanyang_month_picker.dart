@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
-import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/viewmodel/date_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/salary_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class NanyangMonthPicker extends StatefulWidget {
@@ -24,12 +24,12 @@ class _NanyangMonthPickerState extends State<NanyangMonthPicker> {
   @override
   void initState() {
     super.initState();
-    if (widget.selectedDate != null){
+    if (widget.selectedDate != null) {
       Future.delayed(Duration.zero, () {
         selectedDate = widget.selectedDate!;
         widget.controller!.text = DateFormat('MMMM yyyy').format(selectedDate);
       });
-    }else{
+    } else {
       Future.delayed(Duration.zero, () {
         selectedDate = Provider.of<DateViewModel>(context, listen: false).initializeDateForPicker(widget.controller!, widget.type);
       });
@@ -49,14 +49,16 @@ class _NanyangMonthPickerState extends State<NanyangMonthPicker> {
         if (widget.controller != null) {
           widget.controller!.text = DateFormat('MMMM yyyy').format(selectedDate);
         }
-        if (widget.type == 'salary-user'){
+        if (widget.type == 'salary-user') {
           Provider.of<DateProvider>(context, listen: false).setSalaryDate(selectedDate);
-        }else if (widget.type == 'salary-admin'){
-          Provider.of<DateProvider>(context, listen: false).setSalaryDate(selectedDate);
+        } else if (widget.type == 'salary-admin') {
+          Provider.of<SalaryViewModel>(context, listen: false).setDate(selectedDate);
+          Provider.of<SalaryViewModel>(context, listen: false).getSalary();
         }
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return IconButton(

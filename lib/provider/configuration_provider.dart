@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/model/configuration.dart';
 import 'package:nanyang_application/model/user.dart';
 
 class ConfigurationProvider with ChangeNotifier {
   late UserModel _user;
+  late ConfigurationModel _configuration;
   late String _avatarInitials;
   late String _shortenedName;
   late bool _isAdmin;
 
   UserModel get user => _user;
+  ConfigurationModel get configuration => _configuration;
   String get shortenedName => _shortenedName;
   String get avatarInitials => _avatarInitials;
   bool get isAdmin => _isAdmin;
 
   void setUser(UserModel user) {
     _user = user;
-    setShortenedName(user.name);
-    setAvatarInitials(user.name);
+    setShortenedName(user.employee.name);
+    setAvatarInitials(user.employee.name);
     setIsAdmin(user.level != 1);
+    notifyListeners();
+  }
+
+  void setConfiguration(ConfigurationModel configuration) {
+    _configuration = configuration;
     notifyListeners();
   }
 
@@ -43,6 +51,5 @@ class ConfigurationProvider with ChangeNotifier {
 
   void setIsAdmin(bool isAdmin) {
     _isAdmin = isAdmin;
-    notifyListeners();
   }
 }

@@ -7,8 +7,7 @@ class UserService {
     try {
       final data = await supabase
           .from('user')
-          .select('''*, karyawan(*, posisi(*)) ''').order('email', ascending: true);
-          print(data);
+          .select('''*, karyawan(*, posisi!inner(*)) ''').order('email', ascending: true);
       return data;
     } on PostgrestException catch (error) {
       throw PostgrestException(message: error.message);
@@ -21,7 +20,8 @@ class UserService {
     try {
       final data = await supabase.from('user').select('''
         *,
-        karyawan(*,
+        karyawan(id_karyawan,
+            nama,
           posisi(*
           )
         )

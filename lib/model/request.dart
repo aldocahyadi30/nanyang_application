@@ -1,20 +1,22 @@
+import 'dart:io';
+
+import 'package:nanyang_application/model/employee.dart';
+
 class RequestModel {
   final int id;
-  final int type;
-  final int status;
-  final DateTime? startDateTime;
-  final DateTime? endDateTime;
+  int type;
+  int status;
+  DateTime? startDateTime;
+  DateTime? endDateTime;
   final DateTime? approvalTime;
   final DateTime? rejectTime;
-  final int requesterId;
-  final String requesterName;
-  final int? approverId;
-  final String? approverName;
-  final int? rejecterId;
-  final String? rejecterName;
-  final String? reason;
-  final String? comment;
-  final String? file;
+  String? reason;
+  String? comment;
+  String? filePath;
+  File? file;
+  final EmployeeModel requester;
+  final EmployeeModel? approver;
+  final EmployeeModel? rejecter;
 
   RequestModel({
     required this.id,
@@ -24,40 +26,63 @@ class RequestModel {
     this.endDateTime,
     this.approvalTime,
     this.rejectTime,
-    required this.requesterId,
-    required this.requesterName,
-    this.approverId = 0,
-    this.approverName = '',
-    this.rejecterId = 0,
-    this.rejecterName = '',
     this.reason,
     this.comment,
+    this.filePath,
     this.file,
+    required this.requester,
+    this.approver,
+    this.rejecter,
   });
 
-  static List<RequestModel> fromSupabaseList(List<Map<String, dynamic>> requests) {
-    return requests.map((request) {
-      bool haveApprover = request['approver'] != null;
-      bool haveRejecter = request['penolak'] != null;
 
-      return RequestModel(
-        id: request['id_izin'],
-        type: request['jenis'],
-        status: request['status'],
-        startDateTime: request['waktu_mulai'] == null ? null : DateTime.tryParse(request['waktu_mulai']),
-        endDateTime: request['waktu_akhir'] == null ? null : DateTime.tryParse(request['waktu_akhir']),
-        approvalTime: request['waktu_approve'] == null ? null : DateTime.tryParse(request['waktu_approve']),
-        rejectTime: request['waktu_tolak'] == null ? null : DateTime.tryParse(request['waktu_tolak']),
-        requesterId: request['karyawan']['id_karyawan'],
-        requesterName: request['karyawan']['nama'],
-        approverId: haveApprover ? request['approver']['id_karyawan'] : null,
-        approverName: haveApprover ? request['approver']['nama'] : null,
-        rejecterId: haveRejecter ? request['penolak']['id_karyawan'] : null,
-        rejecterName: haveRejecter ? request['penolak']['nama'] : null,
-        reason: request['alasan'] ?? '',
-        comment: haveRejecter || haveApprover ? request['komentar'] : '',
-        file: request['file'] ?? '',
-      );
-    }).toList();
+factory RequestModel.fromSupabase(Map<String, dynamic> request) {
+    bool haveApprover = request['approver'] != null;
+    bool haveRejecter = request['penolak'] != null;
+    EmployeeModel approver;
+    EmployeeModel rejecter;
+
+    if (haveApprover) {
+      approver = EmployeeModel.fromSupabase(request['approver']);
+    } else {
+      approver = EmployeeModel.empty();
+    }
+
+    if (haveRejecter) {
+      rejecter = EmployeeModel.fromSupabase(request['penolak']);
+    } else {
+      rejecter = EmployeeModel.empty();
+    }
+
+    return RequestModel(
+      id: request['id_izin'],
+      type: request['jenis'],
+      status: request['status'],
+      startDateTime: request['waktu_mulai'] == null ? null : DateTime.tryParse(request['waktu_mulai']),
+      endDateTime: request['waktu_akhir'] == null ? null : DateTime.tryParse(request['waktu_akhir']),
+      approvalTime: request['waktu_approve'] == null ? null : DateTime.tryParse(request['waktu_approve']),
+      rejectTime: request['waktu_tolak'] == null ? null : DateTime.tryParse(request['waktu_tolak']),
+      requester: EmployeeModel.fromSupabase(request['karyawan']),
+      approver: approver,
+      rejecter: rejecter,
+      reason: request['alasan'] ?? '',
+      comment: haveRejecter || haveApprover ? request['komentar'] : '',
+      filePath: request['file'] ?? '',
+      file: null,
+    );
+  }
+  static List<RequestModel> fromSupabaseList(List<Map<String, dynamic>> requests) {
+    return requests.map((request) => RequestModel.fromSupabase(request)).toList();
+  }
+
+  factory RequestModel.empty() {
+    return RequestModel(
+      id: 0,
+      type: 0,
+      status: 0,
+      requester: EmployeeModel.empty(),
+      approvalTime: null,
+      rejectTime: null,
+    );
   }
 }

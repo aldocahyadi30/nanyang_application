@@ -1,19 +1,25 @@
+import 'dart:math';
+
+import 'package:nanyang_application/model/position.dart';
+import 'package:nanyang_application/model/salary.dart';
+
 class EmployeeModel {
   final int id;
-  final String name;
-  final String shortedName;
-  final String initials;
-  final int? age;
-  final String? address;
-  final int positionId;
-  final String positionName;
-  final int positionType;
-  final String? birthPlace;
-  final DateTime? birthDate;
-  final String? phoneNumber;
-  final String? gender;
-  final String? religion;
-  final int? attendanceMachineID;
+  String name;
+  String? shortedName;
+  String? initials;
+  int? age;
+  String? address;
+  String? birthPlace;
+  DateTime? birthDate;
+  String? phoneNumber;
+  String? gender;
+  String? religion;
+  int? attendanceMachineID;
+  DateTime? entryDate;
+  double? salary;
+  PositionModel position;
+  SalaryModel? thisMonthSalary;
 
   EmployeeModel({
     required this.id,
@@ -21,19 +27,21 @@ class EmployeeModel {
     required this.shortedName,
     required this.initials,
     this.age,
-    this.address,
-    required this.positionId,
-    required this.positionName,
-    required this.positionType,
+    this.address = '',
     this.birthPlace,
     this.birthDate,
-    this.phoneNumber,
-    this.gender,
-    this.religion,
-    this.attendanceMachineID,
+    this.phoneNumber = '',
+    this.gender = '',
+    this.religion = '',
+    this.attendanceMachineID = 0,
+    this.entryDate,
+    this.salary = 0.0,
+    required this.position,
+    this.thisMonthSalary,
   });
 
   factory EmployeeModel.fromSupabase(Map<String, dynamic> employee) {
+    SalaryModel? thisMonthSalary;
     String name = employee['nama'];
     List<String> nameParts = name.split(' ');
     String shortedName = '';
@@ -50,6 +58,10 @@ class EmployeeModel {
     initials =
         ((nameParts.isNotEmpty && nameParts[0].isNotEmpty ? nameParts[0][0] : '') + (nameParts.length > 1 && nameParts[1].isNotEmpty ? nameParts[1][0] : ''))
             .toUpperCase();
+
+    if (employee['gaji'] != null && employee['gaji'].isNotEmpty) {
+      thisMonthSalary = SalaryModel.fromMap(employee['gaji']);
+    }
     return EmployeeModel(
       id: employee['id_karyawan'],
       name: name,
@@ -57,19 +69,66 @@ class EmployeeModel {
       initials: initials,
       age: employee['umur'],
       address: employee['alamat'],
-      positionId: employee['posisi']['id_posisi'],
-      positionName: employee['posisi']['nama'],
-      positionType: employee['posisi']['tipe'],
+      position: PositionModel.fromSupabase(employee['posisi']),
+      thisMonthSalary: thisMonthSalary,
       birthPlace: employee['tempat_lahir'],
       birthDate: employee['tanggal_lahir'] != null ? DateTime.parse(employee['tanggal_lahir']) : null,
-      phoneNumber: employee['no_hp'],
-      gender: employee['gender'],
-      religion: employee['agama'],
+      entryDate: employee['tanggal_masuk'] != null ? DateTime.parse(employee['tanggal_masuk']) : null,
+      phoneNumber: employee['no_telp'].toString(),
+      gender: employee['gender'].toString(),
+      religion: employee['agama'].toString(),
+      salary: employee['gaji_pokok'] != null ? employee['gaji_pokok'].toDouble() : 0.0,
       attendanceMachineID: employee['id_mesin_absensi'],
     );
   }
 
   static List<EmployeeModel> fromSupabaseList(List<Map<String, dynamic>> employees) {
     return employees.map((employee) => EmployeeModel.fromSupabase(employee)).toList();
+  }
+
+  factory EmployeeModel.empty() {
+    return EmployeeModel(
+      id: 0,
+      name: '',
+      shortedName: '',
+      initials: '',
+      position: PositionModel.empty(),
+    );
+  }
+
+  EmployeeModel copyWith({
+    int? id,
+    String? name,
+    String? shortedName,
+    String? initials,
+    int? age,
+    String? address,
+    String? birthPlace,
+    DateTime? birthDate,
+    String? phoneNumber,
+    String? gender,
+    String? religion,
+    int? attendanceMachineID,
+    DateTime? entryDate,
+    double? salary,
+    PositionModel? position,
+  }) {
+    return EmployeeModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      shortedName: shortedName ?? this.shortedName,
+      initials: initials ?? this.initials,
+      age: age ?? this.age,
+      address: address ?? this.address,
+      birthPlace: birthPlace ?? this.birthPlace,
+      birthDate: birthDate ?? this.birthDate,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      gender: gender ?? this.gender,
+      religion: religion ?? this.religion,
+      attendanceMachineID: attendanceMachineID ?? this.attendanceMachineID,
+      entryDate: entryDate ?? this.entryDate,
+      salary: salary ?? this.salary,
+      position: position ?? this.position,
+    );
   }
 }

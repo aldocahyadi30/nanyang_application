@@ -14,7 +14,7 @@ class AnnouncementCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(left: BorderSide(color: model.categoryColor, width: dynamicWidth(12, context))),
+        border: Border(left: BorderSide(color: model.category.color, width: dynamicWidth(12, context))),
         borderRadius: BorderRadius.circular(dynamicWidth(8, context)),
         boxShadow: [
           BoxShadow(
@@ -42,16 +42,16 @@ class AnnouncementCard extends StatelessWidget {
                       children: [
                         Text(
                           model.title,
-                          style: TextStyle(fontSize: dynamicFontSize(16, context), fontWeight: FontWeight.bold, color: model.categoryColor),
+                          style: TextStyle(fontSize: dynamicFontSize(16, context), fontWeight: FontWeight.bold, color: model.category.color),
                         ),
                         Container(
                           padding: dynamicPaddingSymmetric(4, 8, context),
                           decoration: BoxDecoration(
-                            color: model.categoryColor,
+                            color: model.category.color,
                             borderRadius: BorderRadius.circular(dynamicWidth(8, context)),
                           ),
                           child: Text(
-                            model.categoryName,
+                            model.category.name,
                             style: TextStyle(fontSize: dynamicFontSize(14, context), fontWeight: FontWeight.bold, color: Colors.white),
                           ),
                         )

@@ -71,7 +71,6 @@ class _ChatScreenState extends State<ChatScreen> {
       int chatID = widget.model != null ? widget.model!.id : _config.user.userChatId!;
       _chatViewModel.sendMessage(chatID, _config.user.id, _config.isAdmin, meesage: message, file: file);
     } catch (e) {
-      print(e);
       _toast.showToast('Terjadi kesalahan, silahkan coba lagi', 'error');
     }
   }
@@ -81,11 +80,10 @@ class _ChatScreenState extends State<ChatScreen> {
     var keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       appBar: NanyangAppbar(
-        title: _config.isAdmin ? '${widget.model!.employeeName.split(' ')[0]}' : 'Halo, ${_config.user.name.split(' ')[0]}!',
+        title: _config.isAdmin ? '${widget.model!.user.employee.name.split(' ')[0]}' : 'Halo, ${_config.user.employee.name.split(' ')[0]}!',
         isBackButton: true,
         isCenter: true,
         backgroundColor: ColorTemplate.periwinkle,
-        actions: [],
       ),
       body: Container(
         decoration: const BoxDecoration(

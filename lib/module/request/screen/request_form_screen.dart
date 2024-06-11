@@ -49,7 +49,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
       } else {}
       reasonController.text = widget.model!.reason ?? '';
       if (widget.model!.file != null) {
-        fileController.text = widget.model!.file!.split('/').last;
+        fileController.text = widget.model!.filePath!.split('/').last;
       }
     } else {
       if (widget.type == 1 || widget.type == 2 || widget.type == 3) {
@@ -328,7 +328,7 @@ Widget _buildResponseField(BuildContext context, RequestModel model) {
     SizedBox(height: dynamicHeight(16, context)),
     FormTextField(
       title: 'Admin',
-      initialValue: model.status == 1 ? model.approverName : model.rejecterName,
+      initialValue: model.status == 1 ? model.approver!.name : model.rejecter!.name,
       isReadOnly: true,
       isRequired: false,
     ),

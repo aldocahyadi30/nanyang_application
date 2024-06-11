@@ -35,7 +35,7 @@ class UserViewModel extends ChangeNotifier {
 
   Future<void> getUser() async {
     try {
-      List<Map<String,dynamic>> data = await _userService.getUser();
+      List<Map<String, dynamic>> data = await _userService.getUser();
       _user = UserModel.fromSupabaseList(data);
 
       notifyListeners();
@@ -49,5 +49,4 @@ class UserViewModel extends ChangeNotifier {
       }
     }
   }
-
 }

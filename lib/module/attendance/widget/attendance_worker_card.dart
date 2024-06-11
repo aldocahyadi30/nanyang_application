@@ -74,8 +74,8 @@ Widget _buildCheckIn(BuildContext context, AttendanceUserModel data) {
         fontWeight: FontWeight.w600,
       ),
     ),
-    subtitle: _checkInSub(context, data.attendance?['inStatus'], data.attendance?['checkIn']),
-    trailing: _buildTrailing(context, data.attendance?['inStatus']),
+    subtitle: _checkInSub(context, data.attendance!.inStatus!, data.attendance!.checkIn!),
+    trailing: _buildTrailing(context, data.attendance!.inStatus!),
   );
 }
 
@@ -91,8 +91,8 @@ Widget _buildCheckOut(BuildContext context, AttendanceUserModel data) {
         fontWeight: FontWeight.w600,
       ),
     ),
-    subtitle: _buildCheckOutSub(context, data.attendance?['outStatus'], data.attendance?['checkOut']),
-    trailing: _buildTrailing(context, data.attendance?['outStatus']),
+    subtitle: _buildCheckOutSub(context, data.attendance!.outStatus!, data.attendance!.checkOut!),
+    trailing: _buildTrailing(context, data.attendance!.outStatus!),
   );
 }
 

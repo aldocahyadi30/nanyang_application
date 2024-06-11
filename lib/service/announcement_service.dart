@@ -11,7 +11,8 @@ class AnnouncementService {
     try {
       final data = await supabase.from('pengumuman').select('''
         *,
-        pengumuman_kategori!inner(*)
+        pengumuman_kategori!inner(*),
+        karyawan!inner(*, posisi!inner(*))
       ''').order('tanggal_post', ascending: false).limit(2);
 
 
@@ -30,7 +31,7 @@ class AnnouncementService {
       final data = await supabase.from('pengumuman').select('''
         *,
         pengumuman_kategori!inner(*),
-        karyawan!inner(*)
+        karyawan!inner(*, posisi!inner(*))
       ''').order('waktu_kirim', ascending: false);
 
 
@@ -87,7 +88,7 @@ class AnnouncementService {
         'waktu_kirim': dateTime.toIso8601String(),
         'durasi' : duration,
         'sudah_kirim': isPosted,
-        'id_pembuat': Provider.of<ConfigurationProvider>(navigatorKey.currentContext!, listen: false).user.employeeId,
+        'id_pembuat': Provider.of<ConfigurationProvider>(navigatorKey.currentContext!, listen: false).user.employee.id,
       });
     } on PostgrestException catch (error) {
       debugPrint('Announcement error: ${error.message}');

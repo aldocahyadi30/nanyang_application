@@ -40,7 +40,7 @@ class _AttendanceUserListState extends State<AttendanceUserList> {
                 : ListView.builder(
               itemCount: attendanceUser.length,
               itemBuilder: (context, index) {
-                return user.positionType == 1
+                return user.employee.position.type == 1
                     ? AttendanceWorkerCard(user: attendanceUser[index])
                     : AttendanceLaborCard(user: attendanceUser[index]);
               },

@@ -64,7 +64,7 @@ class _RequestListState extends State<RequestList> {
                     return context
                         .read<RequestViewModel>()
                         .request
-                        .where((RequestModel request) => request.requesterName.toLowerCase().contains(query.toLowerCase()))
+                        .where((RequestModel request) => request.requester.name.toLowerCase().contains(query.toLowerCase()))
                         .map<Widget>((request) => InkWell(
                               onTap: () {},
                               child: Container(

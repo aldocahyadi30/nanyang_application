@@ -15,17 +15,22 @@ import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
 import 'package:nanyang_application/service/auth_service.dart';
 import 'package:nanyang_application/service/chat_service.dart';
+import 'package:nanyang_application/service/configuration_service.dart';
 import 'package:nanyang_application/service/employee_service.dart';
 import 'package:nanyang_application/service/firebase_service.dart';
+import 'package:nanyang_application/service/navigation_service.dart';
 import 'package:nanyang_application/service/request_service.dart';
+import 'package:nanyang_application/service/salary_service.dart';
 import 'package:nanyang_application/service/user_service.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/chat_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/date_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/salary_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -92,6 +97,12 @@ Future<void> main() async {
           create: (context) => ChatViewModel(chatService: ChatService()),
         ),
         ChangeNotifierProvider(
+          create: (context) => SalaryViewModel(salaryService: SalaryService()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ConfigurationViewModel(configurationService: ConfigurationService()),
+        ),
+        ChangeNotifierProvider(
           create: (context) => DateViewModel(),
         ),
         ChangeNotifierProvider(
@@ -109,6 +120,9 @@ Future<void> main() async {
         ChangeNotifierProvider(
           create: (context) => FileProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => NavigationService(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -117,16 +131,10 @@ Future<void> main() async {
         },
         title: 'Nanyang Mobile',
         theme: ThemeData(
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(Colors.blue[100]),
-              overlayColor: MaterialStateProperty.all(Colors.blue),
-            ),
-          ),
           useMaterial3: true,
           fontFamily: 'Poppins',
           navigationBarTheme: NavigationBarThemeData(
-            labelTextStyle: MaterialStateProperty.all(
+            labelTextStyle: WidgetStateProperty.all(
               const TextStyle(
                 color: Colors.white,
                 fontSize: 12,

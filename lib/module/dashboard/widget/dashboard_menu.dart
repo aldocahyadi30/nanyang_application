@@ -5,6 +5,7 @@ import 'package:nanyang_application/module/chat/screen/chat_list_screen.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_menu_icon.dart';
 import 'package:nanyang_application/module/management/screen/management_employee_screen.dart';
 import 'package:nanyang_application/module/management/screen/management_user_screen.dart';
+import 'package:nanyang_application/module/performance/screen/performance_admin_screen.dart';
 import 'package:nanyang_application/module/request/screen/request_screen.dart';
 import 'package:nanyang_application/module/salary/screen/salary_admin_screen.dart';
 import 'package:nanyang_application/helper.dart';
@@ -54,7 +55,7 @@ class _DashboardMenuState extends State<DashboardMenu> {
                 children: [
                   DashboardMenuIcon(
                       image: 'assets/image/icon/menu/peformance.png',
-                      route: AttendanceAdminScreen(), //TODO : Temporarily using attendance screen
+                      route: PerformanceAdminScreen(),
                       title: 'Peformance'),
                   DashboardMenuIcon(image: 'assets/image/icon/menu/gaji.png', route: SalaryAdminScreen(), title: 'Gaji'),
                   DashboardMenuIcon(

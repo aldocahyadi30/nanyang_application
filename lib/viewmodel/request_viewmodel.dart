@@ -30,19 +30,19 @@ class RequestViewModel extends ChangeNotifier {
 
     if (filterStatus == '') {
       requestFiltered = requestFiltered
-          .where((element) => element.approverId == null || element.rejecterId == null || element.approverId == null || element.rejecterId != null)
+          .where((element) => element.approver!.id == 0 || element.rejecter!.id == 0 || element.approver!.id != 0 || element.rejecter!.id != 0)
           .toList();
     } else {
       if (filterStatus == 'Pending') {
-        requestFiltered = requestFiltered.where((element) => element.approverId == null && element.rejecterId == null).toList();
+        requestFiltered = requestFiltered.where((element) => element.approver!.id == 0 && element.rejecter!.id == 0).toList();
       }
 
       if (filterStatus == 'Approved') {
-        requestFiltered = requestFiltered.where((element) => element.approverId != null).toList();
+        requestFiltered = requestFiltered.where((element) => element.approver!.id != 0).toList();
       }
 
       if (filterStatus == 'Rejected') {
-        requestFiltered = requestFiltered.where((element) => element.rejecterId != null).toList();
+        requestFiltered = requestFiltered.where((element) => element.rejecter!.id != 0).toList();
       }
     }
 
@@ -65,7 +65,7 @@ class RequestViewModel extends ChangeNotifier {
     try {
       List<Map<String, dynamic>> data;
       data = await _requestService.getDashboardRequest(_configurationProvider.user.level,
-          employeeID: _configurationProvider.isAdmin ? null : _configurationProvider.user.employeeId);
+          employeeID: _configurationProvider.isAdmin ? null : _configurationProvider.user.employee.id);
 
       _requestDashboard = RequestModel.fromSupabaseList(data);
       notifyListeners();
@@ -83,7 +83,7 @@ class RequestViewModel extends ChangeNotifier {
   Future<void> getRequest() async {
     try {
       List<Map<String, dynamic>> data;
-      data = await _requestService.getListRequest(employeeID: _configurationProvider.isAdmin ? null : _configurationProvider.user.employeeId);
+      data = await _requestService.getListRequest(employeeID: _configurationProvider.isAdmin ? null : _configurationProvider.user.employee.id);
       _request = RequestModel.fromSupabaseList(data);
       notifyListeners();
     } catch (e) {
@@ -99,7 +99,7 @@ class RequestViewModel extends ChangeNotifier {
 
   Future<void> store(int type, String reason, {String? fileName, String? startTime, String? endTime, String? startDate, String? endDate}) async {
     try {
-      final int employeeID = _configurationProvider.user.employeeId;
+      final int employeeID = _configurationProvider.user.employee.id;
       File? file;
       String? startDateTime;
       String? endDateTime;
@@ -134,12 +134,12 @@ class RequestViewModel extends ChangeNotifier {
   Future<void> update(RequestModel model, int type, String reason,
       {String? fileName, String? startTime, String? endTime, String? startDate, String? endDate}) async {
     try {
-      final int employeeID = _configurationProvider.user.employeeId;
+      final int employeeID = _configurationProvider.user.employee.id;
       File? file;
       String? startDateTime;
       String? endDateTime;
 
-      if ((fileName != null && fileName != '' && fileName == model.file?.split('/').last) && fileName == _fileProvider.fileName) {
+      if ((fileName != null && fileName != '' && fileName == model.filePath?.split('/').last) && fileName == _fileProvider.fileName) {
         file = _fileProvider.file;
       }
       if (type == 1 || type == 2) {
@@ -168,7 +168,7 @@ class RequestViewModel extends ChangeNotifier {
 
   Future<void> response(String type, int id, String? comment) async {
     try {
-      final int employeeID = _configurationProvider.user.employeeId;
+      final int employeeID = _configurationProvider.user.employee.id;
       if (type == 'approve') {
         await _requestService.approve(id, employeeID, comment);
         _toastProvider.showToast('Permintaan berhasil disetujui!', 'success');

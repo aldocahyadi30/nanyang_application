@@ -1,16 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/model/attendance.dart';
 import 'package:nanyang_application/model/attendance_admin.dart';
-import 'package:nanyang_application/model/attendance_labor.dart';
-import 'package:nanyang_application/model/attendance_worker.dart';
-import 'package:nanyang_application/module/attendance/screen/attendance_detail_screen.dart';
+import 'package:nanyang_application/model/attendance_detail.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/module/attendance/screen/attendance_admin_detail_screen.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:provider/provider.dart';
+
 class AttendanceAdminCard extends StatefulWidget {
   final AttendanceAdminModel model;
 
@@ -35,14 +34,14 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
           radius: dynamicWidth(24, context),
           backgroundColor: ColorTemplate.argentinianBlue,
           child: Text(
-            widget.model.employeeInitials,
+            widget.model.employee.initials!,
             style: const TextStyle(color: Colors.white),
           ),
         ),
         title: Padding(
           padding: dynamicPaddingOnly(0, 4, 0, 0, context),
           child: Text(
-            widget.model.employeeShortName,
+            widget.model.employee.shortedName!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
@@ -52,32 +51,28 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
             ),
           ),
         ),
-        subtitle: widget.model.positionType == 1 ? _buildSubWorker(context, widget.model.attendance!) : _buildSubLabor(context, widget.model.laborDetail),
-        trailing: widget.model.positionType == 1
-            ? _buildTrailing(context, 1, worker: widget.model.attendance!)
-            : _buildTrailing(context, 2, labor: widget.model.laborDetail),
+        subtitle:
+            widget.model.employee.position.type == 1 ? _buildSubWorker(context, widget.model.attendance!) : _buildSubLabor(context, widget.model.laborDetail!),
+        trailing: widget.model.employee.position.type == 1 ? _buildTrailing(context, 1) : _buildTrailing(context, 2, detailID: widget.model.laborDetail!.id),
         onTap: () {
-          // if (widget.model.positionType == 2) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => AttendanceDetailScreen(
-          //         model: widget.model,
-          //       ),
-          //     ),
-          //   );
-          // }
+          context.read<AttendanceViewModel>().setAttendanceAdmin(widget.model);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AttendanceAdminDetailScreen(),
+            ),
+          );
         },
       ),
     );
   }
 
-  Row _buildSubWorker(BuildContext context, Map<String, dynamic> attendance) {
-    if (attendance.isNotEmpty) {
-      int? inStatus = attendance['inStatus'];
-      int? outStatus = attendance['outStatus'];
-      DateTime? checkIn = attendance['checkIn'];
-      DateTime? checkOut = attendance['checkOut'];
+  Row _buildSubWorker(BuildContext context, AttendanceModel attendance) {
+    if (attendance.id != 0) {
+      int? inStatus = attendance.inStatus;
+      int? outStatus = attendance.outStatus;
+      DateTime? checkIn = attendance.checkIn;
+      DateTime? checkOut = attendance.checkOut;
       return Row(
         children: [
           Expanded(child: _buildStatusWorker(context, 0, inStatus: inStatus, checkIn: checkIn)),
@@ -133,8 +128,8 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
     );
   }
 
-  Text _buildSubLabor(BuildContext context, Map<String, dynamic>? detail) {
-    if (detail != null) {
+  Text _buildSubLabor(BuildContext context, AttendanceDetailModel detail) {
+    if (detail.id != 0) {
       return Text(
         'Absensi terisi',
         style: TextStyle(
@@ -155,7 +150,7 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
     }
   }
 
-  Widget _buildTrailing(BuildContext context, int type, {Map<String, dynamic>? worker, Map<String, dynamic>? labor}) {
+  Widget _buildTrailing(BuildContext context, int type, {int detailID = 0}) {
     if (type == 1) {
       return Icon(
         Icons.arrow_forward_ios,
@@ -163,7 +158,7 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
         size: dynamicWidth(16, context),
       );
     } else {
-      if (labor != null) {
+      if (detailID != 0) {
         return const CircleAvatar(
           backgroundColor: Colors.green,
           child: FaIcon(
@@ -182,5 +177,4 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
       }
     }
   }
-
 }

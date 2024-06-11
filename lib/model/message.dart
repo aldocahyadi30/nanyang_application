@@ -1,8 +1,11 @@
+import 'dart:io';
+
 class MessageModel {
   final int id;
   final String userId;
   final String? message;
-  final String? file;
+  final String? filePath;
+  final File? file;
   final bool isAdmin;
   final DateTime timestamp;
 
@@ -11,6 +14,7 @@ class MessageModel {
     required this.userId,
     this.message,
     this.file,
+    this.filePath,
     required this.isAdmin,
     required this.timestamp,
   });
@@ -19,8 +23,7 @@ class MessageModel {
     return MessageModel(
       id: message['id_pesan'],
       userId: message['id_user'],
-    message: message['pesan'],
-      file: message['file'],
+      message: message['pesan'],
       isAdmin: message['is_admin'],
       timestamp: DateTime.parse(message['waktu_kirim']),
     );
@@ -28,5 +31,15 @@ class MessageModel {
 
   static List<MessageModel> fromSupabaseList(List<Map<String, dynamic>> messages) {
     return messages.map((message) => MessageModel.fromSupabase(message)).toList();
+  }
+
+  factory MessageModel.empty() {
+    return MessageModel(
+      id: 0,
+      userId: '',
+      message: '',
+      isAdmin: false,
+      timestamp: DateTime.now(),
+    );
   }
 }

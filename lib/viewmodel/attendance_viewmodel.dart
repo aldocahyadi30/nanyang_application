@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/main.dart';
+import 'package:nanyang_application/model/attendance.dart';
 import 'package:nanyang_application/model/attendance_admin.dart';
-import 'package:nanyang_application/model/attendance_labor.dart';
+import 'package:nanyang_application/model/attendance_detail.dart';
 import 'package:nanyang_application/model/attendance_user.dart';
-import 'package:nanyang_application/model/attendance_worker.dart';
 import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
@@ -18,54 +18,29 @@ class AttendanceViewModel extends ChangeNotifier {
   final ConfigurationProvider _configurationProvider = Provider.of<ConfigurationProvider>(navigatorKey.currentContext!, listen: false);
   int workerCount = 0;
   int laborCount = 0;
-  List<AttendanceWorkerModel> workerAttendance = [];
-  List<AttendanceLaborModel> laborAttendance = [];
   List<AttendanceAdminModel> adminAttendance = [];
   List<AttendanceUserModel> userAttendance = [];
+  AttendanceAdminModel _selectedAtt = AttendanceAdminModel.empty();
+  DateTime _selectedDateAttAdmin = DateTime.now();
 
   AttendanceViewModel({required AttendanceService attendanceService}) : _attendanceService = attendanceService;
 
-  get attendanceWorker => workerAttendance;
-  get attendanceLabor => laborAttendance;
   get attendanceUser => userAttendance;
   get attendanceAdmin => adminAttendance;
+  AttendanceAdminModel get selectedAtt => _selectedAtt;
+  get selectedAdminDate => _selectedDateAttAdmin;
 
-  Future<void> getWorkerAttendance() async {
-    try {
-      String date = _dateProvider.attendanceWorkerDateString;
-      List<Map<String, dynamic>> data = await _attendanceService.getWorkerAttendanceByDate(date);
-
-      workerAttendance = AttendanceWorkerModel.fromSupabaseList(data);
-      notifyListeners();
-    } catch (e) {
-      if (e is PostgrestException) {
-        debugPrint('Attendance error: ${e.message}');
-        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
-      } else {
-        debugPrint('Attendance error: ${e.toString()}');
-        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
-      }
-    }
+  void setAttendanceAdmin(AttendanceAdminModel model) {
+    _selectedAtt = model;
+    notifyListeners();
   }
 
-  Future<void> getLaborAttendance() async {
-    try {
-      String date = _dateProvider.attendanceLaborDateString;
-      List<Map<String, dynamic>> data = await _attendanceService.getLaborAttendanceByDate(date);
-
-      laborAttendance = AttendanceLaborModel.fromSupabaseList(data);
-      notifyListeners();
-    } catch (e) {
-      if (e is PostgrestException) {
-        debugPrint('Attendance error: ${e.message}');
-        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
-      } else {
-        debugPrint('Attendance error: ${e.toString()}');
-        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
-      }
-    }
+  void setAdminDate(DateTime date) {
+    _selectedDateAttAdmin = date;
+    notifyListeners();
   }
 
+  
   Future<void> getAdminAttendance(int type) async {
     try {
       String date = '';
@@ -82,10 +57,10 @@ class AttendanceViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       if (e is PostgrestException) {
-        debugPrint('Attendance error: ${e.message}');
+        debugPrint('Get Attendance error: ${e.message}');
         _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        debugPrint('Attendance error: ${e.toString()}');
+        debugPrint('Get Attendance error: ${e.toString()}');
         _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
     }
@@ -95,7 +70,7 @@ class AttendanceViewModel extends ChangeNotifier {
     try {
       String startDate = _dateProvider.attendanceUserDateStartString;
       String endDate = _dateProvider.attendanceUserDateEndString;
-      int employeeID = _configurationProvider.user.employeeId;
+      int employeeID = _configurationProvider.user.employee.id;
       List<Map<String, dynamic>> data = await _attendanceService.getUserAttendance(employeeID, startDate, endDate);
 
       List<DateTime> dateRange = generateDateRange(_dateProvider.attendanceUserDateStart, _dateProvider.attendanceUserDateEnd);
@@ -142,16 +117,6 @@ class AttendanceViewModel extends ChangeNotifier {
     }
   }
 
-  Future<AttendanceLaborModel> getLaborerAttendanceByID(int id) async {
-    try {
-      AttendanceLaborModel attendance = await _attendanceService.getLaborAttendanceByID(id);
-
-      return attendance;
-    } catch (e) {
-      throw Exception(e);
-    }
-  }
-
   String getShortenedName(String name) {
     List<String> nameParts = name.split(' ');
 
@@ -170,19 +135,75 @@ class AttendanceViewModel extends ChangeNotifier {
     return ((nameParts.isNotEmpty ? nameParts[0][0] : '') + (nameParts.length > 1 ? nameParts[1][0] : '')).toUpperCase();
   }
 
-  Future<void> storeTodayLaborerAttendance(AttendanceLaborModel model, String date, String status, int type, int? initialQty, int? finalQty,
-      double? initialWeight, double? finalWeight, int? cleanScore) async {
+  Future<void> storeWorker(String startTime, String endTime) async {
     try {
-      await _attendanceService.storeLaborAttendance(model, date, status, type, initialQty, finalQty, initialWeight, finalWeight, cleanScore);
-      _toastProvider.showToast('Absensi berhasil disimpan', 'success');
+      DateTime checkIn = DateTime(
+        _selectedDateAttAdmin.year,
+        _selectedDateAttAdmin.month,
+        _selectedDateAttAdmin.day,
+        int.parse(startTime.split(':')[0]),
+        int.parse(startTime.split(':')[1]),
+      );
 
-      notifyListeners();
+      DateTime checkOut = DateTime(
+        _selectedDateAttAdmin.year,
+        _selectedDateAttAdmin.month,
+        _selectedDateAttAdmin.day,
+        int.parse(endTime.split(':')[0]),
+        int.parse(endTime.split(':')[1]),
+      );
+      final attendanceModel = AttendanceAdminModel(
+          employee: _selectedAtt.employee,
+          attendance: AttendanceModel(id: selectedAtt.attendance!.id, checkIn: checkIn, checkOut: checkOut),
+          laborDetail: AttendanceDetailModel.empty());
+
+      await _attendanceService.storeWorkerAttendance(attendanceModel);
+
+      getAdminAttendance(1);
     } catch (e) {
       if (e is PostgrestException) {
-        debugPrint('Attendance error: ${e.message}');
+        debugPrint('Store Attendance Worker error: ${e.message}');
         _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
       } else {
-        debugPrint('Attendance error: ${e.toString()}');
+        debugPrint('Store Attendance Worker error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+      }
+    }
+  }
+
+  Future<void> storeLabor(
+      int attendanceStatus, int featherType, int initialQty, int finalQty, double initialWeight, double finalWeight, int minDeprecation) async {
+    try {
+      double minimunWeightLoss = initialWeight * (minDeprecation / 100);
+      double weightLoss = initialWeight - finalWeight;
+      if (weightLoss < minimunWeightLoss) weightLoss = minimunWeightLoss;
+      double normalizedLoss = weightLoss / (initialWeight - minimunWeightLoss);
+      double score = 100 - (normalizedLoss * 100);
+
+
+      final attendanceModel = AttendanceAdminModel(
+          employee: _selectedAtt.employee,
+          attendance: AttendanceModel(id: 0, checkIn: _selectedDateAttAdmin),
+          laborDetail: AttendanceDetailModel(
+            id: 0,
+            status: attendanceStatus,
+            featherType: featherType,
+            initialQty: initialQty,
+            finalQty: finalQty,
+            initialWeight: initialWeight,
+            finalWeight: finalWeight,
+            minDepreciation: minDeprecation,
+            performanceScore: score,
+          ));
+      await _attendanceService.storeLaborAttendance(attendanceModel);
+
+      getAdminAttendance(2);
+    } catch (e) {
+      if (e is PostgrestException) {
+        debugPrint('Store Attendance Labor error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+      } else {
+        debugPrint('Store Attendance Labor error: ${e.toString()}');
         _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
     }

@@ -18,16 +18,22 @@ class RequestService {
         waktu_tolak,
         file,
         karyawan:id_karyawan(
-          id_karyawan,
-          nama
+          *,
+          posisi(
+            *
+          )
         ),
         approver:id_approver(
-          id_karyawan,
-          nama
+          *,
+          posisi(
+            *
+          )
         ),
         penolak:id_penolak(
-          id_karyawan,
-          nama
+          *,
+          posisi(
+            *
+          )
         )
         ''');
 
@@ -59,57 +65,27 @@ class RequestService {
         waktu_tolak,
         file,
         karyawan:id_karyawan(
-          id_karyawan,
-          nama
+          *,
+          posisi(
+            *
+          )
         ),
         approver:id_approver(
-          id_karyawan,
-          nama
+          *,
+          posisi(
+            *
+          )
         ),
         penolak:id_penolak(
-          id_karyawan,
-          nama
+          *,
+          posisi(
+            *
+          )
         )
         ''');
-
       if (employeeID != null) query.eq('id_karyawan', employeeID);
 
       final data = await query.order('id_izin', ascending: false);
-
-      return data;
-    } on PostgrestException catch (error) {
-      throw PostgrestException(message: error.message);
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> getListRequestByID(int employeeID) async {
-    try {
-      final data = await supabase.from('izin').select('''
-        id_izin,
-        jenis,
-        status,
-        waktu_mulai,
-        waktu_akhir,
-        alasan,
-        komentar,
-        waktu_approve,
-        waktu_tolak,
-        file,
-        karyawan:id_karyawan(
-          id_karyawan,
-          nama
-        ),
-        approver:id_approver(
-          id_karyawan,
-          nama
-        ),
-        penolak:id_penolak(
-          id_karyawan,
-          nama
-        )
-        ''').eq('id_karyawan', employeeID).order('id_izin', ascending: false);
 
       return data;
     } on PostgrestException catch (error) {
@@ -124,7 +100,7 @@ class RequestService {
       String path = '';
       if (file != null) {
         final String fileName = file.path.split('/').last;
-        path = await supabase.storage.from('RequestFile').upload(
+        path = await supabase.storage.from('request').upload(
               '/$employeeID/$fileName',
               file,
               fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
@@ -151,7 +127,7 @@ class RequestService {
       String path = '';
       if (file != null) {
         final String fileName = file.path.split('/').last;
-        path = await supabase.storage.from('RequestFile').upload(
+        path = await supabase.storage.from('request').upload(
               '/$employeeID/$fileName',
               file,
               fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
