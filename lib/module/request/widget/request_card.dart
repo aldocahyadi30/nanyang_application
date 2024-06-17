@@ -7,6 +7,7 @@ import 'package:nanyang_application/module/request/screen/request_detail_screen.
 import 'package:nanyang_application/module/request/screen/request_form_screen.dart';
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class RequestCard extends StatelessWidget {
@@ -18,120 +19,105 @@ class RequestCard extends StatelessWidget {
     final EmployeeViewModel employeeViewModel = Provider.of<EmployeeViewModel>(context, listen: false);
 
     return Card(
-        child: ListTile(
-          contentPadding: dynamicPaddingSymmetric(4, 16, context),
-          leading: CircleAvatar(
-            radius: dynamicWidth(30, context),
-            backgroundColor: Colors.black,
-            child: Text(
-              model.requester.initials!,
-              style: const TextStyle(color: Colors.white),
-            ),
+      child: ListTile(
+        contentPadding: dynamicPaddingSymmetric(4, 16, context),
+        leading: CircleAvatar(
+          radius: dynamicWidth(30, context),
+          backgroundColor: Colors.black,
+          child: Text(
+            model.requester.initials!,
+            style: const TextStyle(color: Colors.white),
           ),
-          title: Text(
-            model.requester.shortedName!,
-            style:  TextStyle(
-              color: Colors.black,
-              fontSize: dynamicFontSize(16, context),
-              fontWeight: FontWeight.w700,
-            ),
+        ),
+        title: Text(
+          model.requester.shortedName!,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: dynamicFontSize(16, context),
+            fontWeight: FontWeight.w700,
           ),
-          subtitle: _buildSub(context, model.type, startDate: model.startDateTime, endDate: model.endDateTime),
-          trailing: _buildTrailing(context, model.status),
-          onTap: () {
-            redirect(context, model);
-          },
-        )
+        ),
+        subtitle: _buildSub(context, model.type, startDate: model.startDateTime, endDate: model.endDateTime),
+        trailing: _buildTrailing(context, model.status),
+        onTap: () => context.read<RequestViewModel>().detail(model),
+      ),
     );
   }
 }
 
-void redirect(BuildContext context, RequestModel model){
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => RequestDetailScreen(
-        model: model,
-      ),
-    ),
-  );
-}
-
-Widget _buildSub(BuildContext context, int type, {DateTime? startDate, DateTime? endDate}){
+Widget _buildSub(BuildContext context, int type, {DateTime? startDate, DateTime? endDate}) {
   String typeName = '';
   String dateTime = '';
   if (type == 1) {
     typeName = 'Izin Telat';
     dateTime = DateFormat('dd MMMM yyyy').format(startDate!);
-  }else if (type == 2){
+  } else if (type == 2) {
     typeName = 'Izin Pulang Cepat';
-    dateTime = DateFormat('dd/MMMM/yyyy HH:ii').format(startDate!);
-  }else if (type == 3){
+    dateTime = DateFormat('dd/MMMM/yyyy HH:mm').format(startDate!);
+  } else if (type == 3) {
     typeName = 'Izin Tidak Masuk';
     dateTime = '${DateFormat('dd MMMM yyyy').format(startDate!)} - ${DateFormat('dd MMMM yyyy').format(endDate!)}';
-  }else if (type == 4){
+  } else if (type == 4) {
     typeName = 'Cuti Tahunan';
     dateTime = '${DateFormat('dd MMMM yyyy').format(startDate!)} - ${DateFormat('dd MMMM yyyy').format(endDate!)}';
-  }else if (type == 5){
+  } else if (type == 5) {
     typeName = 'Cuti Sakit';
-    if (endDate != null){
+    if (endDate != null) {
       dateTime = '${DateFormat('dd MMMM yyyy').format(startDate!)} - ${DateFormat('dd MMMM yyyy').format(endDate)}';
-    }else{
+    } else {
       dateTime = DateFormat('dd MMMM yyyy').format(startDate!);
     }
-  }else if (type == 6){
+  } else if (type == 6) {
     typeName = 'Cuti Melahirkan';
     dateTime = '${DateFormat('dd MMMM yyyy').format(startDate!)} - ${DateFormat('dd MMMM yyyy').format(endDate!)}';
   }
-  
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        typeName,
-        style:  TextStyle(
-          color: ColorTemplate.violetBlue,
-          fontSize: dynamicFontSize(12, context),
-          fontWeight: FontWeight.w500,
-        ),
+   else if (type == 7) {
+    typeName = 'Izin Lembur';
+    dateTime = '${DateFormat('dd MMMM yyyy, HH:mm').format(startDate!)} - ${DateFormat('HH:mm').format(endDate!)}';
+  }
+
+  return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    Text(
+      typeName,
+      style: TextStyle(
+        color: ColorTemplate.violetBlue,
+        fontSize: dynamicFontSize(12, context),
+        fontWeight: FontWeight.w500,
       ),
-      SizedBox(width: dynamicHeight(8, context)),
-      Text(
-        dateTime,
-        style:  TextStyle(
-          color: Colors.grey,
-          fontSize: dynamicFontSize(12, context),
-          fontWeight: FontWeight.w400,
-        ),
+    ),
+    SizedBox(width: dynamicHeight(8, context)),
+    Text(
+      dateTime,
+      style: TextStyle(
+        color: Colors.grey,
+        fontSize: dynamicFontSize(12, context),
+        fontWeight: FontWeight.w400,
       ),
-    ]
-  );
+    ),
+  ]);
 }
 
-CircleAvatar _buildTrailing(BuildContext context, int status){
-  if (status == 0){
-   return const CircleAvatar(
-     backgroundColor: Colors.yellow,
-     child: FaIcon(
-       FontAwesomeIcons.solidHourglassHalf,
-       color: Colors.black,
-     )
-   );
-  }else if (status == 1){
+CircleAvatar _buildTrailing(BuildContext context, int status) {
+  if (status == 0) {
+    return const CircleAvatar(
+        backgroundColor: Colors.yellow,
+        child: FaIcon(
+          FontAwesomeIcons.solidHourglassHalf,
+          color: Colors.black,
+        ));
+  } else if (status == 1) {
     return const CircleAvatar(
         backgroundColor: Colors.green,
         child: FaIcon(
           FontAwesomeIcons.check,
           color: Colors.white,
-        )
-    );
-  }else{
+        ));
+  } else {
     return const CircleAvatar(
         backgroundColor: Colors.red,
         child: FaIcon(
           FontAwesomeIcons.x,
           color: Colors.white,
-        )
-    );
+        ));
   }
 }

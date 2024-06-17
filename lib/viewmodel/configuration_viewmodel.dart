@@ -1,30 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/main.dart';
+import 'package:nanyang_application/model/announcement_category.dart';
 import 'package:nanyang_application/model/configuration.dart';
 import 'package:nanyang_application/model/holiday.dart';
 import 'package:nanyang_application/model/position.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
+import 'package:nanyang_application/model/user.dart';
+import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/configuration_service.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ConfigurationViewModel extends ChangeNotifier {
   final ConfigurationService _configurationService;
-  final config = Provider.of<ConfigurationProvider>(navigatorKey.currentContext!, listen: false);
+  final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
+  UserModel currentUser = UserModel.empty();
+  ConfigurationModel currentConfig = ConfigurationModel.empty();
   List<HolidayModel> holidayList = [];
   List<PositionModel> positionList = [];
+  List<AnnouncementCategoryModel> announcementCategoryList = [];
   HolidayModel _selectedHoliday = HolidayModel.empty();
   PositionModel _selectedPosition = PositionModel.empty();
+  AnnouncementCategoryModel _selectedAnnouncementCategory = AnnouncementCategoryModel.empty();
 
   ConfigurationViewModel({required ConfigurationService configurationService}) : _configurationService = configurationService;
 
+  UserModel get user => currentUser;
   HolidayModel get selectedHoliday => _selectedHoliday;
   PositionModel get selectedPosition => _selectedPosition;
+  ConfigurationModel get configuration => currentConfig;
+  AnnouncementCategoryModel get selectedAnnouncementCategory => _selectedAnnouncementCategory;
   get holiday {
     return holidayList.reversed.toList();
   }
 
   get position => positionList;
+  get announcementCategory => announcementCategoryList;
 
   void selectHoliday(HolidayModel model) {
     _selectedHoliday = model;
@@ -36,11 +46,26 @@ class ConfigurationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setUser(UserModel user) {
+    currentUser = user;
+    notifyListeners();
+  }
+
+  void setConfiguration(ConfigurationModel configuration) {
+    currentConfig = configuration;
+    notifyListeners();
+  }
+
+  void setAnnouncementCategory(List<AnnouncementCategoryModel> announcementCategory) {
+    announcementCategoryList = announcementCategory;
+    notifyListeners();
+  }
+
   Future<void> getConfiguration() async {
     try {
       List<Map<String, dynamic>> data = await _configurationService.getConfiguration();
-
-      config.setConfiguration(ConfigurationModel.fromMap(data));
+      print(data);
+      currentConfig = ConfigurationModel.fromSupabaseList(data);
       notifyListeners();
     } catch (e) {
       if (e is PostgrestException) {
@@ -48,6 +73,7 @@ class ConfigurationViewModel extends ChangeNotifier {
       } else {
         debugPrint('Get Configuration error: ${e.toString()}');
       }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
     }
   }
 
@@ -67,6 +93,7 @@ class ConfigurationViewModel extends ChangeNotifier {
       } else {
         debugPrint('Get Holiday error: ${e.toString()}');
       }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
     }
   }
 
@@ -88,6 +115,7 @@ class ConfigurationViewModel extends ChangeNotifier {
       } else {
         debugPrint('Update Holiday error: ${e.toString()}');
       }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
     }
   }
 
@@ -103,6 +131,7 @@ class ConfigurationViewModel extends ChangeNotifier {
       } else {
         debugPrint('Get Position error: ${e.toString()}');
       }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
     }
   }
 
@@ -110,10 +139,10 @@ class ConfigurationViewModel extends ChangeNotifier {
     try {
       if (type == 1) {
         await _configurationService.savePosition(name, positionType);
-      } else if (type == 2){
+      } else if (type == 2) {
         int id = _selectedPosition.id;
         await _configurationService.updatePosition(id, name, positionType);
-      }else{
+      } else {
         int id = _selectedPosition.id;
         await _configurationService.deletePosition(id);
       }
@@ -125,10 +154,11 @@ class ConfigurationViewModel extends ChangeNotifier {
       } else {
         debugPrint('Update Position error: ${e.toString()}');
       }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
     }
   }
 
-  Future<void> updateSalaryConfiguration(double foodAllowanceWorker, double foodAllowanceLabor, int day) async{
+  Future<void> updateSalaryConfiguration(double foodAllowanceWorker, double foodAllowanceLabor, int day) async {
     try {
       await _configurationService.updateSalaryConfiguration(foodAllowanceWorker, foodAllowanceLabor, day);
       getConfiguration();
@@ -138,6 +168,60 @@ class ConfigurationViewModel extends ChangeNotifier {
       } else {
         debugPrint('Update Salary Configuration error: ${e.toString()}');
       }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+    }
+  }
+
+  Future<void> getAnnouncementCategory() async {
+    try {
+      List<Map<String, dynamic>> data = await _configurationService.getAnnouncementCategory();
+      announcementCategoryList = AnnouncementCategoryModel.fromSupabaseList(data);
+
+      notifyListeners();
+    } catch (e) {
+      if (e is PostgrestException) {
+        debugPrint('Announcement error: ${e.message}');
+      } else {
+        debugPrint('Announcement error: ${e.toString()}');
+      }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+    }
+  }
+
+  Future<void> updateAnnouncementCategory(int type) async {
+    try {
+      if (type == 1) {
+        await _configurationService.storeAnnouncementCategory(_selectedAnnouncementCategory);
+      } else if (type == 2) {
+        await _configurationService.updateAnnouncementCategory(_selectedAnnouncementCategory);
+      } else {
+        await _configurationService.deleteAnnouncementCategory(_selectedAnnouncementCategory.id);
+      }
+
+      getAnnouncementCategory();
+    } catch (e) {
+      if (e is PostgrestException) {
+        debugPrint('Update Announcement Category error: ${e.message}');
+      } else {
+        debugPrint('Update Announcement Category error: ${e.toString()}');
+      }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+    }
+  }
+
+  Future<void> initialize() async {
+    try {
+      await getConfiguration();
+      await getHoliday();
+      await getPosition();
+      await getAnnouncementCategory();
+    } catch (e) {
+      if (e is PostgrestException) {
+        debugPrint('Initialize Configuration error: ${e.message}');
+      } else {
+        debugPrint('Initialize Configuration error: ${e.toString()}');
+      }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
     }
   }
 }

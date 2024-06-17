@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nanyang_application/color_template.dart';
-import 'package:nanyang_application/module/setting/screen/configuration_screen.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/model/employee.dart';
+import 'package:nanyang_application/model/user.dart';
+import 'package:nanyang_application/module/setting/screen/configuration_screen.dart';
 import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class SettingScreen extends StatelessWidget {
@@ -17,7 +19,7 @@ class SettingScreen extends StatelessWidget {
         return AlertDialog(
           backgroundColor: Colors.white,
           actionsPadding: EdgeInsets.zero,
-          contentPadding: dynamicPaddingSymmetric(16, 24,context),
+          contentPadding: dynamicPaddingSymmetric(16, 24, context),
           actionsAlignment: MainAxisAlignment.spaceEvenly,
           title: Center(
             child: SvgPicture.asset(
@@ -39,21 +41,23 @@ class SettingScreen extends StatelessWidget {
                 style: TextStyle(color: ColorTemplate.neonBlue),
               ),
             ),
-
             ElevatedButton(
                 onPressed: () async {
                   await context.read<AuthViewModel>().logout();
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(ColorTemplate.lightVistaBlue),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  backgroundColor: WidgetStateProperty.all<Color>(ColorTemplate.lightVistaBlue),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
-                  padding: MaterialStateProperty.all<EdgeInsetsGeometry>(dynamicPaddingSymmetric(0, 16, context)),
+                  padding: WidgetStateProperty.all<EdgeInsetsGeometry>(dynamicPaddingSymmetric(0, 16, context)),
                 ),
-                child: const Text('Keluar', style: TextStyle(color: Colors.white),)),
+                child: const Text(
+                  'Keluar',
+                  style: TextStyle(color: Colors.white),
+                )),
           ],
         );
       },
@@ -62,7 +66,7 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int level = Provider.of<ConfigurationProvider>(context).user.level;
+    UserModel user = Provider.of<ConfigurationViewModel>(context).user;
 
     return Scaffold(
       backgroundColor: ColorTemplate.periwinkle,
@@ -85,7 +89,7 @@ class SettingScreen extends StatelessWidget {
               child: Center(
                 child: Padding(
                   padding: dynamicPaddingOnly(36, 0, 28, 28, context),
-                  child: _buildAccount(context),
+                  child: _buildAccount(context, user.employee),
                 ),
               ),
             ),
@@ -103,7 +107,7 @@ class SettingScreen extends StatelessWidget {
                       _buildListTile(context, 'Notifikasi', Colors.white, Icons.notifications_none_outlined, () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const ConfigurationScreen()));
                       }),
-                      if (level != 1)
+                      if (user.isAdmin)
                         _buildListTile(context, 'Konfigurasi', Colors.white, Icons.admin_panel_settings_outlined, () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const ConfigurationScreen()));
                         }),
@@ -142,17 +146,13 @@ Widget _buildListTile(BuildContext context, String title, Color color, IconData 
   );
 }
 
-Widget _buildAccount(BuildContext context) {
-  final user = Provider.of<ConfigurationProvider>(context).user;
-  String avatarText = Provider.of<ConfigurationProvider>(context).avatarInitials;
-  String employeeName = Provider.of<ConfigurationProvider>(context).shortenedName;
-
+Widget _buildAccount(BuildContext context, EmployeeModel employee) {
   return Row(
     children: [
       CircleAvatar(
         radius: dynamicWidth(40, context),
         backgroundColor: ColorTemplate.argentinianBlue,
-        child: Text(avatarText, style: TextStyle(color: Colors.white, fontSize: dynamicFontSize(24, context))),
+        child: Text(employee.initials!, style: TextStyle(color: Colors.white, fontSize: dynamicFontSize(24, context))),
       ),
       SizedBox(width: dynamicWidth(28, context)),
       Column(
@@ -160,7 +160,7 @@ Widget _buildAccount(BuildContext context) {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            employeeName,
+            employee.shortedName!,
             style: TextStyle(
               color: Colors.white,
               fontSize: dynamicFontSize(20, context),
@@ -168,7 +168,7 @@ Widget _buildAccount(BuildContext context) {
             ),
           ),
           Text(
-            user.employee.position.name,
+            employee.position.name,
             style: TextStyle(
               fontSize: dynamicFontSize(12, context),
               fontWeight: FontWeight.w700,

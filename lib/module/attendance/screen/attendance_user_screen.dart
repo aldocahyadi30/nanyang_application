@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/module/attendance/widget/attendance_user_list.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_date_range_picker.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class AttendanceUserScreen extends StatefulWidget {
   const AttendanceUserScreen({super.key});
@@ -14,6 +17,14 @@ class AttendanceUserScreen extends StatefulWidget {
 
 class _AttendanceUserScreenState extends State<AttendanceUserScreen> {
   final TextEditingController dateController = TextEditingController();
+  late DateTimeRange _dateRange;
+
+  @override
+  void initState() {
+    super.initState();
+    _dateRange = context.read<AttendanceViewModel>().selectedUserDate;
+    dateController.text = '${parseDateToStringFormatted(_dateRange.start)} - ${parseDateToStringFormatted(_dateRange.end)}';
+  }
 
   @override
   void dispose() {
@@ -55,9 +66,13 @@ class _AttendanceUserScreenState extends State<AttendanceUserScreen> {
                   labelText: 'Filter Tanggal',
                   labelStyle: const TextStyle(color: ColorTemplate.violetBlue, fontWeight: FontWeight.w600),
                   suffixIcon: NanyangDateRangePicker(
-                    controller: dateController,
-                    type: 'attendance-user',
                     color: ColorTemplate.violetBlue,
+                    selectedDateRange: _dateRange,
+                    onDateRangePicked: (date) {
+                      dateController.text = '${DateFormat('dd/MM/yyyy').format(date.start)} - ${DateFormat('dd/MM/yyyy').format(date.end)}';
+                      context.read<AttendanceViewModel>().setUserDate(date);
+                      context.read<AttendanceViewModel>().getUserAttendance();
+                    },
                   ),
                   border: InputBorder.none,
                 ),

@@ -17,7 +17,7 @@ class AnnouncementModel {
     required this.title,
     required this.content,
     this.postDate,
-    required this.duration,
+    this.duration = 0,
     this.isSend = false,
     this.status = 0,
     required this.employee,
@@ -40,5 +40,31 @@ class AnnouncementModel {
 
   static List<AnnouncementModel> fromSupabaseList(List<Map<String, dynamic>> announcements) {
     return announcements.map((announcement) => AnnouncementModel.fromSupabase(announcement)).toList();
+  }
+
+  factory AnnouncementModel.empty() {
+    return AnnouncementModel(
+      id: 0,
+      title: '',
+      content: '',
+      postDate: null,
+      duration: 0,
+      employee: EmployeeModel.empty(),
+      category: AnnouncementCategoryModel.empty(),
+    );
+  }
+
+  factory AnnouncementModel.copyWith(AnnouncementModel announcement) {
+    return AnnouncementModel(
+      id: announcement.id,
+      title: announcement.title,
+      content: announcement.content,
+      postDate: announcement.postDate,
+      duration: announcement.duration,
+      isSend: announcement.isSend,
+      status: announcement.status,
+      employee: announcement.employee,
+      category: announcement.category,
+    );
   }
 }

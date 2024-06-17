@@ -74,6 +74,7 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
       DateTime? checkIn = attendance.checkIn;
       DateTime? checkOut = attendance.checkOut;
       return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(child: _buildStatusWorker(context, 0, inStatus: inStatus, checkIn: checkIn)),
           Expanded(child: _buildStatusWorker(context, 1, outStatus: outStatus, checkOut: checkOut)),
@@ -83,8 +84,8 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _buildStatusWorker(context, 0),
-          _buildStatusWorker(context, 1),
+          Expanded(child: _buildStatusWorker(context, 0)),
+          Expanded(child: _buildStatusWorker(context, 1)),
         ],
       );
     }

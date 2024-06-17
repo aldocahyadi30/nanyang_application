@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/announcement/screen/announcement_screen.dart';
 import 'package:nanyang_application/module/attendance/screen/attendance_admin_screen.dart';
 import 'package:nanyang_application/module/chat/screen/chat_list_screen.dart';
@@ -9,8 +10,8 @@ import 'package:nanyang_application/module/management/screen/management_user_scr
 import 'package:nanyang_application/module/performance/screen/performance_admin_screen.dart';
 import 'package:nanyang_application/module/salary/screen/salary_admin_screen.dart';
 import 'package:nanyang_application/module/salary/screen/salary_user_screen.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class DashboardMenuCard extends StatelessWidget {
@@ -18,7 +19,7 @@ class DashboardMenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ConfigurationProvider config = Provider.of<ConfigurationProvider>(context);
+    final UserModel user = Provider.of<ConfigurationViewModel>(context).user;
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
@@ -52,7 +53,7 @@ class DashboardMenuCard extends StatelessWidget {
                 ),
                 children: <TextSpan>[
                   TextSpan(
-                    text: config.shortenedName,
+                    text: user.employee.shortedName,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: dynamicFontSize(20, context),
@@ -63,8 +64,8 @@ class DashboardMenuCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (config.user.level == 1) _userMenu(),
-            if (config.user.level != 1) _adminMenu(),
+            if (user.level == 1) _userMenu(),
+            if (user.level != 1) _adminMenu(),
           ],
         ),
       ),

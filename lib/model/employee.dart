@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:nanyang_application/model/position.dart';
 import 'package:nanyang_application/model/salary.dart';
 
@@ -96,7 +94,7 @@ class EmployeeModel {
     );
   }
 
-  EmployeeModel copyWith({
+  factory EmployeeModel.copyWith(EmployeeModel employee,{
     int? id,
     String? name,
     String? shortedName,
@@ -114,21 +112,21 @@ class EmployeeModel {
     PositionModel? position,
   }) {
     return EmployeeModel(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      shortedName: shortedName ?? this.shortedName,
-      initials: initials ?? this.initials,
-      age: age ?? this.age,
-      address: address ?? this.address,
-      birthPlace: birthPlace ?? this.birthPlace,
-      birthDate: birthDate ?? this.birthDate,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      gender: gender ?? this.gender,
-      religion: religion ?? this.religion,
-      attendanceMachineID: attendanceMachineID ?? this.attendanceMachineID,
-      entryDate: entryDate ?? this.entryDate,
-      salary: salary ?? this.salary,
-      position: position ?? this.position,
+      id: id ?? employee.id,
+      name: name ?? employee.name,
+      shortedName: shortedName ?? employee.shortedName,
+      initials: initials ?? employee.initials,
+      age: age ?? employee.age,
+      address: address ?? employee.address,
+      birthPlace: birthPlace ?? employee.birthPlace,
+      birthDate: birthDate ?? employee.birthDate,
+      phoneNumber: phoneNumber ?? employee.phoneNumber,
+      gender: gender ?? employee.gender,
+      religion: religion ?? employee.religion,
+      attendanceMachineID: attendanceMachineID ?? employee.attendanceMachineID,
+      entryDate: entryDate ?? employee.entryDate,
+      salary: salary ?? employee.salary,
+      position: position ?? employee.position,
     );
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_month_picker.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class SalaryUserScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class SalaryUserScreen extends StatefulWidget {
 }
 
 class _SalaryUserScreenState extends State<SalaryUserScreen> {
-  late final ConfigurationProvider _config;
+  late final UserModel _user;
   final TextEditingController dateController = TextEditingController();
   bool isDownloadLoading = false;
   bool isContactLoading = false;
@@ -23,7 +24,7 @@ class _SalaryUserScreenState extends State<SalaryUserScreen> {
   @override
   void initState() {
     super.initState();
-    _config = context.read<ConfigurationProvider>();
+    _user = context.read<ConfigurationViewModel>().user;
   }
 
   @override
@@ -83,7 +84,7 @@ class _SalaryUserScreenState extends State<SalaryUserScreen> {
                 padding: dynamicPaddingSymmetric(16, 16, context),
                 child: Column(
                   children: [
-                    _buildProfileField(context, _config),
+                    _buildProfileField(context, _user),
                     SizedBox(height: dynamicHeight(8, context)),
                     const Divider(color: Colors.grey),
                     SizedBox(height: dynamicHeight(8, context)),
@@ -129,19 +130,19 @@ class _SalaryUserScreenState extends State<SalaryUserScreen> {
   }
 }
 
-Column _buildProfileField(BuildContext context, ConfigurationProvider config) {
+Column _buildProfileField(BuildContext context, UserModel user) {
   return Column(
     children: [
       CircleAvatar(
         radius: dynamicWidth(48, context),
         backgroundColor: Colors.black,
         child: Text(
-          config.avatarInitials,
+          user.employee.initials!,
           style: TextStyle(color: Colors.white, fontSize: dynamicFontSize(24, context)),
         ),
       ),
       Text(
-        config.shortenedName,
+        user.employee.shortedName!,
         style: TextStyle(
           color: Colors.black,
           fontSize: dynamicFontSize(20, context),
@@ -149,7 +150,7 @@ Column _buildProfileField(BuildContext context, ConfigurationProvider config) {
         ),
       ),
       Text(
-        config.user.employee.position.name,
+        user.employee.position.name,
         style: TextStyle(
           color: Colors.black,
           fontSize: dynamicFontSize(16, context),
@@ -296,4 +297,3 @@ Column _buildSalaryDetailField(BuildContext context) {
     ],
   );
 }
-

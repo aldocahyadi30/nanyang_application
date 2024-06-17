@@ -54,6 +54,8 @@ dependencies:
   fl_chart: ^0.68.0
   mask_text_input_formatter: ^2.9.0
   currency_text_input_formatter: ^2.2.3
+  camera: ^0.11.0+1
+  google_mlkit_face_detection: ^0.11.0
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +104,7 @@ flutter:
     - assets/svg/empty_2.svg
     - assets/svg/no_access.svg
     - assets/svg/door.svg
+    - assets/svg/logo.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

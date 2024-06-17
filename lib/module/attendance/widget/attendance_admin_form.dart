@@ -81,21 +81,25 @@ class _AttendanceAdminFormState extends State<AttendanceAdminForm> {
                         FormPickerField(
                             title: 'Waktu Masuk',
                             picker: NanyangTimePicker(
-                              controller: _startTimeController,
                               selectedTime: viewmodel.selectedAtt.attendance!.checkIn != null
                                   ? TimeOfDay(hour: viewmodel.selectedAtt.attendance!.checkIn!.hour, minute: viewmodel.selectedAtt.attendance!.checkIn!.minute)
                                   : null,
+                              onTimePicked: (time){
+                                _startTimeController.text = time.format(context);
+                              },
                             ),
                             controller: _startTimeController),
                         SizedBox(height: dynamicHeight(24, context)),
                         FormPickerField(
                             title: 'Waktu Pulang',
                             picker: NanyangTimePicker(
-                              controller: _endTimeController,
                               selectedTime: viewmodel.selectedAtt.attendance!.checkOut != null
                                   ? TimeOfDay(
                                       hour: viewmodel.selectedAtt.attendance!.checkOut!.hour, minute: viewmodel.selectedAtt.attendance!.checkOut!.minute)
                                   : null,
+                              onTimePicked: (time){
+                                _endTimeController.text = time.format(context);
+                              },
                             ),
                             controller: _endTimeController),
                       ],

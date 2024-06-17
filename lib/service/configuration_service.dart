@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:nanyang_application/model/announcement_category.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 
@@ -117,6 +118,54 @@ class ConfigurationService {
   Future<void> updatePosition(int id, String name, int type) async {
     try {
       await supabase.from('posisi').update({'nama': name, 'tipe': type}).eq('id_posisi', id);
+    } on PostgrestException catch (error) {
+      throw PostgrestException(message: error.message);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<List<Map<String,dynamic>>> getAnnouncementCategory() async {
+    try {
+      final data = await supabase.from('pengumuman_kategori').select('*').order('id_kategori', ascending: true);
+
+      return data;
+    } on PostgrestException catch (error) {
+      throw PostgrestException(message: error.message);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> storeAnnouncementCategory(AnnouncementCategoryModel model) async {
+    try {
+      await supabase.from('pengumuman_kategori').insert({
+        'nama': model.name,
+        'kode_warna': model.color.value.toRadixString(16),
+      });
+    } on PostgrestException catch (error) {
+      throw PostgrestException(message: error.message);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> updateAnnouncementCategory(AnnouncementCategoryModel model) async {
+    try {
+      await supabase.from('pengumuman_kategori').update({
+        'nama': model.name,
+        'kode_warna': model.color.value.toRadixString(16),
+      }).eq('id_kategori', model.id);
+    } on PostgrestException catch (error) {
+      throw PostgrestException(message: error.message);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> deleteAnnouncementCategory(int id) async {
+    try {
+      await supabase.from('pengumuman_kategori').delete().eq('id_kategori', id);
     } on PostgrestException catch (error) {
       throw PostgrestException(message: error.message);
     } catch (e) {

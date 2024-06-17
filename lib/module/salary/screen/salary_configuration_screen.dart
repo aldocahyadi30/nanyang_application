@@ -5,7 +5,7 @@ import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:nanyang_application/module/global/form/form_dropdown.dart';
 import 'package:nanyang_application/module/global/form/form_text_field.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class SalaryConfigurationScreen extends StatefulWidget {
@@ -52,7 +52,7 @@ class _SalaryConfigurationScreenState extends State<SalaryConfigurationScreen> {
                 ),
         ],
       ),
-      body: Consumer<ConfigurationProvider>(builder: (context, provider, child) {
+      body: Consumer<ConfigurationViewModel>(builder: (context, provider, child) {
         _foodAllowanceWorkerController.text = provider.configuration.foodAllowanceWorker.toString();
         _foodAllowanceLaborontroller.text = provider.configuration.foodAllowanceLabor.toString();
         _selectedDay = provider.configuration.cutoffDay;

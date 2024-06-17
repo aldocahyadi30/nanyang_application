@@ -8,8 +8,6 @@ class AttendanceUserModel {
 
   AttendanceUserModel({
     required this.date,
-    // this.attendance,
-    // this.laborDetail,
     required this.attendance,
     required this.laborDetail,
   });

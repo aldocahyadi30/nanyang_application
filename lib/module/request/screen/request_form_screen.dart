@@ -12,14 +12,14 @@ import 'package:nanyang_application/module/global/picker/nanyang_date_range_pick
 import 'package:nanyang_application/module/global/picker/nanyang_file_picker.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_time_picker.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class RequestFormScreen extends StatefulWidget {
-  final RequestModel? model;
   final int type;
 
-  const RequestFormScreen({super.key, this.model, required this.type});
+  const RequestFormScreen({super.key, required this.type});
 
   @override
   State<RequestFormScreen> createState() => _RequestFormScreenState();
@@ -28,12 +28,15 @@ class RequestFormScreen extends StatefulWidget {
 class _RequestFormScreenState extends State<RequestFormScreen> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController dateRangeController = TextEditingController();
-  final TextEditingController timeController = TextEditingController();
+  final TextEditingController timeController1 = TextEditingController();
+  final TextEditingController timeController2 = TextEditingController();
   final TextEditingController reasonController = TextEditingController();
   final TextEditingController fileController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late RequestViewModel _requestViewModel;
+  late ConfigurationViewModel _configurationViewModel;
+  late RequestModel model;
   bool isLoading = false;
   bool isEdit = false;
   int selectedAttendance = 1;
@@ -42,14 +45,21 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
   void initState() {
     super.initState();
     _requestViewModel = Provider.of<RequestViewModel>(context, listen: false);
-    if (widget.model != null) {
+    if (_requestViewModel.selectedRequest.id == 0) {
+      model = _requestViewModel.selectedRequest;
+      model.type = widget.type;
+    } else {
+      model = RequestModel.copyWith(_requestViewModel.selectedRequest);
+    }
+
+    if (model.id != 0) {
       isEdit = true;
       if (widget.type == 1 || widget.type == 2 || widget.type == 3) {
-        selectedAttendance = widget.model!.type;
+        selectedAttendance = widget.type;
       } else {}
-      reasonController.text = widget.model!.reason ?? '';
-      if (widget.model!.file != null) {
-        fileController.text = widget.model!.filePath!.split('/').last;
+      reasonController.text = model.reason ?? '';
+      if (model.file != null) {
+        fileController.text = model.filePath!.split('/').last;
       }
     } else {
       if (widget.type == 1 || widget.type == 2 || widget.type == 3) {
@@ -63,7 +73,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
     super.dispose();
     dateController.dispose();
     dateRangeController.dispose();
-    timeController.dispose();
+    timeController1.dispose();
     reasonController.dispose();
     fileController.dispose();
     commentController.dispose();
@@ -78,26 +88,30 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
       String? endDate;
       String? startTime;
       String? endTime;
-      String fileName = fileController.text;
-      String reason = reasonController.text;
-      if (selectedAttendance == 1) {
+      model.reason = reasonController.text;
+      if (selectedAttendance == 1 || selectedAttendance == 2) {
         startDate = dateController.text;
-        startTime = timeController.text;
-      } else if (selectedAttendance == 2) {
+        startTime = timeController1.text;
+        model.startDateTime = parseStringToDateFormattedWithTime('$startTime $startTime');
+      } else if (selectedAttendance == 7) {
         startDate = dateController.text;
-        startTime = timeController.text;
+        startTime = timeController1.text;
+        endTime = timeController2.text;
+        model.startDateTime = parseStringToDateFormattedWithTime('$startDate $startTime');
+        model.endDateTime = parseStringToDateFormattedWithTime('$startDate $endTime');
       } else {
         startTime = '00:00';
         endTime = '23:59';
         List<String> dateRange = dateRangeController.text.split(' - ');
         startDate = dateRange[0];
         endDate = dateRange[1];
+        model.startDateTime = parseStringToDateFormattedWithTime('$startDate $startTime');
+        model.endDateTime = parseStringToDateFormattedWithTime('$endDate $endTime');
       }
       if (isEdit) {
-        await _requestViewModel.update(widget.model!, selectedAttendance, reason,
-            fileName: fileName, startTime: startTime, endTime: endTime, startDate: startDate, endDate: endDate);
+        await _requestViewModel.update(model);
       } else {
-        await _requestViewModel.store(widget.type, reason, fileName: fileName, startTime: startTime, endTime: endTime, startDate: startDate, endDate: endDate);
+        await _requestViewModel.store(model);
       }
     }
     setState(() {
@@ -147,12 +161,13 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
                         onChanged: (value) {
                           setState(() {
                             selectedAttendance = value!;
+                            model.type = value;
                           });
                         },
                       )
                     : Container(),
                 SizedBox(height: dynamicHeight(16, context)),
-                _buildDateTimeField(context, selectedAttendance, dateController, dateRangeController, timeController, model: widget.model),
+                _buildDateTimeField(context, widget.type, dateController, dateRangeController, timeController1, timeController2, model),
                 SizedBox(height: dynamicHeight(16, context)),
                 FormTextField(
                   title: 'Alasan',
@@ -160,14 +175,21 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
                   maxLines: 5,
                 ),
                 SizedBox(height: dynamicHeight(16, context)),
-                FormPickerField(
-                  title: widget.type == 5 || widget.type == 6 ? 'Surat Dokter' : 'File (Opsional)',
-                  isRequired: widget.type == 5 || widget.type == 6 ? true : false,
-                  picker: NanyangFilePicker(
+                if (widget.type != 7)
+                  FormPickerField(
+                    title: widget.type == 5 || widget.type == 6 ? 'Surat Dokter' : 'File (Opsional)',
+                    isRequired: widget.type == 5 || widget.type == 6 ? true : false,
+                    picker: NanyangFilePicker(
+                      onFilePicked: (file) {
+                        setState(() {
+                          fileController.text = file.path.split('/').last;
+                          model.filePath = file.path;
+                          model.file = file;
+                        });
+                      },
+                    ),
                     controller: fileController,
                   ),
-                  controller: fileController,
-                ),
                 SizedBox(height: dynamicHeight(32, context)),
                 FormButton(
                   text: isEdit ? 'Update' : 'Buat',
@@ -197,6 +219,8 @@ Widget _buildTypeField(BuildContext context, int type) {
     requestType = 'Cuti Sakit';
   } else if (type == 6) {
     requestType = 'Cuti Hamil';
+  } else if (type == 7) {
+    requestType = 'Lembur';
   }
 
   if (type != 4) {
@@ -229,17 +253,17 @@ Widget _buildTypeField(BuildContext context, int type) {
   }
 }
 
-Widget _buildDateTimeField(BuildContext context, int selectedAttendance, TextEditingController dateController, TextEditingController dateRangeController,
-    TextEditingController timeController,
-    {RequestModel? model}) {
-  if (selectedAttendance == 1) {
+Widget _buildDateTimeField(BuildContext context, int type, TextEditingController dateController, TextEditingController dateRangeController,
+    TextEditingController timeController1, TextEditingController timeController2, RequestModel model) {
+  if (type == 1) {
     return Column(children: [
       FormPickerField(
         title: 'Tanggal',
         picker: NanyangDatePicker(
-          type: 'normal',
-          controller: dateController,
-          selectedDate: model?.startDateTime,
+          selectedDate: model.startDateTime,
+          onDatePicked: (date) {
+            dateController.text = DateFormat('dd/MM/yyyy').format(date);
+          },
         ),
         controller: dateController,
       ),
@@ -247,20 +271,23 @@ Widget _buildDateTimeField(BuildContext context, int selectedAttendance, TextEdi
       FormPickerField(
         title: 'Jam Masuk',
         picker: NanyangTimePicker(
-          controller: timeController,
-          selectedTime: model != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
+          selectedTime: model.startDateTime != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
+          onTimePicked: (time) {
+            timeController1.text = time.format(context);
+          },
         ),
-        controller: timeController,
+        controller: timeController1,
       ),
     ]);
-  } else if (selectedAttendance == 2) {
+  } else if (type == 2) {
     return Column(children: [
       FormPickerField(
         title: 'Tanggal',
         picker: NanyangDatePicker(
-          type: 'normal',
-          controller: dateController,
-          selectedDate: model?.startDateTime,
+          selectedDate: model.startDateTime,
+          onDatePicked: (date) {
+            dateController.text = DateFormat('dd/MM/yyyy').format(date);
+          },
         ),
         controller: dateController,
       ),
@@ -268,19 +295,57 @@ Widget _buildDateTimeField(BuildContext context, int selectedAttendance, TextEdi
       FormPickerField(
         title: 'Jam Pulang',
         picker: NanyangTimePicker(
-          controller: timeController,
-          selectedTime: model != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
+          selectedTime: model.startDateTime != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
+          onTimePicked: (time) {
+            timeController1.text = time.format(context);
+          },
         ),
-        controller: timeController,
+        controller: timeController1,
+      ),
+    ]);
+  } else if (type == 7) {
+    return Column(children: [
+      FormPickerField(
+        title: 'Tanggal',
+        picker: NanyangDatePicker(
+          selectedDate: model.startDateTime,
+          onDatePicked: (date) {
+            dateController.text = DateFormat('dd/MM/yyyy').format(date);
+          },
+        ),
+        controller: dateController,
+      ),
+      SizedBox(height: dynamicHeight(16, context)),
+      FormPickerField(
+        title: 'Jam Mulai',
+        picker: NanyangTimePicker(
+          selectedTime: model.startDateTime != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
+          onTimePicked: (time) {
+            timeController1.text = time.format(context);
+          },
+        ),
+        controller: timeController1,
+      ),
+      SizedBox(height: dynamicHeight(16, context)),
+      FormPickerField(
+        title: 'Jam Selesai',
+        picker: NanyangTimePicker(
+          selectedTime: model.endDateTime != null ? TimeOfDay(hour: model.endDateTime!.hour, minute: model.endDateTime!.minute) : null,
+          onTimePicked: (time) {
+            timeController2.text = time.format(context);
+          },
+        ),
+        controller: timeController2,
       ),
     ]);
   } else {
     return FormPickerField(
       title: 'Tanggal',
       picker: NanyangDateRangePicker(
-        controller: dateRangeController,
-        type: 'normal',
-        selectedDateRange: model != null ? DateTimeRange(start: model.startDateTime!, end: model.endDateTime!) : null,
+        selectedDateRange: model.startDateTime != null ? DateTimeRange(start: model.startDateTime!, end: model.endDateTime!) : null,
+        onDateRangePicked: (dateRange) {
+          dateRangeController.text = '${DateFormat('dd/MM/yyyy').format(dateRange.start)} - ${DateFormat('dd/MM/yyyy').format(dateRange.end)}';
+        },
       ),
       controller: dateRangeController,
     );
@@ -310,42 +375,4 @@ Widget _buildLeaveQuote(BuildContext context, int quote) {
       focusColor: Colors.blue,
     ),
   );
-}
-
-Widget _buildResponseField(BuildContext context, RequestModel model) {
-  return Column(children: [
-    const Divider(
-      color: Colors.grey,
-      thickness: 1,
-    ),
-    SizedBox(height: dynamicHeight(16, context)),
-    FormTextField(
-      title: 'Respon Admin',
-      initialValue: model.status == 1 ? 'Diterima' : 'Ditolak',
-      isReadOnly: true,
-      isRequired: false,
-    ),
-    SizedBox(height: dynamicHeight(16, context)),
-    FormTextField(
-      title: 'Admin',
-      initialValue: model.status == 1 ? model.approver!.name : model.rejecter!.name,
-      isReadOnly: true,
-      isRequired: false,
-    ),
-    SizedBox(height: dynamicHeight(16, context)),
-    FormTextField(
-      title: 'Komentar',
-      initialValue: model.comment,
-      isReadOnly: true,
-      isRequired: false,
-      maxLines: 5,
-    ),
-    SizedBox(height: dynamicHeight(16, context)),
-    FormTextField(
-      title: 'Waktu Respon',
-      initialValue: DateFormat('dd/MM/yyyy HH:mm').format(model.status == 1 ? model.approvalTime! : model.rejectTime!),
-      isReadOnly: true,
-      isRequired: false,
-    ),
-  ]);
 }

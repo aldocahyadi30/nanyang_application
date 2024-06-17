@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nanyang_application/color_template.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/module/auth/screen/login_screen.dart';
 import 'package:nanyang_application/module/home_screen.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
@@ -45,10 +46,9 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       );
     } else {
-        await Provider.of<UserViewModel>(context, listen: false)
-          .getUserByID(Supabase.instance.client.auth.currentUser!.id)
-          .then((userData) {
-        Provider.of<ConfigurationProvider>(context, listen: false).setUser(userData);
+      await Provider.of<ConfigurationViewModel>(context, listen: false).initialize();
+      await Provider.of<UserViewModel>(context, listen: false).getUserByID(Supabase.instance.client.auth.currentUser!.id).then((userData) {
+        Provider.of<ConfigurationViewModel>(context, listen: false).setUser(userData);
         Navigator.pushReplacement(
           context,
           PageRouteBuilder(
@@ -79,10 +79,10 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Center(
         child: Hero(
           tag: 'logo',
-          child: Image.asset(
-            'assets/image/logo-nanyang.png',
-            width: 175,
-            height: 175,
+          child: SvgPicture.asset(
+            'assets/svg/logo.svg',
+            width: dynamicHeight(175, context),
+            height: dynamicWidth(175, context),
           ),
         ),
       ),

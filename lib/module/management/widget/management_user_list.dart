@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/global/other/nanyang_empty_placeholder.dart';
 import 'package:nanyang_application/module/global/other/nanyang_no_access_placeholder.dart';
 import 'package:nanyang_application/module/management/widget/management_user_card.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -33,11 +33,10 @@ class _ManagementUserListState extends State<ManagementUserList> {
               return SizedBox(
                 height: dynamicHeight(52, context),
                 child: SearchBar(
-                    elevation: MaterialStateProperty.all<double>(0),
+                    elevation: WidgetStateProperty.all<double>(0),
                     hintText: 'Cari...',
-                    backgroundColor: MaterialStateProperty.all<Color>(ColorTemplate.periwinkle),
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(dynamicWidth(20, context)))),
+                    backgroundColor: WidgetStateProperty.all<Color>(ColorTemplate.periwinkle),
+                    shape: WidgetStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(dynamicWidth(20, context)))),
                     onTap: () {
                       controller.openView();
                     },
@@ -74,10 +73,9 @@ class _ManagementUserListState extends State<ManagementUserList> {
             height: dynamicHeight(16, context),
           ),
           Expanded(
-            child: context.read<ConfigurationProvider>().user.level >= widget.level
+            child: context.read<ConfigurationViewModel>().user.level >= widget.level
                 ? Selector<UserViewModel, List<UserModel>>(
-                    selector: (context, viewmodel) =>
-                        viewmodel.user.where((element) => element.level == widget.level).toList(),
+                    selector: (context, viewmodel) => viewmodel.user.where((element) => element.level == widget.level).toList(),
                     builder: (context, user, child) {
                       return RefreshIndicator(
                         onRefresh: () async {

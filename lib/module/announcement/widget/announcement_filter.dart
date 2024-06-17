@@ -120,7 +120,6 @@ class _AnnouncementFilterState extends State<AnnouncementFilter> {
                             labelStyle: const TextStyle(color: Color(0xFF3F51B5), fontWeight: FontWeight.w600),
                             suffixIcon: NanyangDatePicker(
                               controller: _dateController,
-                              type: 'normal',
                               color: ColorTemplate.violetBlue,
                             ),
                             border: OutlineInputBorder(

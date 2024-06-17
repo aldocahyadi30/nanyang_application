@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_admin.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_announcement.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_profile_card.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_request.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -20,14 +21,14 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  late ConfigurationProvider config;
+  late UserModel user;
 
   @override
   void initState() {
     super.initState();
-    config = context.read<ConfigurationProvider>();
+    user = context.read<ConfigurationViewModel>().user;
 
-    if (config.isAdmin) {
+    if (user.isAdmin) {
       context.read<EmployeeViewModel>().getCount();
       context.read<AttendanceViewModel>().getCount();
     } else {
@@ -42,7 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       backgroundColor: ColorTemplate.periwinkle,
       body: RefreshIndicator(
         onRefresh: () async {
-          if (config.isAdmin) {
+          if (user.isAdmin) {
             context.read<EmployeeViewModel>().getCount();
             context.read<AttendanceViewModel>().getCount();
           } else {
@@ -80,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   SizedBox(
                     height: dynamicHeight(8, context),
                   ),
-                  config.isAdmin ? const DashboardAdmin() : const DashboardAnnouncement(),
+                  user.isAdmin ? const DashboardAdmin() : const DashboardAnnouncement(),
                   SizedBox(
                     height: dynamicHeight(8, context),
                   ),

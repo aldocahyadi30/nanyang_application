@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/employee.dart';
 import 'package:nanyang_application/model/position.dart';
+import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:nanyang_application/module/global/form/form_dropdown.dart';
 import 'package:nanyang_application/module/global/form/form_picker_field.dart';
 import 'package:nanyang_application/module/global/form/form_text_field.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_date_picker.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +25,7 @@ class ManagementEmployeeFormScreen extends StatefulWidget {
 class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScreen> {
   late final EmployeeViewModel _employeeViewModel;
   late final EmployeeModel _model;
-  late final ConfigurationProvider _config;
+  late final UserModel _user;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _birthdayController = TextEditingController();
   final TextEditingController _birthplaceController = TextEditingController();
@@ -35,8 +35,6 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
   final TextEditingController _salaryController = TextEditingController();
   final TextEditingController _attendanceIDController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  int? _selectedPosition;
-  String? _selectedGender;
 
   bool isLoading = false;
   bool isEdit = false;
@@ -45,9 +43,14 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
   void initState() {
     super.initState();
     _employeeViewModel = context.read<EmployeeViewModel>();
-    _model = _employeeViewModel.selectedEmployee;
-    _config = context.read<ConfigurationProvider>();
+    _user = context.read<ConfigurationViewModel>().user;
     isEdit = widget.type == 'edit';
+
+    if (isEdit) {
+      _model = _employeeViewModel.selectedEmployee;
+    } else {
+      _model = EmployeeModel.copyWith(_employeeViewModel.selectedEmployee);
+    }
 
     _nameController.text = _model.name;
     _addressController.text = _model.address ?? '';
@@ -55,8 +58,6 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
     _phoneController.text = _model.phoneNumber ?? '';
     _salaryController.text = _model.salary.toString();
     _attendanceIDController.text = _model.attendanceMachineID.toString();
-    _selectedGender = _model.gender;
-    _selectedPosition = _model.position.id != 0 ? _model.position.id : null;
   }
 
   @override
@@ -73,52 +74,11 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
   }
 
   Future<void> store() async {
-    int age;
-
-    if (_birthdayController.text.isNotEmpty) {
-      age = DateTime.now().year - _model.birthDate!.year;
-    } else {
-      age = _model.age ?? 0;
-    }
-    _model.name = _nameController.text;
-    _model.address = _addressController.text;
-    _model.birthPlace = _birthplaceController.text;
-    _model.phoneNumber = _phoneController.text;
-    _model.salary = double.parse(_salaryController.text);
-    _model.attendanceMachineID = int.parse(_attendanceIDController.text);
-    _model.entryDate = parseFormattedDate(_entryDateController.text);
-    _model.birthDate = parseFormattedDate(_birthdayController.text);
-    _model.age = age;
-    _model.gender = _selectedGender;
-    _model.position = PositionModel(id: _selectedPosition!, name: '', type: 0);
-
-    _employeeViewModel.store();
+    await _employeeViewModel.store(_model);
   }
 
   Future<void> edit() async {
-    int age;
-
-    if (_birthdayController.text.isNotEmpty) {
-      age = DateTime.now().year - _model.birthDate!.year;
-    } else {
-      age = _model.age ?? 0;
-    }
-
-    EmployeeModel updatedModel = _model.copyWith(
-        name: _nameController.text,
-        address: _addressController.text,
-        birthPlace: _birthplaceController.text,
-        phoneNumber: _phoneController.text,
-        salary: double.parse(_salaryController.text),
-        attendanceMachineID: int.parse(_attendanceIDController.text),
-        entryDate: parseFormattedDate(_entryDateController.text),
-        birthDate: parseFormattedDate(_birthdayController.text),
-        age: age,
-        gender: _selectedGender,
-        position: PositionModel(id: _selectedPosition!, name: '', type: 0));
-
-    _employeeViewModel.setEmployee(updatedModel);
-    _employeeViewModel.update();
+    await _employeeViewModel.update(_model);
   }
 
   @override
@@ -140,6 +100,11 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
               FormTextField(
                 title: 'Nama',
                 controller: _nameController,
+                onChanged: (value) {
+                  if (value!.isNotEmpty){
+                    _model.name = value;
+                  }
+                },
               ),
               SizedBox(height: dynamicHeight(16, context)),
               Selector<ConfigurationViewModel, List<PositionModel>>(
@@ -151,7 +116,7 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
                     items: position.map((e) => DropdownMenuItem(value: e.id, child: Text(e.name))).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _selectedPosition = value;
+                        _model.position = position.firstWhere((element) => element.id == value);
                       });
                     },
                   );
@@ -161,9 +126,12 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
               FormPickerField(
                   title: 'Tanggal Masuk',
                   picker: NanyangDatePicker(
-                    type: 'normal',
                     selectedDate: _model.entryDate,
                     controller: _entryDateController,
+                    onDatePicked: (date) {
+                      _entryDateController.text = parseDateToStringFormatted(date);
+                      _model.entryDate = date;
+                    },
                   ),
                   controller: _entryDateController),
               SizedBox(height: dynamicHeight(16, context)),
@@ -171,6 +139,11 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
                 title: 'Nomor Telepon',
                 controller: _phoneController,
                 keyboardType: TextInputType.phone,
+                onChanged: (value) {
+                  if (value!.isNotEmpty){
+                    _model.phoneNumber = value;
+                  }
+                },
               ),
               SizedBox(height: dynamicHeight(16, context)),
               if (widget.type == 'edit')
@@ -180,50 +153,74 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
                       title: 'Alamat',
                       controller: _addressController,
                       isRequired: false,
+                      onChanged: (value){
+                        if (value!.isNotEmpty){
+                          _model.address = value;
+                        }
+                      },
                     ),
                     SizedBox(height: dynamicHeight(16, context)),
                     FormTextField(
                       title: 'Tempat Lahir',
                       controller: _birthplaceController,
                       isRequired: false,
+                      onChanged: (value){
+                        if (value!.isNotEmpty){
+                          _model.birthPlace = value;
+                        }
+                      },
                     ),
                     SizedBox(height: dynamicHeight(16, context)),
                     FormPickerField(
                         title: 'Tanggal Lahir',
                         isRequired: false,
                         picker: NanyangDatePicker(
-                          type: 'normal',
                           selectedDate: _model.birthDate,
                           controller: _birthdayController,
+                          onDatePicked: (date){
+                            _birthdayController.text = parseDateToStringFormatted(date);
+                            _model.birthDate = date;
+                            _model.age = DateTime.now().year - date.year;
+                          },
                         ),
                         controller: _birthdayController),
                     SizedBox(height: dynamicHeight(16, context)),
                     FormDropdown(
                       title: 'Jenis Kelamin',
                       isRequired: false,
-                      value: _selectedGender,
+                      value: _model.gender,
                       items: const [DropdownMenuItem(value: 'Pria', child: Text('Pria')), DropdownMenuItem(value: 'Wanita', child: Text('Wanita'))],
                       onChanged: (value) {
                         setState(() {
-                          _selectedGender = value.toString();
+                          _model.gender = value.toString();
                         });
                       },
                     ),
                     SizedBox(height: dynamicHeight(16, context)),
                   ],
                 ),
-              if (_config.user.level == 3)
+              if (_user.level == 3)
                 FormTextField(
                   title: 'Gaji',
                   controller: _salaryController,
                   keyboardType: TextInputType.number,
                   inputFormatters: [inputCurrencyFormatter],
+                  onChanged: (value){
+                    if (value!.isNotEmpty){
+                      _model.salary = double.parse(value);
+                    }
+                  },
                 ),
               SizedBox(height: dynamicHeight(16, context)),
               FormTextField(
                 title: 'ID Mesin Absensi',
                 controller: _attendanceIDController,
                 keyboardType: TextInputType.number,
+                onChanged: (value){
+                  if (value!.isNotEmpty){
+                    _model.attendanceMachineID = int.parse(value);
+                  }
+                },
               ),
               SizedBox(height: dynamicHeight(32, context)),
               FormButton(

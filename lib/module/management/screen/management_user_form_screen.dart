@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/employee.dart';
 import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:nanyang_application/module/global/form/form_dropdown.dart';
 import 'package:nanyang_application/module/global/form/form_text_field.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +22,7 @@ class ManagementUserFormScreen extends StatefulWidget {
 
 class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
   late final AuthViewModel _authViewModel;
-  late final ConfigurationProvider _config;
+  late final UserModel _user;
   final formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -32,13 +32,14 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
   int? selectedLevel;
   bool isLoading = false;
   bool isEdit = false;
-  bool isObscure = true;
+  bool isObscure1 = true;
+  bool isObscure2 = true;
 
   @override
   void initState() {
     super.initState();
     _authViewModel = context.read<AuthViewModel>();
-    _config = context.read<ConfigurationProvider>();
+    _user = context.read<ConfigurationViewModel>().user;
     if (widget.model != null) {
       isEdit = true;
       _emailController.text = widget.model!.email;
@@ -112,7 +113,7 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
                 ),
                 FormDropdown(
                     title: 'Level',
-                    items: _config.user.level == 3
+                    items: _user.level == 3
                         ? [
                             const DropdownMenuItem<int>(
                               value: 1,
@@ -168,6 +169,7 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
                           FormTextField(
                             title: 'Password',
                             controller: _passwordController,
+                            isObscure: isObscure1,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Tolong isi inputan ini';
@@ -184,6 +186,7 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
                           ),
                           FormTextField(
                             title: 'Masukan Ulang Password',
+                            isObscure: isObscure2,
                             controller: _retypePasswordController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {

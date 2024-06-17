@@ -1,20 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/request.dart';
+import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/request/screen/request_form_screen.dart';
 import 'package:nanyang_application/module/request/screen/request_screen.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class RequestDetailScreen extends StatefulWidget {
-  final RequestModel model;
-  const RequestDetailScreen({super.key, required this.model});
+  const RequestDetailScreen({
+    super.key,
+  });
 
   @override
   State<RequestDetailScreen> createState() => _RequestDetailScreenState();
@@ -23,22 +24,20 @@ class RequestDetailScreen extends StatefulWidget {
 class _RequestDetailScreenState extends State<RequestDetailScreen> {
   final TextEditingController commentController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  late RequestViewModel _requestViewModel;
-  late ConfigurationProvider _config;
+  // late RequestViewModel _requestViewModel;
+  late UserModel _user;
   bool isLoading = false;
   bool isAdmin = false;
-  bool isClosed = false;
 
   @override
   void initState() {
     super.initState();
-    _requestViewModel = Provider.of<RequestViewModel>(context, listen: false);
-    _config = Provider.of<ConfigurationProvider>(context, listen: false);
-    isAdmin = _config.isAdmin;
-    isClosed = widget.model.approver!.id != 0 || widget.model.rejecter!.id != 0;
+    // _requestViewModel = Provider.of<RequestViewModel>(context, listen: false);
+    _user = Provider.of<ConfigurationViewModel>(context, listen: false).user;
+    isAdmin = _user.isAdmin;
   }
 
-  Future<void> response(BuildContext context, String type) async {
+  Future<void> response(BuildContext context, String type, RequestViewModel viewmodel) async {
     await showDialog(
       context: context,
       builder: (context) {
@@ -91,9 +90,9 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       isLoading = true;
                     });
                     if (isTypeApproval) {
-                      await _requestViewModel.response('approve', widget.model.id, commentController.text);
+                      await viewmodel.response('approve', viewmodel.request.id, commentController.text);
                     } else {
-                      await _requestViewModel.response('reject', widget.model.id, commentController.text);
+                      await viewmodel.response('reject', viewmodel.request.id, commentController.text);
                     }
 
                     setState(() {
@@ -128,227 +127,107 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorTemplate.periwinkle,
-      appBar: NanyangAppbar(
-        title: 'Perizinan',
-        isBackButton: true,
-        isCenter: true,
-        actions: [
-          if (!isClosed && !isAdmin)
-            IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RequestFormScreen(
-                      type: widget.model.type,
-                      model: widget.model,
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.edit, color: ColorTemplate.vistaBlue),
-            ),
-          if (isClosed)
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.delete, color: ColorTemplate.violetBlue),
-            ),
-        ],
-      ),
-      body: Container(
-        padding: dynamicPaddingSymmetric(0, 16, context),
-        child: Column(
-          children: [
-            Card(
-              elevation: 0,
-              child: Container(
-                width: double.infinity,
-                padding: dynamicPaddingSymmetric(16, 16, context),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Detail Perizinan',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: dynamicFontSize(20, context),
-                          fontWeight: FontWeight.bold,
+    return Consumer<RequestViewModel>(
+      builder: (context, viewmodel, child) {
+        RequestModel model = viewmodel.selectedRequest;
+        bool isClosed = model.approver!.id != 0 || model.rejecter!.id != 0;
+        return Scaffold(
+          backgroundColor: ColorTemplate.periwinkle,
+          appBar: NanyangAppbar(
+            title: 'Perizinan',
+            isBackButton: true,
+            isCenter: true,
+            actions: [
+              if (!isClosed && !isAdmin)
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RequestFormScreen(
+                          type: model.type,
                         ),
                       ),
-                    ),
-                    SizedBox(height: dynamicHeight(16, context)),
-                    _buildNameField(context, widget.model.requester.name),
-                    SizedBox(height: dynamicHeight(8, context)),
-                    _buildTypeField(context, widget.model.type),
-                    SizedBox(height: dynamicHeight(8, context)),
-                    if (widget.model.type == 1 || widget.model.type == 2 || widget.model.type == 3) _buildAttendanceStatus(context, widget.model.type),
-                    SizedBox(height: dynamicHeight(8, context)),
-                    _buildDate(context, widget.model),
-                  ],
+                    );
+                  },
+                  icon: const Icon(Icons.edit, color: ColorTemplate.vistaBlue),
                 ),
-              ),
-            ),
-            Card(
-              elevation: 0,
-              child: Container(
-                width: double.infinity,
-                padding: dynamicPaddingSymmetric(16, 16, context),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Keterangan',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: dynamicFontSize(20, context),
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: dynamicHeight(16, context)),
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        widget.model.reason != null ? widget.model.reason! : 'Tidak ada keterangan',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: dynamicFontSize(16, context),
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ],
+              if (isClosed)
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.delete, color: ColorTemplate.violetBlue),
                 ),
-              ),
-            ),
-            if (widget.model.file != null && widget.model.filePath!.isNotEmpty)
-              Card(
-                elevation: 0,
-                child: Container(
-                  width: double.infinity,
-                  padding: dynamicPaddingOnly(8, 16, 16, 16, context),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'File',
+            ],
+          ),
+          body: Container(
+            padding: dynamicPaddingSymmetric(0, 16, context),
+            child: Column(
+              children: [
+                Card(
+                  elevation: 0,
+                  child: Container(
+                    width: double.infinity,
+                    padding: dynamicPaddingSymmetric(16, 16, context),
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Detail Perizinan',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: dynamicFontSize(20, context),
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.download,
-                              color: ColorTemplate.violetBlue,
-                            ),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: dynamicHeight(8, context)),
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          widget.model.filePath!.split('/').last,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: dynamicFontSize(16, context),
-                            fontWeight: FontWeight.w400,
-                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            if (!isClosed && isAdmin)
-              Column(
-                children: [
-                  SizedBox(height: dynamicHeight(16, context)),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: dynamicHeight(64, context),
-                          child: ElevatedButton(
-                              onPressed: () => response(context, 'reject'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                foregroundColor: Colors.red,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                elevation: 8,
-                              ),
-                              child: Text(
-                                'Tolak',
-                                style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.red, fontWeight: FontWeight.bold),
-                              )),
-                        ),
-                      ),
-                      SizedBox(
-                        width: dynamicWidth(16, context),
-                      ),
-                      Expanded(
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: dynamicHeight(64, context),
-                          child: ElevatedButton(
-                              onPressed: () => response(context, 'approve'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: ColorTemplate.lightVistaBlue,
-                                foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                elevation: 8,
-                              ),
-                              child: Text(
-                                'Approve',
-                                style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.white, fontWeight: FontWeight.bold),
-                              )),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            if (isClosed)
-              Column(
-                children: [
-                  Card(
-                    elevation: 0,
-                    child: Container(
-                      width: double.infinity,
-                      padding: dynamicPaddingOnly(8, 16, 16, 16, context),
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Respon Admin',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: dynamicFontSize(20, context),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: dynamicHeight(16, context)),
-                          _buildResponseField(context, widget.model)
-                        ],
-                      ),
+                        SizedBox(height: dynamicHeight(16, context)),
+                        _buildNameField(context, model.requester.name),
+                        SizedBox(height: dynamicHeight(8, context)),
+                        _buildTypeField(context, model.type),
+                        SizedBox(height: dynamicHeight(8, context)),
+                        if (model.type == 1 || model.type == 2 || model.type == 3) _buildAttendanceStatus(context, model.type),
+                        SizedBox(height: dynamicHeight(8, context)),
+                        _buildDate(context, model),
+                      ],
                     ),
                   ),
+                ),
+                Card(
+                  elevation: 0,
+                  child: Container(
+                    width: double.infinity,
+                    padding: dynamicPaddingSymmetric(16, 16, context),
+                    child: Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Keterangan',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: dynamicFontSize(20, context),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: dynamicHeight(16, context)),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            model.reason != null ? model.reason! : 'Tidak ada keterangan',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: dynamicFontSize(16, context),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (model.file != null && model.filePath!.isNotEmpty)
                   Card(
                     elevation: 0,
                     child: Container(
@@ -356,22 +235,31 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       padding: dynamicPaddingOnly(8, 16, 16, 16, context),
                       child: Column(
                         children: [
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Komentar Admin',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: dynamicFontSize(20, context),
-                                fontWeight: FontWeight.bold,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'File',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: dynamicFontSize(20, context),
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
+                              IconButton(
+                                onPressed: () {},
+                                icon: const Icon(
+                                  Icons.download,
+                                  color: ColorTemplate.violetBlue,
+                                ),
+                              )
+                            ],
                           ),
-                          SizedBox(height: dynamicHeight(16, context)),
+                          SizedBox(height: dynamicHeight(8, context)),
                           Align(
                             alignment: Alignment.topLeft,
                             child: Text(
-                              widget.model.comment != null && widget.model.comment!.isNotEmpty ? widget.model.comment! : 'Tidak ada komentar',
+                              model.filePath!.split('/').last,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: dynamicFontSize(16, context),
@@ -383,11 +271,127 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                       ),
                     ),
                   ),
-                ],
-              )
-          ],
-        ),
-      ),
+                if (!isClosed && isAdmin)
+                  Column(
+                    children: [
+                      SizedBox(height: dynamicHeight(16, context)),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: dynamicHeight(64, context),
+                              child: ElevatedButton(
+                                  onPressed: () => response(context, 'reject', viewmodel),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                    elevation: 8,
+                                  ),
+                                  child: Text(
+                                    'Tolak',
+                                    style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.red, fontWeight: FontWeight.bold),
+                                  )),
+                            ),
+                          ),
+                          SizedBox(
+                            width: dynamicWidth(16, context),
+                          ),
+                          Expanded(
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: dynamicHeight(64, context),
+                              child: ElevatedButton(
+                                  onPressed: () => response(context, 'approve', viewmodel),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: ColorTemplate.lightVistaBlue,
+                                    foregroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                    elevation: 8,
+                                  ),
+                                  child: Text(
+                                    'Approve',
+                                    style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.white, fontWeight: FontWeight.bold),
+                                  )),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                if (isClosed)
+                  Column(
+                    children: [
+                      Card(
+                        elevation: 0,
+                        child: Container(
+                          width: double.infinity,
+                          padding: dynamicPaddingOnly(8, 16, 16, 16, context),
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Respon Admin',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: dynamicFontSize(20, context),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: dynamicHeight(16, context)),
+                              _buildResponseField(context, model)
+                            ],
+                          ),
+                        ),
+                      ),
+                      Card(
+                        elevation: 0,
+                        child: Container(
+                          width: double.infinity,
+                          padding: dynamicPaddingOnly(8, 16, 16, 16, context),
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Komentar Admin',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: dynamicFontSize(20, context),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: dynamicHeight(16, context)),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  model.comment != null && model.comment!.isNotEmpty ? model.comment! : 'Tidak ada komentar',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: dynamicFontSize(16, context),
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -442,6 +446,8 @@ Widget _buildTypeField(BuildContext context, int type) {
     requestType = 'Cuti Sakit';
   } else if (type == 6) {
     requestType = 'Cuti Hamil';
+  } else if (type == 7) {
+    requestType = 'Izin Lembur';
   }
 
   return _buildRow(context, 'Jenis Perizinan', requestType);
@@ -464,13 +470,21 @@ Widget _buildDate(BuildContext context, RequestModel model) {
   if (model.type == 1 || model.type == 2) {
     return Column(
       children: [
-        _buildRow(context, 'Tanggal', DateFormat('dd/MM/yyyy').format(model.startDateTime!)),
+        _buildRow(context, 'Tanggal', parseDateToStringFormatted(model.startDateTime!)),
         SizedBox(height: dynamicHeight(8, context)),
-        _buildRow(context, model.type == 1 ? 'Jam Masuk' : 'Jam Pulang', DateFormat('HH:mm').format(model.startDateTime!)),
+        _buildRow(context, model.type == 1 ? 'Jam Masuk' : 'Jam Pulang', parseTimeToString(model.startDateTime!)),
+      ],
+    );
+  } else if (model.type == 7) {
+    return Column(
+      children: [
+        _buildRow(context, 'Tanggal', parseDateToStringFormatted(model.startDateTime!)),
+        SizedBox(height: dynamicHeight(8, context)),
+        _buildRow(context, 'Jam Lembur', "${parseTimeToString(model.startDateTime!)} - ${parseTimeToString(model.endDateTime!)}"),
       ],
     );
   } else {
-    return _buildRow(context, 'Tanggal', "${DateFormat('dd/MM/yyyy').format(model.startDateTime!)} - ${DateFormat('dd/MM/yyyy').format(model.endDateTime!)}");
+    return _buildRow(context, 'Tanggal', "${parseDateToStringFormatted(model.startDateTime!)} - ${parseDateToStringFormatted(model.endDateTime!)}");
   }
 }
 
@@ -481,7 +495,7 @@ Column _buildResponseField(BuildContext context, RequestModel model) {
       SizedBox(height: dynamicHeight(8, context)),
       _buildRow(context, 'Status', model.approver!.id != 0 ? 'Disetujui' : 'Ditolak'),
       SizedBox(height: dynamicHeight(8, context)),
-      _buildRow(context, 'Waktu Respon', DateFormat('dd/MM/yyyy HH:mm').format(model.status == 1 ? model.approvalTime! : model.rejectTime!))
+      _buildRow(context, 'Waktu Respon', parseDateToStringWithTime(model.status == 1 ? model.approvalTime! : model.rejectTime!)),
     ],
   );
 }

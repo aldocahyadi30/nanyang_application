@@ -16,7 +16,6 @@ class ManagementEmployeeList extends StatefulWidget {
 }
 
 class _ManagementEmployeeListState extends State<ManagementEmployeeList> {
-
   @override
   void initState() {
     super.initState();
@@ -37,11 +36,10 @@ class _ManagementEmployeeListState extends State<ManagementEmployeeList> {
               return SizedBox(
                 height: dynamicHeight(52, context),
                 child: SearchBar(
-                    elevation: MaterialStateProperty.all<double>(0),
+                    elevation: WidgetStateProperty.all<double>(0),
                     hintText: 'Cari...',
-                    backgroundColor: MaterialStateProperty.all<Color>(ColorTemplate.periwinkle),
-                    shape: MaterialStateProperty.all<OutlinedBorder>(
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(dynamicWidth(20, context)))),
+                    backgroundColor: WidgetStateProperty.all<Color>(ColorTemplate.periwinkle),
+                    shape: WidgetStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(dynamicWidth(20, context)))),
                     onTap: () {
                       controller.openView();
                     },
@@ -64,13 +62,13 @@ class _ManagementEmployeeListState extends State<ManagementEmployeeList> {
                   .where((EmployeeModel employee) => employee.name.toLowerCase().contains(query.toLowerCase()))
                   .where((element) => element.position.type == widget.type)
                   .map<Widget>((employee) => InkWell(
-                onTap: () {},
-                child: Container(
-                  // margin: dynamicPaddingSymmetric(8, 0, context),
-                  padding: dynamicPaddingSymmetric(0, 8, context),
-                  child: ManagementEmployeeCard(model: employee),
-                ),
-              ))
+                        onTap: () {},
+                        child: Container(
+                          // margin: dynamicPaddingSymmetric(8, 0, context),
+                          padding: dynamicPaddingSymmetric(0, 8, context),
+                          child: ManagementEmployeeCard(model: employee),
+                        ),
+                      ))
                   .toList();
             },
           ),
@@ -78,26 +76,24 @@ class _ManagementEmployeeListState extends State<ManagementEmployeeList> {
             height: dynamicHeight(16, context),
           ),
           Expanded(
-            child: Selector<EmployeeViewModel, List<EmployeeModel>>(
-              selector: (context, viewmodel) =>
-                  viewmodel.employee.where((element) => element.position.type == widget.type).toList(),
-              builder: (context, employee, child) {
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    await context.read<EmployeeViewModel>().getEmployee();
-                  },
-                  child: employee.isEmpty
-                      ? const Center(child: NanyangEmptyPlaceholder())
-                      : ListView.builder(
-                    itemCount: employee.length,
-                    itemBuilder: (context, index) {
-                      return ManagementEmployeeCard(model: employee[index]);
-                    },
-                  ),
-                );
-              },
-            )
-          ),
+              child: Selector<EmployeeViewModel, List<EmployeeModel>>(
+            selector: (context, viewmodel) => viewmodel.employee.where((element) => element.position.type == widget.type).toList(),
+            builder: (context, employee, child) {
+              return RefreshIndicator(
+                onRefresh: () async {
+                  await context.read<EmployeeViewModel>().getEmployee();
+                },
+                child: employee.isEmpty
+                    ? const Center(child: NanyangEmptyPlaceholder())
+                    : ListView.builder(
+                        itemCount: employee.length,
+                        itemBuilder: (context, index) {
+                          return ManagementEmployeeCard(model: employee[index]);
+                        },
+                      ),
+              );
+            },
+          )),
         ],
       ),
     );

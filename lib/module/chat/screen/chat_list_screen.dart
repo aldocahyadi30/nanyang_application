@@ -4,12 +4,13 @@ import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/model/chat.dart';
 import 'package:nanyang_application/model/employee.dart';
 import 'package:nanyang_application/model/message.dart';
+import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/chat/screen/chat_screen.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/chat_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -21,7 +22,7 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
-  late final ConfigurationProvider _config;
+  late final UserModel _user;
   late final ToastProvider _toast;
   late final SupabaseStreamBuilder _messageStream;
   late final ChatViewModel _chatViewModel;
@@ -30,7 +31,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   void initState() {
     super.initState();
-    _config = context.read<ConfigurationProvider>();
+    _user = context.read<ConfigurationViewModel>().user;
     _toast = context.read<ToastProvider>();
     _chatViewModel = context.read<ChatViewModel>();
     try {

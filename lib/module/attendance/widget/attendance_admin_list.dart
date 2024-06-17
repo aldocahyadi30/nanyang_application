@@ -19,7 +19,6 @@ class _AttendanceAdminListState extends State<AttendanceAdminList> {
   @override
   void initState() {
     super.initState();
-    context.read<AttendanceViewModel>().getAdminAttendance(widget.type);
   }
 
   @override

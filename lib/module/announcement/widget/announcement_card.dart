@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nanyang_application/model/announcement.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/model/announcement.dart';
+import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class AnnouncementCard extends StatelessWidget {
   final AnnouncementModel model;
+
   const AnnouncementCard({super.key, required this.model});
 
   @override
@@ -25,13 +28,11 @@ class AnnouncementCard extends StatelessWidget {
         ],
       ),
       child: InkWell(
-        onTap: () {
-        },
+        onTap: () => context.read<AnnouncementViewModel>().detail(model),
         child: Padding(
           padding: dynamicPaddingAll(8, context),
           child: Row(
             children: [
-
               SizedBox(width: dynamicWidth(12, context)),
               Expanded(
                 child: Column(
@@ -42,7 +43,10 @@ class AnnouncementCard extends StatelessWidget {
                       children: [
                         Text(
                           model.title,
-                          style: TextStyle(fontSize: dynamicFontSize(16, context), fontWeight: FontWeight.bold, color: model.category.color),
+                          style: TextStyle(
+                              fontSize: dynamicFontSize(16, context),
+                              fontWeight: FontWeight.bold,
+                              color: model.category.color),
                         ),
                         Container(
                           padding: dynamicPaddingSymmetric(4, 8, context),
@@ -52,7 +56,10 @@ class AnnouncementCard extends StatelessWidget {
                           ),
                           child: Text(
                             model.category.name,
-                            style: TextStyle(fontSize: dynamicFontSize(14, context), fontWeight: FontWeight.bold, color: Colors.white),
+                            style: TextStyle(
+                                fontSize: dynamicFontSize(14, context),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                         )
                       ],

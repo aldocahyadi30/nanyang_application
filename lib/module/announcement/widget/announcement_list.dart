@@ -38,11 +38,10 @@ class _AnnouncementListState extends State<AnnouncementList> {
                   dividerColor: ColorTemplate.violetBlue,
                   builder: (BuildContext context, SearchController controller) {
                     return SearchBar(
-                        elevation: MaterialStateProperty.all<double>(0),
+                        elevation: WidgetStateProperty.all<double>(0),
                         hintText: 'Cari...',
-                        backgroundColor: MaterialStateProperty.all<Color>(ColorTemplate.periwinkle),
-                        shape: MaterialStateProperty.all<OutlinedBorder>(
-                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(dynamicWidth(20, context)))),
+                        backgroundColor: WidgetStateProperty.all<Color>(ColorTemplate.periwinkle),
+                        shape: WidgetStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(dynamicWidth(20, context)))),
                         onTap: () {
                           controller.openView();
                         },
@@ -61,8 +60,7 @@ class _AnnouncementListState extends State<AnnouncementList> {
                     return context
                         .read<AnnouncementViewModel>()
                         .announcement
-                        .where((AnnouncementModel announcement) =>
-                            announcement.title.toLowerCase().contains(query.toLowerCase()))
+                        .where((AnnouncementModel announcement) => announcement.title.toLowerCase().contains(query.toLowerCase()))
                         .map<Widget>((announcement) => InkWell(
                               onTap: () {},
                               child: Container(

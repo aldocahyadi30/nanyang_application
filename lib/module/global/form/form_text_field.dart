@@ -4,13 +4,15 @@ import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/helper.dart';
 
 class FormTextField extends StatefulWidget {
-  final String title;
+  final String? title;
+  final String? hintText;
   final Color titleColor;
   final Color fillColor;
   final Color textColor;
   final int maxLines;
   final bool isReadOnly;
   final bool isRequired;
+  final bool isObscure;
   final TextEditingController? controller;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType keyboardType;
@@ -20,13 +22,15 @@ class FormTextField extends StatefulWidget {
 
   const FormTextField({
     super.key,
-    required this.title,
+    this.title,
+    this.hintText,
     this.titleColor = ColorTemplate.darkVistaBlue,
     this.fillColor = ColorTemplate.lavender,
     this.textColor = ColorTemplate.darkVistaBlue,
     this.maxLines = 1,
     this.isReadOnly = false,
     this.isRequired = true,
+    this.isObscure = false,
     this.initialValue,
     this.controller,
     this.inputFormatters,
@@ -51,36 +55,42 @@ class _FormTextFieldState extends State<FormTextField> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: dynamicPaddingSymmetric(0, 20, context),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: RichText(
-                text: TextSpan(
-                  text: widget.title,
-                  style: TextStyle(
-                    fontSize: dynamicFontSize(16, context),
-                    fontWeight: FontWeight.w700,
-                    color: widget.titleColor,
+        if (widget.title != null)
+          Column(
+            children: [
+              Padding(
+                padding: dynamicPaddingSymmetric(0, 20, context),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: RichText(
+                    text: TextSpan(
+                      text: widget.title,
+                      style: TextStyle(
+                        fontSize: dynamicFontSize(16, context),
+                        fontWeight: FontWeight.w700,
+                        color: widget.titleColor,
+                      ),
+                      children: widget.isRequired
+                          ? <TextSpan>[
+                              TextSpan(
+                                text: ' *',
+                                style: TextStyle(
+                                  fontSize: dynamicFontSize(16, context),
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ]
+                          : <TextSpan>[],
+                    ),
                   ),
-                  children: widget.isRequired
-                      ? <TextSpan>[
-                          TextSpan(
-                            text: ' *',
-                            style: TextStyle(
-                              fontSize: dynamicFontSize(16, context),
-                              fontWeight: FontWeight.w700,
-                              color: Colors.red,
-                            ),
-                          ),
-                        ]
-                      : <TextSpan>[],
                 ),
-              )),
-        ),
-        SizedBox(
-          height: dynamicHeight(8, context),
-        ),
+              ),
+              SizedBox(
+                height: dynamicHeight(8, context),
+              ),
+            ],
+          ),
         TextFormField(
           initialValue: widget.initialValue,
           controller: widget.controller,
@@ -90,12 +100,18 @@ class _FormTextFieldState extends State<FormTextField> {
           readOnly: widget.isReadOnly,
           onChanged: widget.onChanged,
           inputFormatters: widget.inputFormatters,
+          obscureText: widget.isObscure,
           style: TextStyle(
             fontSize: dynamicFontSize(16, context),
             color: widget.isReadOnly ? Colors.grey[600] : widget.textColor,
             fontWeight: FontWeight.w600,
           ),
           decoration: InputDecoration(
+            hintText: widget.hintText,
+            hintStyle: TextStyle(
+              fontSize: dynamicFontSize(16, context),
+              color: Colors.grey[400],
+            ),
             contentPadding: dynamicPaddingSymmetric(16, 24, context),
             enabledBorder: _outlineInputBorder(context),
             focusedBorder: _outlineInputBorder(context),

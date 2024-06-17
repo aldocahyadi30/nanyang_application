@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/main.dart';
 import 'package:nanyang_application/model/attendance.dart';
 import 'package:nanyang_application/model/attendance_admin.dart';
 import 'package:nanyang_application/model/attendance_detail.dart';
 import 'package:nanyang_application/model/attendance_user.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
+import 'package:nanyang_application/module/attendance/screen/attendance_user_scan_screen.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
+import 'package:nanyang_application/service/navigation_service.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -15,13 +18,17 @@ class AttendanceViewModel extends ChangeNotifier {
   final AttendanceService _attendanceService;
   final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
   final DateProvider _dateProvider = Provider.of<DateProvider>(navigatorKey.currentContext!, listen: false);
-  final ConfigurationProvider _configurationProvider = Provider.of<ConfigurationProvider>(navigatorKey.currentContext!, listen: false);
+  final ConfigurationViewModel _configViewModel = Provider.of<ConfigurationViewModel>(navigatorKey.currentContext!, listen: false);
+  final NavigationService _navigationService = Provider.of<NavigationService>(navigatorKey.currentContext!, listen: false);
   int workerCount = 0;
   int laborCount = 0;
   List<AttendanceAdminModel> adminAttendance = [];
   List<AttendanceUserModel> userAttendance = [];
   AttendanceAdminModel _selectedAtt = AttendanceAdminModel.empty();
   DateTime _selectedDateAttAdmin = DateTime.now();
+  DateTimeRange _selectedDateUser = DateTimeRange(
+      start: DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)),
+      end: DateTime.now().add(Duration(days: DateTime.daysPerWeek - DateTime.now().weekday)));
 
   AttendanceViewModel({required AttendanceService attendanceService}) : _attendanceService = attendanceService;
 
@@ -29,6 +36,7 @@ class AttendanceViewModel extends ChangeNotifier {
   get attendanceAdmin => adminAttendance;
   AttendanceAdminModel get selectedAtt => _selectedAtt;
   get selectedAdminDate => _selectedDateAttAdmin;
+  get selectedUserDate => _selectedDateUser;
 
   void setAttendanceAdmin(AttendanceAdminModel model) {
     _selectedAtt = model;
@@ -40,17 +48,18 @@ class AttendanceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  
+  void setUserDate(DateTimeRange date) {
+    _selectedDateUser = date;
+    notifyListeners();
+  }
+
   Future<void> getAdminAttendance(int type) async {
     try {
-      String date = '';
       List<Map<String, dynamic>>? data;
       if (type == 1) {
-        date = _dateProvider.attendanceWorkerDateString;
-        data = await _attendanceService.getAdminAttendanceByDate(date, type);
+        data = await _attendanceService.getAdminAttendanceByDate(parseDateToString(_selectedDateAttAdmin), type);
       } else if (type == 2) {
-        date = _dateProvider.attendanceLaborDateString;
-        data = await _attendanceService.getAdminAttendanceByDate(date, type);
+        data = await _attendanceService.getAdminAttendanceByDate(parseDateToString(_selectedDateAttAdmin), type);
       }
       adminAttendance = AttendanceAdminModel.fromSupabaseList(data!);
 
@@ -68,12 +77,12 @@ class AttendanceViewModel extends ChangeNotifier {
 
   Future<void> getUserAttendance() async {
     try {
-      String startDate = _dateProvider.attendanceUserDateStartString;
-      String endDate = _dateProvider.attendanceUserDateEndString;
-      int employeeID = _configurationProvider.user.employee.id;
+      String startDate = parseDateToString(_selectedDateUser.start);
+      String endDate = parseDateToString(_selectedDateUser.end);
+      int employeeID = _configViewModel.user.employee.id;
       List<Map<String, dynamic>> data = await _attendanceService.getUserAttendance(employeeID, startDate, endDate);
 
-      List<DateTime> dateRange = generateDateRange(_dateProvider.attendanceUserDateStart, _dateProvider.attendanceUserDateEnd);
+      List<DateTime> dateRange = generateDateRange(_selectedDateUser.start, _selectedDateUser.end);
 
       userAttendance = AttendanceUserModel.fromSupabaseList(data, dateRange);
       notifyListeners();
@@ -180,7 +189,6 @@ class AttendanceViewModel extends ChangeNotifier {
       double normalizedLoss = weightLoss / (initialWeight - minimunWeightLoss);
       double score = 100 - (normalizedLoss * 100);
 
-
       final attendanceModel = AttendanceAdminModel(
           employee: _selectedAtt.employee,
           attendance: AttendanceModel(id: 0, checkIn: _selectedDateAttAdmin),
@@ -206,6 +214,22 @@ class AttendanceViewModel extends ChangeNotifier {
         debugPrint('Store Attendance Labor error: ${e.toString()}');
         _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
+    }
+  }
+
+  void scan() {
+    _navigationService.navigateTo(const AttendanceUserScanScreen());
+  }
+
+  void index(){
+    if (_configViewModel.user.level == 1){
+      _selectedDateUser = DateTimeRange(
+          start: DateTime.now().subtract(Duration(days: DateTime.now().weekday - 1)),
+          end: DateTime.now().add(Duration(days: DateTime.daysPerWeek - DateTime.now().weekday)));
+      getUserAttendance();
+    }else{
+      _selectedDateAttAdmin = DateTime.now();
+      getAdminAttendance(1);
     }
   }
 }

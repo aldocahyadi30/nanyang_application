@@ -8,15 +8,15 @@ class RequestModel {
   int status;
   DateTime? startDateTime;
   DateTime? endDateTime;
-  final DateTime? approvalTime;
-  final DateTime? rejectTime;
+  DateTime? approvalTime;
+  DateTime? rejectTime;
   String? reason;
   String? comment;
   String? filePath;
   File? file;
-  final EmployeeModel requester;
-  final EmployeeModel? approver;
-  final EmployeeModel? rejecter;
+  EmployeeModel requester;
+  EmployeeModel? approver;
+  EmployeeModel? rejecter;
 
   RequestModel({
     required this.id,
@@ -83,6 +83,25 @@ factory RequestModel.fromSupabase(Map<String, dynamic> request) {
       requester: EmployeeModel.empty(),
       approvalTime: null,
       rejectTime: null,
+    );
+  }
+
+  factory RequestModel.copyWith(RequestModel request, {int? id, int? type, int? status, DateTime? startDateTime, DateTime? endDateTime, DateTime? approvalTime, DateTime? rejectTime, String? reason, String? comment, String? filePath, File? file, EmployeeModel? requester, EmployeeModel? approver, EmployeeModel? rejecter}) {
+    return RequestModel(
+      id: id ?? request.id,
+      type: type ?? request.type,
+      status: status ?? request.status,
+      startDateTime: startDateTime ?? request.startDateTime,
+      endDateTime: endDateTime ?? request.endDateTime,
+      approvalTime: approvalTime ?? request.approvalTime,
+      rejectTime: rejectTime ?? request.rejectTime,
+      reason: reason ?? request.reason,
+      comment: comment ?? request.comment,
+      filePath: filePath ?? request.filePath,
+      file: file ?? request.file,
+      requester: requester ?? request.requester,
+      approver: approver ?? request.approver,
+      rejecter: rejecter ?? request.rejecter,
     );
   }
 }

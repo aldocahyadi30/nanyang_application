@@ -9,13 +9,13 @@ import 'package:provider/provider.dart';
 
 class NanyangDateRangePicker extends StatefulWidget {
   final TextEditingController? controller;
-  final String type;
   final Color color;
   final DateTimeRange? selectedDateRange;
   final bool isDisabled;
+  final Function(DateTimeRange)? onDateRangePicked;
 
   const NanyangDateRangePicker(
-      {super.key, this.controller, required this.type, this.color = ColorTemplate.violetBlue, this.selectedDateRange, this.isDisabled = false});
+      {super.key, this.controller, this.color = ColorTemplate.violetBlue, this.selectedDateRange, this.isDisabled = false, this.onDateRangePicked});
 
   @override
   State<NanyangDateRangePicker> createState() => _NanyangDateRangePickerState();
@@ -30,13 +30,11 @@ class _NanyangDateRangePickerState extends State<NanyangDateRangePicker> {
     if (widget.selectedDateRange != null) {
       Future.delayed(Duration.zero, () {
         selectedDateRange = widget.selectedDateRange!;
-        widget.controller!.text =
-            '${DateFormat('dd/MM/yyyy').format(selectedDateRange!.start)} - ${DateFormat('dd/MM/yyyy').format(selectedDateRange!.end)}';
+        widget.controller!.text = '${DateFormat('dd/MM/yyyy').format(selectedDateRange!.start)} - ${DateFormat('dd/MM/yyyy').format(selectedDateRange!.end)}';
       });
     } else {
       Future.delayed(Duration.zero, () {
-        selectedDateRange = Provider.of<DateViewModel>(context, listen: false)
-            .initializeDateRangeForPicker(widget.controller!, widget.type);
+        selectedDateRange = DateTimeRange(start: DateTime.now(), end: DateTime.now());
       });
     }
   }
@@ -52,21 +50,14 @@ class _NanyangDateRangePickerState extends State<NanyangDateRangePicker> {
       },
     );
     if (picked != null && picked != selectedDateRange) {
-      setState(() {
-        selectedDateRange = picked;
-        if (widget.controller != null) {
-          widget.controller!.text =
-              '${DateFormat('dd/MM/yyyy').format(selectedDateRange!.start)} - ${DateFormat('dd/MM/yyyy').format(selectedDateRange!.end)}';
-        }
-
-        if (widget.type == 'attendance-user') {
-          Provider.of<DateProvider>(context, listen: false).setAttendanceUserDate(selectedDateRange!);
-          Provider.of<AttendanceViewModel>(context, listen: false).getUserAttendance();
-        }else if (widget.type == 'request') {
-          Provider.of<DateProvider>(context, listen: false).setRequestDate(selectedDateRange!);
-          Provider.of<RequestViewModel>(context, listen: false).addFilter(date: selectedDateRange!);
-        }
-      });
+      setState(
+        () {
+          selectedDateRange = picked;
+        },
+      );
+      if (widget.onDateRangePicked != null) {
+        widget.onDateRangePicked!(selectedDateRange!);
+      }
     }
   }
 

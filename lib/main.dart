@@ -7,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:nanyang_application/module/splash_screen.dart';
 import 'package:nanyang_application/provider/color_provider.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/provider/date_provider.dart';
 import 'package:nanyang_application/provider/file_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
@@ -19,6 +18,7 @@ import 'package:nanyang_application/service/configuration_service.dart';
 import 'package:nanyang_application/service/employee_service.dart';
 import 'package:nanyang_application/service/firebase_service.dart';
 import 'package:nanyang_application/service/navigation_service.dart';
+import 'package:nanyang_application/service/performance_service.dart';
 import 'package:nanyang_application/service/request_service.dart';
 import 'package:nanyang_application/service/salary_service.dart';
 import 'package:nanyang_application/service/user_service.dart';
@@ -29,6 +29,7 @@ import 'package:nanyang_application/viewmodel/chat_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/date_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/performance_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/salary_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
@@ -103,10 +104,10 @@ Future<void> main() async {
           create: (context) => ConfigurationViewModel(configurationService: ConfigurationService()),
         ),
         ChangeNotifierProvider(
-          create: (context) => DateViewModel(),
+          create: (context) => PerformanceViewmodel(performanceService: PerformanceService()),
         ),
         ChangeNotifierProvider(
-          create: (context) => ConfigurationProvider(),
+          create: (context) => DateViewModel(),
         ),
         ChangeNotifierProvider(
           create: (context) => ToastProvider(),

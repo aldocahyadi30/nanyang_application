@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/other/nanyang_detail_card.dart';
 import 'package:nanyang_application/module/management/screen/management_user_form_screen.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 enum MenuItem { edit, delete }
@@ -55,7 +54,7 @@ class ManagementUserDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ConfigurationProvider _config = context.read<ConfigurationProvider>();
+    final UserModel _user = context.read<ConfigurationViewModel>().user;
     return Scaffold(
       backgroundColor: ColorTemplate.periwinkle,
       appBar: NanyangAppbar(

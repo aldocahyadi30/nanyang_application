@@ -55,9 +55,8 @@ class _RequestFilterState extends State<RequestFilter> {
         builder: (context) {
           return StatefulBuilder(
             builder: (context, StateSetter setState) {
-              _isFiltered = _selectedCategories.isNotEmpty ||
-                  Provider.of<DateProvider>(context, listen: false).requestDate != null ||
-                  _selectedStatus != 'Pending';
+              _isFiltered =
+                  _selectedCategories.isNotEmpty || Provider.of<DateProvider>(context, listen: false).requestDate != null || _selectedStatus != 'Pending';
 
               return Container(
                 decoration: BoxDecoration(
@@ -83,10 +82,7 @@ class _RequestFilterState extends State<RequestFilter> {
                               child: Text(
                                 'Filter',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: const Color(0xFFE6EAFE),
-                                    fontSize: dynamicFontSize(24, context),
-                                    fontWeight: FontWeight.bold),
+                                style: TextStyle(color: const Color(0xFFE6EAFE), fontSize: dynamicFontSize(24, context), fontWeight: FontWeight.bold),
                               ),
                             ),
                             Expanded(
@@ -111,10 +107,7 @@ class _RequestFilterState extends State<RequestFilter> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text('Status',
-                                  style: TextStyle(
-                                      color: ColorTemplate.darkPeriwinkle,
-                                      fontSize: dynamicFontSize(20, context),
-                                      fontWeight: FontWeight.bold)),
+                                  style: TextStyle(color: ColorTemplate.darkPeriwinkle, fontSize: dynamicFontSize(20, context), fontWeight: FontWeight.bold)),
                             ),
                             SizedBox(
                               height: dynamicHeight(16, context),
@@ -151,8 +144,7 @@ class _RequestFilterState extends State<RequestFilter> {
                                 onChanged: (value) {
                                   setState(() {
                                     _selectedStatus = value.toString();
-                                    Provider.of<RequestViewModel>(context, listen: false)
-                                        .addFilter(status: _selectedStatus);
+                                    context.read<RequestViewModel>().addFilter(status: _selectedStatus);
                                   });
                                 },
                                 dropdownColor: ColorTemplate.periwinkle,
@@ -177,10 +169,7 @@ class _RequestFilterState extends State<RequestFilter> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Text('Kategori',
-                                  style: TextStyle(
-                                      color: ColorTemplate.darkPeriwinkle,
-                                      fontSize: dynamicFontSize(20, context),
-                                      fontWeight: FontWeight.bold)),
+                                  style: TextStyle(color: ColorTemplate.darkPeriwinkle, fontSize: dynamicFontSize(20, context), fontWeight: FontWeight.bold)),
                             ),
                             Wrap(
                               spacing: 12,
@@ -206,8 +195,7 @@ class _RequestFilterState extends State<RequestFilter> {
                                       } else {
                                         _selectedCategories.remove(index);
                                       }
-                                      Provider.of<RequestViewModel>(context, listen: false)
-                                          .addFilter(selectedCategory: _selectedCategories);
+                                      context.read<RequestViewModel>().addFilter(selectedCategory: _selectedCategories);
                                     });
                                   },
                                   shape: RoundedRectangleBorder(
@@ -258,8 +246,11 @@ class _RequestFilterState extends State<RequestFilter> {
                                     labelStyle: const TextStyle(color: ColorTemplate.violetBlue, fontWeight: FontWeight.w600),
                                     suffixIcon: NanyangDateRangePicker(
                                       controller: _dateController,
-                                      type: 'request',
                                       color: ColorTemplate.violetBlue,
+                                      onDateRangePicked: (range) {
+                                        _dateController.text = '${parseDateToStringFormatted(range.start)} - ${parseDateToStringFormatted(range.end)}';
+                                        context.read<RequestViewModel>().addFilter(date: range);
+                                      },
                                     ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(dynamicWidth(25, context)),

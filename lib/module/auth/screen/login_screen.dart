@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/module/auth/widget/login_form.dart';
@@ -49,10 +50,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 Padding(padding: dynamicPaddingOnly(120, 0, 0, 0, context)),
                 Hero(
                   tag: 'logo',
-                  child: Image.asset(
-                    'assets/image/logo-nanyang.png',
-                    width: 175,
-                    height: 175,
+                  child: SvgPicture.asset(
+                    'assets/svg/logo.svg',
+                    width: dynamicHeight(175, context),
+                    height: dynamicWidth(175, context),
                   ),
                 ),
                 AnimatedOpacity(

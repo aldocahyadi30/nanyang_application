@@ -9,7 +9,7 @@ class ConfigurationModel {
     required this.cutoffDay,
   });
 
-  factory ConfigurationModel.fromMap(List<Map<String, dynamic>> configurations) {
+  factory ConfigurationModel.fromSupabaseList(List<Map<String, dynamic>> configurations) {
     return ConfigurationModel(
       foodAllowanceWorker: double.parse(configurations.where((element) => element['nama_konfigurasi'] == 'uang_makan_karyawan').first['value']),
       foodAllowanceLabor: double.parse(configurations.where((element) => element['nama_konfigurasi'] == 'uang_makan_cabutan').first['value']),

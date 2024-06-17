@@ -6,6 +6,7 @@ import 'package:nanyang_application/model/salary.dart';
 import 'package:nanyang_application/module/salary/screen/salary_admin_detail_screen.dart';
 import 'package:nanyang_application/module/salary/screen/salary_admin_form_screen.dart';
 import 'package:nanyang_application/module/salary/screen/salary_admin_screen.dart';
+import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/navigation_service.dart';
 import 'package:nanyang_application/service/salary_service.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class SalaryViewModel extends ChangeNotifier {
   final SalaryService _salaryService;
   final NavigationService _navigationService = Provider.of<NavigationService>(navigatorKey.currentContext!, listen: false);
+  final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
   SalaryModel _selectedSalary = SalaryModel.empty();
   List<EmployeeModel> _employeeList = [];
   EmployeeModel _selectedEmployee = EmployeeModel.empty();
@@ -69,6 +71,7 @@ class SalaryViewModel extends ChangeNotifier {
       } else {
         debugPrint('Get Salary error: ${e.toString()}');
       }
+      
     }
   }
 
@@ -138,7 +141,7 @@ class SalaryViewModel extends ChangeNotifier {
     _navigationService.navigateTo(const SalaryAdminFormScreen());
   }
 
-  Future<void> detail(EmployeeModel employee) async{
+  Future<void> detail(EmployeeModel employee) async {
     _selectedEmployee = employee;
     _selectedDate = DateTime.now();
     notifyListeners();

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 
 class NanyangTimePicker extends StatefulWidget {
-  final TextEditingController controller;
   final Color color;
   final TimeOfDay? selectedTime;
   final bool isDisabled;
+  final Function(TimeOfDay)? onTimePicked;
 
-  const NanyangTimePicker({super.key, required this.controller, this.color = ColorTemplate.violetBlue, this.selectedTime, this.isDisabled = false});
+  const NanyangTimePicker({super.key, this.color = ColorTemplate.violetBlue, this.selectedTime, this.isDisabled = false, this.onTimePicked});
 
   @override
   State<NanyangTimePicker> createState() => _DatePickerState();
@@ -22,7 +22,6 @@ class _DatePickerState extends State<NanyangTimePicker> {
     if (widget.selectedTime != null) {
       Future.delayed(Duration.zero, () {
         selectedTime = widget.selectedTime!;
-        widget.controller.text = selectedTime.format(context);
       });
     }else{
       Future.delayed(Duration.zero, () {
@@ -42,8 +41,10 @@ class _DatePickerState extends State<NanyangTimePicker> {
     if (picked != null) {
       setState(() {
         selectedTime = picked;
-        widget.controller.text = selectedTime.format(context);
       });
+      if (widget.onTimePicked != null) {
+        widget.onTimePicked!(selectedTime);
+      }
     }
   }
 

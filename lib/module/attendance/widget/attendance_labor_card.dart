@@ -7,9 +7,9 @@ import 'package:nanyang_application/model/attendance_user.dart';
 import 'package:nanyang_application/helper.dart';
 
 class AttendanceLaborCard extends StatefulWidget {
-  final AttendanceUserModel user;
+  final AttendanceUserModel attendance;
 
-  const AttendanceLaborCard({super.key, required this.user});
+  const AttendanceLaborCard({super.key, required this.attendance});
 
   @override
   State<AttendanceLaborCard> createState() => _AttendanceLaborCardState();
@@ -21,16 +21,16 @@ class _AttendanceLaborCardState extends State<AttendanceLaborCard> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.user.laborDetail == null) {
+    if (widget.attendance.laborDetail == null) {
       _height = dynamicHeight(100, context);
     } else {
-      if (widget.user.laborDetail!.status == 1) {
+      if (widget.attendance.laborDetail!.status == 1) {
         _height = dynamicHeight(200, context);
       } else {
         _height = dynamicHeight(100, context);
       }
     }
-    String date = DateFormat('EEEE, dd MMMM yyyy').format(widget.user.date);
+    String date = DateFormat('EEEE, dd MMMM yyyy').format(widget.attendance.date);
     return Column(
       children: [
         Padding(
@@ -61,7 +61,7 @@ class _AttendanceLaborCardState extends State<AttendanceLaborCard> {
               color: ColorTemplate.violetBlue,
               borderRadius: BorderRadius.circular(25),
             ),
-            child: _buildListTile(context, widget.user, _isExpanded),
+            child: _buildListTile(context, widget.attendance, _isExpanded),
           ),
         ),
         SizedBox(
@@ -76,7 +76,7 @@ class _AttendanceLaborCardState extends State<AttendanceLaborCard> {
               color: ColorTemplate.lavender,
               borderRadius: BorderRadius.circular(25),
             ),
-            child: _buildDetail(context, widget.user.laborDetail!),
+            child: _buildDetail(context, widget.attendance.laborDetail!),
           ),
         ),
         SizedBox(
@@ -137,31 +137,19 @@ Widget _buildDetail(BuildContext context, AttendanceDetailModel data) {
       children: [
         Row(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: ColorTemplate.darkVistaBlue,
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Text(
-                '',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: dynamicFontSize(16, context),
-                  fontWeight: FontWeight.w600,
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: ColorTemplate.darkVistaBlue,
+                  borderRadius: BorderRadius.circular(25),
                 ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: ColorTemplate.darkVistaBlue,
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Text(
-                data.statusName!,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: dynamicFontSize(16, context),
-                  fontWeight: FontWeight.w600,
+                child: Text(
+                  data.statusName!,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: dynamicFontSize(16, context),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             )

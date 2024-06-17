@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/attendance/screen/attendance_admin_screen.dart';
 import 'package:nanyang_application/module/attendance/screen/attendance_user_screen.dart';
 import 'package:nanyang_application/module/dashboard/screen/dashboard_screen.dart';
-import 'package:nanyang_application/module/setting/screen/setting_screen.dart';
 import 'package:nanyang_application/module/request/screen/request_screen.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
-import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/module/setting/screen/setting_screen.dart';
+import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    user = context.read<ConfigurationProvider>().user;
+    user = context.read<ConfigurationViewModel>().user;
     _attendanceScreen = user.level == 1 ? const AttendanceUserScreen() : const AttendanceAdminScreen();
   }
 
@@ -44,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ));
 
     return Scaffold(
-      backgroundColor: color,
+      backgroundColor: currentPageIndex == 2 ? ColorTemplate.lightVistaBlue : ColorTemplate.periwinkle,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
@@ -62,10 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
           onDestinationSelected: (int index) {
             setState(() {
               currentPageIndex = index;
-              if (currentPageIndex == 2) {
-                color = ColorTemplate.lightVistaBlue;
-              } else {
-                color = ColorTemplate.periwinkle;
+              if (currentPageIndex == 1){
+                context.read<AttendanceViewModel>().index();
               }
             });
           },

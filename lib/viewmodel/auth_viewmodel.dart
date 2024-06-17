@@ -3,11 +3,11 @@ import 'package:nanyang_application/main.dart';
 import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/auth/screen/login_screen.dart';
 import 'package:nanyang_application/module/home_screen.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/auth_service.dart';
 import 'package:nanyang_application/service/firebase_service.dart';
 import 'package:nanyang_application/service/navigation_service.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,7 +18,7 @@ class AuthViewModel extends ChangeNotifier {
   final NavigationService _navigationService = Provider.of<NavigationService>(navigatorKey.currentContext!, listen: false);
 
   final userViewModel = Provider.of<UserViewModel>(navigatorKey.currentContext!, listen: false);
-  final config = Provider.of<ConfigurationProvider>(navigatorKey.currentContext!, listen: false);
+  final configViewModel = Provider.of<ConfigurationViewModel>(navigatorKey.currentContext!, listen: false);
   final firebaseService = FirebaseService();
 
   AuthViewModel({required AuthenticationService authenticationService}) : _authenticationService = authenticationService;
@@ -26,11 +26,11 @@ class AuthViewModel extends ChangeNotifier {
   Future<void> login(String email, String password) async {
     try {
       String? token = await firebaseService.getFCMToken();
-
       final Map<String, dynamic> user = await _authenticationService.login(email, password, token);
 
       if (user['id'] != '') {
-        config.setUser(UserModel.fromSupabase(user));
+        configViewModel.setUser(UserModel.fromSupabase(user));
+        await configViewModel.initialize();
 
         _toastProvider.showToast('Login berhasil!', 'success');
         _navigationService.navigateToReplace(const HomeScreen());

@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/model/chat.dart';
 import 'package:nanyang_application/model/message.dart';
+import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/other/nanyang_loading_dialog.dart';
-import 'package:nanyang_application/provider/configuration_provider.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/chat_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -24,7 +25,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController messageController = TextEditingController();
-  late final ConfigurationProvider _config;
+  late final UserModel _user;
   late final ToastProvider _toast;
   late final SupabaseStreamBuilder _messageStream;
   late final ChatViewModel _chatViewModel;
@@ -33,14 +34,14 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    _config = context.read<ConfigurationProvider>();
+    _user = context.read<ConfigurationViewModel>().user;
     _toast = context.read<ToastProvider>();
     _chatViewModel = context.read<ChatViewModel>();
     try {
       if (widget.model != null) {
         _messageStream = _chatViewModel.getMessageStream(widget.model!.id)!;
       } else {
-        _messageStream = _chatViewModel.getMessageStream(_config.user.userChatId!)!;
+        _messageStream = _chatViewModel.getMessageStream(_user.userChatId!)!;
       }
     } catch (e) {
       _toast.showToast('Terjadi kesalahan, silahkan coba lagi', 'error');
@@ -68,8 +69,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void _sendMessage({String? message, File? file}) {
     try {
-      int chatID = widget.model != null ? widget.model!.id : _config.user.userChatId!;
-      _chatViewModel.sendMessage(chatID, _config.user.id, _config.isAdmin, meesage: message, file: file);
+      int chatID = widget.model != null ? widget.model!.id : _user.userChatId!;
+      _chatViewModel.sendMessage(chatID, _user.id, _user.isAdmin, meesage: message, file: file);
     } catch (e) {
       _toast.showToast('Terjadi kesalahan, silahkan coba lagi', 'error');
     }
@@ -80,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
     var keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       appBar: NanyangAppbar(
-        title: _config.isAdmin ? '${widget.model!.user.employee.name.split(' ')[0]}' : 'Halo, ${_config.user.employee.name.split(' ')[0]}!',
+        title: _user.isAdmin ? widget.model!.user.employee.name.split(' ')[0] : 'Halo, ${_user.employee.name.split(' ')[0]}!',
         isBackButton: true,
         isCenter: true,
         backgroundColor: ColorTemplate.periwinkle,
@@ -115,7 +116,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         reverse: true,
                         itemCount: messages.length,
                         itemBuilder: (context, index) {
-                          return _buildChatBubble(context, messages[index], _config);
+                          return _buildChatBubble(context, messages[index], _user);
                         },
                       );
                     } else {
@@ -186,8 +187,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 }
 
-Row _buildChatBubble(BuildContext context, MessageModel message, ConfigurationProvider config) {
-  bool isUser = (config.isAdmin && message.isAdmin) || (!config.isAdmin && config.user.id == message.userId);
+Row _buildChatBubble(BuildContext context, MessageModel message, UserModel user) {
+  bool isUser = (user.isAdmin && message.isAdmin) || (!user.isAdmin && user.id == message.userId);
   return Row(
     mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
     children: [

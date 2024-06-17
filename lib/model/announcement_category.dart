@@ -25,4 +25,8 @@ class AnnouncementCategoryModel {
   static List<AnnouncementCategoryModel> fromSupabaseList(List<Map<String, dynamic>> categories) {
     return categories.map((category) => AnnouncementCategoryModel.fromSupabase(category)).toList();
   }
+
+  factory AnnouncementCategoryModel.empty() {
+    return AnnouncementCategoryModel(id: 0, name: '', color: const Color(0xFFFFFFFF));
+  }
 }

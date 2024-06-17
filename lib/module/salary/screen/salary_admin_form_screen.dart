@@ -41,10 +41,10 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
   void initState() {
     super.initState();
     _salaryViewModel = context.read<SalaryViewModel>();
-    _salary = _salaryViewModel.salary;
     _employee = _salaryViewModel.employee;
-    isEdit = _salary.id != 0;
+    isEdit = _salaryViewModel.salary.id != 0;
     if (isEdit) {
+      _salary = SalaryModel.copyWith(_salaryViewModel.salary);
       _period = _salary.period;
       _monthlySalary = _salary.monthlySalary;
       _attendanceQtyController.text = _salary.totalAttendance.toString();
@@ -65,7 +65,9 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
       }
       _noteController.text = _salary.note;
     } else {
+      _salary = _salaryViewModel.salary;
       _period = DateFormat('yyyyMM').format(DateTime.now());
+      _salary.period = _period;
       _monthlySalary = _employee.salary!;
       _attendanceQtyController.text = _salary.totalAttendance.toString();
       _workingDayController.text = _salary.totalWorkingDay.toString();
@@ -92,9 +94,9 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
     _salary.monthlySalary = _monthlySalary;
     _salary.totalAttendance = int.tryParse(_attendanceQtyController.text) ?? 0;
     _salary.totalWorkingDay = int.tryParse(_workingDayController.text) ?? 0;
-    _salary.totalOvertime = double.tryParse(_overtimeController.text) ?? 0;
-    _salary.totalBonus = double.tryParse(_bonusController.text) ?? 0;
-    _salary.totalDeduction = double.tryParse(_deductionController.text) ?? 0;
+    _salary.totalOvertime = removeCurrencyFormat(_overtimeController.text);
+    _salary.totalBonus = removeCurrencyFormat(_bonusController.text);
+    _salary.totalDeduction = removeCurrencyFormat(_deductionController.text);
     _salary.bpjsRate = double.tryParse(_bpjsRateController.text) ?? 0;
     double dailySalary = _monthlySalary / _salary.totalWorkingDay;
     _salary.totalSalary = (dailySalary * _salary.totalAttendance) +
@@ -112,9 +114,9 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
       _salary,
       totalAttendance: int.tryParse(_attendanceQtyController.text),
       totalWorkingDay: int.tryParse(_workingDayController.text),
-      totalOvertime: double.tryParse(_overtimeController.text),
-      totalBonus: double.tryParse(_bonusController.text),
-      totalDeduction: double.tryParse(_deductionController.text),
+      totalOvertime: removeCurrencyFormat(_overtimeController.text),
+      totalBonus: removeCurrencyFormat(_bonusController.text),
+      totalDeduction: removeCurrencyFormat(_deductionController.text),
       bpjsRate: double.tryParse(_bpjsRateController.text),
       totalSalary: ((_salary.monthlySalary / _salary.totalWorkingDay) * _salary.totalAttendance) +
           _salary.totalOvertime +
@@ -192,6 +194,7 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
                         ],
                         onChanged: (value) {
                           final workingDay = int.tryParse(value ?? '0') ?? 0;
+                          _salary.totalWorkingDay = workingDay;
                           if (workingDay > 0) {
                             final dailySalary = _monthlySalary / workingDay;
                             _dailySalaryController.text = formatCurrency(dailySalary);
@@ -224,6 +227,7 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
                         keyboardType: TextInputType.number,
                         onChanged: (value) {
                           final bpjsRate = double.tryParse(value ?? '0') ?? 0;
+                          _salary.bpjsRate = bpjsRate;
 
                           if (bpjsRate > 0) {
                             final bpjs = _monthlySalary * (bpjsRate / 100);
@@ -252,6 +256,9 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
                   controller: _overtimeController,
                   keyboardType: TextInputType.number,
                   inputFormatters: [formatInputCurrencty()],
+                  onChanged: (value) {
+                    if (value!.isNotEmpty) _salary.totalOvertime = removeCurrencyFormat(value);
+                  },
                 ),
                 SizedBox(height: dynamicHeight(16, context)),
                 FormTextField(
@@ -259,6 +266,9 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
                   controller: _bonusController,
                   keyboardType: TextInputType.number,
                   inputFormatters: [formatInputCurrencty()],
+                  onChanged: (value) {
+                    if (value!.isNotEmpty) _salary.totalBonus = removeCurrencyFormat(value);
+                  },
                 ),
                 SizedBox(height: dynamicHeight(16, context)),
                 FormTextField(
@@ -266,6 +276,9 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
                   controller: _deductionController,
                   keyboardType: TextInputType.number,
                   inputFormatters: [formatInputCurrencty()],
+                  onChanged: (value) {
+                    if (value!.isNotEmpty) _salary.totalDeduction = removeCurrencyFormat(value);
+                  },
                 ),
                 SizedBox(height: dynamicHeight(16, context)),
                 FormTextField(
@@ -274,23 +287,31 @@ class _SalaryAdminFormScreenState extends State<SalaryAdminFormScreen> {
                   controller: _noteController,
                   maxLines: 5,
                   keyboardType: TextInputType.multiline,
+                  onChanged: (value){
+                    if (value!.isNotEmpty) _salary.note = value;
+                  },
                 ),
                 SizedBox(height: dynamicHeight(28, context)),
                 FormButton(
-                    text: 'Simpan',
-                    isLoading: _isLoading,
-                    onPressed: () {
-                      setState(() {
-                        _isLoading = true;
-                      });
+                  text: 'Simpan',
+                  isLoading: _isLoading,
+                  onPressed: () async {
+                    setState(() {
+                      _isLoading = true;
+                    });
 
-                      if (isEdit) {
-                      } else {}
+                    if (isEdit) {
+                      await update();
+                    } else {
+                      await store();
+                    }
 
-                      setState(() {
-                        _isLoading = false;
-                      });
-                    })
+                    setState(() {
+                      _isLoading = false;
+                    });
+                  },
+                ),
+                SizedBox(height: dynamicHeight(16, context)),
               ],
             ),
           ),

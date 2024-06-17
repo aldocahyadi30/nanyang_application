@@ -68,9 +68,9 @@ class EmployeeViewModel extends ChangeNotifier {
     _navigationService.navigateTo(const ManagementEmployeeFormScreen(type: 'create'));
   }
 
-  Future<void> store() async {
+  Future<void> store(EmployeeModel model) async {
     try {
-      await _employeeService.store(_selectedEmployee);
+      await _employeeService.store(model);
       _toastProvider.showToast('Data karyawan berhasil ditambahkan', 'success');
       getEmployee();
       _navigationService.goBack();
@@ -87,9 +87,9 @@ class EmployeeViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> update() async {
+  Future<void> update(EmployeeModel model) async {
     try {
-      await _employeeService.update(_selectedEmployee);
+      await _employeeService.update(model);
       _toastProvider.showToast('Data karyawan berhasil diperbarui', 'success');
       getEmployee();
       _navigationService.pushAndRemoveUntil(const ManagementEmployeeScreen());

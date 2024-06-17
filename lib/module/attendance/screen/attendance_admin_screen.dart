@@ -4,6 +4,8 @@ import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/module/attendance/widget/attendance_admin_list.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_date_picker.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class AttendanceAdminScreen extends StatefulWidget {
   const AttendanceAdminScreen({super.key});
@@ -16,11 +18,14 @@ class _AttendanceAdminScreenState extends State<AttendanceAdminScreen> with Tick
   late final TabController _tabController;
   final TextEditingController workerController = TextEditingController();
   final TextEditingController laborController = TextEditingController();
+  late DateTime date;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    date = context.read<AttendanceViewModel>().selectedAdminDate;
+    workerController.text = parseDateToStringFormatted(date);
   }
 
   @override
@@ -90,13 +95,13 @@ class _AttendanceAdminScreenState extends State<AttendanceAdminScreen> with Tick
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [_buildWorkerScreen(context, workerController), _buildLaborScreen(context, laborController)],
+        children: [_buildWorkerScreen(context, workerController, date), _buildLaborScreen(context, laborController,date)],
       ),
     );
   }
 }
 
-Widget _buildWorkerScreen(BuildContext context, TextEditingController dateController) {
+Widget _buildWorkerScreen(BuildContext context, TextEditingController dateController, DateTime date) {
   return Column(
     children: [
       Padding(
@@ -124,8 +129,13 @@ Widget _buildWorkerScreen(BuildContext context, TextEditingController dateContro
               labelStyle: const TextStyle(color: ColorTemplate.violetBlue, fontWeight: FontWeight.w600),
               suffixIcon: NanyangDatePicker(
                 controller: dateController,
-                type: 'attendance-worker',
                 color: ColorTemplate.violetBlue,
+                selectedDate: date,
+                onDatePicked: (picked) {
+                  dateController.text = parseDateToStringFormatted(picked);
+                  context.read<AttendanceViewModel>().setAdminDate(picked);
+                  context.read<AttendanceViewModel>().getAdminAttendance(1);
+                },
               ),
               border: InputBorder.none,
             ),
@@ -140,7 +150,7 @@ Widget _buildWorkerScreen(BuildContext context, TextEditingController dateContro
   );
 }
 
-Widget _buildLaborScreen(BuildContext context, TextEditingController dateController) {
+Widget _buildLaborScreen(BuildContext context, TextEditingController dateController, DateTime date) {
   return Column(
     children: [
       Padding(
@@ -168,8 +178,13 @@ Widget _buildLaborScreen(BuildContext context, TextEditingController dateControl
               labelStyle: const TextStyle(color: ColorTemplate.violetBlue, fontWeight: FontWeight.w600),
               suffixIcon: NanyangDatePicker(
                 controller: dateController,
-                type: 'attendance-labor',
                 color: ColorTemplate.violetBlue,
+                selectedDate: date,
+                onDatePicked: (picked) {
+                  dateController.text = parseDateToStringFormatted(picked);
+                  context.read<AttendanceViewModel>().setAdminDate(picked);
+                  context.read<AttendanceViewModel>().getAdminAttendance(2);
+                },
               ),
               border: InputBorder.none,
             ),

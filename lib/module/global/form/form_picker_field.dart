@@ -3,7 +3,8 @@ import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/helper.dart';
 
 class FormPickerField extends StatefulWidget {
-  final String title;
+  final String? title;
+  final String? hintText;
   final Color titleColor;
   final Color fillColor;
   final Widget picker;
@@ -15,7 +16,8 @@ class FormPickerField extends StatefulWidget {
 
   const FormPickerField({
     super.key,
-    required this.title,
+    this.title,
+    this.hintText,
     this.titleColor = ColorTemplate.darkVistaBlue,
     this.fillColor = ColorTemplate.lavender,
     required this.picker,
@@ -42,35 +44,42 @@ class _FormPickerFieldState extends State<FormPickerField> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: dynamicPaddingSymmetric(0, 20, context),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: RichText(
-              text: TextSpan(
-                text: widget.title,
-                style: TextStyle(
-                  fontSize: dynamicFontSize(16, context),
-                  fontWeight: FontWeight.w700,
-                  color: widget.titleColor,
-                ),
-                children: widget.isRequired ? <TextSpan>[
-                  TextSpan(
-                    text: ' *',
-                    style: TextStyle(
-                      fontSize: dynamicFontSize(16, context),
-                      fontWeight: FontWeight.w700,
-                      color: Colors.red,
+        if (widget.title != null)
+          Column(
+            children: [
+              Padding(
+                padding: dynamicPaddingSymmetric(0, 20, context),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: RichText(
+                    text: TextSpan(
+                      text: widget.title,
+                      style: TextStyle(
+                        fontSize: dynamicFontSize(16, context),
+                        fontWeight: FontWeight.w700,
+                        color: widget.titleColor,
+                      ),
+                      children: widget.isRequired
+                          ? <TextSpan>[
+                              TextSpan(
+                                text: ' *',
+                                style: TextStyle(
+                                  fontSize: dynamicFontSize(16, context),
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ]
+                          : <TextSpan>[],
                     ),
                   ),
-                ] : <TextSpan>[],
+                ),
               ),
-            )
+              SizedBox(
+                height: dynamicHeight(8, context),
+              ),
+            ],
           ),
-        ),
-        SizedBox(
-          height: dynamicHeight(8, context),
-        ),
         TextFormField(
           controller: widget.controller,
           validator: widget.isRequired ? widget.validator : null,
@@ -81,6 +90,7 @@ class _FormPickerFieldState extends State<FormPickerField> {
             fontWeight: FontWeight.w600,
           ),
           decoration: InputDecoration(
+            hintText: widget.hintText,
             contentPadding: dynamicPaddingSymmetric(16, 24, context),
             enabledBorder: _outlineInputBorder(context),
             focusedBorder: _outlineInputBorder(context),
