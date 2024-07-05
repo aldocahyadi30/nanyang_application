@@ -10,6 +10,7 @@ import 'package:nanyang_application/module/global/form/form_picker_field.dart';
 import 'package:nanyang_application/module/global/form/form_text_field.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_date_picker.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +44,7 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
   void initState() {
     super.initState();
     _employeeViewModel = context.read<EmployeeViewModel>();
-    _user = context.read<ConfigurationViewModel>().user;
+    _user = context.read<AuthViewModel>().user;
     isEdit = widget.type == 'edit';
 
     if (isEdit) {
@@ -188,7 +189,7 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
                     FormDropdown(
                       title: 'Jenis Kelamin',
                       isRequired: false,
-                      value: _model.gender,
+                      value: null,
                       items: const [DropdownMenuItem(value: 'Pria', child: Text('Pria')), DropdownMenuItem(value: 'Wanita', child: Text('Wanita'))],
                       onChanged: (value) {
                         setState(() {
@@ -204,10 +205,10 @@ class _ManagementEmployeeFormScreenState extends State<ManagementEmployeeFormScr
                   title: 'Gaji',
                   controller: _salaryController,
                   keyboardType: TextInputType.number,
-                  inputFormatters: [inputCurrencyFormatter],
+                  inputFormatters: [formatInputCurrencty()],
                   onChanged: (value){
                     if (value!.isNotEmpty){
-                      _model.salary = double.parse(value);
+                      _model.salary = removeCurrencyFormat(value);
                     }
                   },
                 ),

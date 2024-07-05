@@ -20,17 +20,23 @@ class AuthViewModel extends ChangeNotifier {
   final userViewModel = Provider.of<UserViewModel>(navigatorKey.currentContext!, listen: false);
   final configViewModel = Provider.of<ConfigurationViewModel>(navigatorKey.currentContext!, listen: false);
   final firebaseService = FirebaseService();
+  UserModel _user = UserModel.empty();
 
   AuthViewModel({required AuthenticationService authenticationService}) : _authenticationService = authenticationService;
 
+  set user(UserModel user) {
+    _user = user;
+    notifyListeners();
+  }
+
+  UserModel get user => _user;
   Future<void> login(String email, String password) async {
     try {
       String? token = await firebaseService.getFCMToken();
-      final Map<String, dynamic> user = await _authenticationService.login(email, password, token);
+      final bool status = await _authenticationService.login(email, password, token);
 
-      if (user['id'] != '') {
-        configViewModel.setUser(UserModel.fromSupabase(user));
-        await configViewModel.initialize();
+      if (status) {
+        await initialize();
 
         _toastProvider.showToast('Login berhasil!', 'success');
         _navigationService.navigateToReplace(const HomeScreen());
@@ -49,10 +55,42 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  //register
-  Future<void> register(String email, String password, int employeeID, int level) async {
+  Future<void> getUser() async {
     try {
-      await _authenticationService.register(email, password, employeeID, level);
+      user = await userViewModel.getUserByID(Supabase.instance.client.auth.currentUser!.id);
+    } catch (e) {
+      if (e is AuthException) {
+        debugPrint('Get user error: ${e.message}');
+        _toastProvider.showToast('Gagal mendapatkan data user!', 'error');
+      } else if (e is PostgrestException) {
+        debugPrint('Get user error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+      } else {
+        debugPrint('Get user error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+      }
+    }
+  }
+
+  Future<void> initialize() async {
+    try {
+      await getUser();
+      await configViewModel.initialize();
+    } catch (e) {
+      if (e is PostgrestException) {
+        debugPrint('Initialize error: ${e.message}');
+        _toastProvider.showToast('Terjadi kesalahan, mohon laporkan!', 'error');
+      } else {
+        debugPrint('Initialize error: ${e.toString()}');
+        _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+      }
+    }
+  }
+
+  //register
+  Future<void> register(UserModel model, String password) async {
+    try {
+      await _authenticationService.register(model, password);
 
       _toastProvider.showToast('Registrasi berhasil!', 'success');
       userViewModel.getUser();
@@ -70,9 +108,9 @@ class AuthViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> update(String uid, String email, int employeeID, int level) async {
+  Future<void> update(UserModel model) async {
     try {
-      await _authenticationService.update(uid, email, employeeID, level);
+      await _authenticationService.update(model);
 
       _toastProvider.showToast('Data user berhasil diperbarui!', 'success');
       userViewModel.getUser();
@@ -95,7 +133,7 @@ class AuthViewModel extends ChangeNotifier {
       await _authenticationService.delete(uid);
 
       _toastProvider.showToast('Data user berhasil dihapus!', 'success');
-      userViewModel.getUser();
+      await userViewModel.getUser();
     } catch (e) {
       if (e is AuthException) {
         debugPrint('Delete error: ${e.message}');
@@ -113,7 +151,8 @@ class AuthViewModel extends ChangeNotifier {
   //logout
   Future<void> logout() async {
     try {
-      await _authenticationService.logout();
+      String? token = await firebaseService.getFCMToken();
+      await _authenticationService.logout(token);
       _toastProvider.showToast('Logout berhasil!', 'success');
       _navigationService.navigateToReplace(const LoginScreen());
     } catch (e) {

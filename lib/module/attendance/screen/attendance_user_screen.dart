@@ -70,7 +70,7 @@ class _AttendanceUserScreenState extends State<AttendanceUserScreen> {
                     selectedDateRange: _dateRange,
                     onDateRangePicked: (date) {
                       dateController.text = '${DateFormat('dd/MM/yyyy').format(date.start)} - ${DateFormat('dd/MM/yyyy').format(date.end)}';
-                      context.read<AttendanceViewModel>().setUserDate(date);
+                      context.read<AttendanceViewModel>().selectedUserDate = date;
                       context.read<AttendanceViewModel>().getUserAttendance();
                     },
                   ),

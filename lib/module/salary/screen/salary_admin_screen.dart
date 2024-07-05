@@ -19,7 +19,7 @@ class _SalaryAdminScreenState extends State<SalaryAdminScreen> with TickerProvid
   @override
   void initState() {
     super.initState();
-    context.read<SalaryViewModel>().getEmployee();
+    // context.read<SalaryViewModel>().index();
     _tabController = TabController(length: 2, vsync: this);
   }
 

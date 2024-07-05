@@ -63,6 +63,11 @@ class EmployeeViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> index() async{
+    await getEmployee().then((_) =>_navigationService.navigateTo(const ManagementEmployeeScreen()));
+
+  }
+
   void create() {
     setEmployee(EmployeeModel.empty());
     _navigationService.navigateTo(const ManagementEmployeeFormScreen(type: 'create'));
@@ -72,8 +77,7 @@ class EmployeeViewModel extends ChangeNotifier {
     try {
       await _employeeService.store(model);
       _toastProvider.showToast('Data karyawan berhasil ditambahkan', 'success');
-      getEmployee();
-      _navigationService.goBack();
+      await index();
     } catch (e) {
       if (e is PostgrestException) {
         debugPrint('Employee Store error: ${e.message}');
@@ -91,8 +95,7 @@ class EmployeeViewModel extends ChangeNotifier {
     try {
       await _employeeService.update(model);
       _toastProvider.showToast('Data karyawan berhasil diperbarui', 'success');
-      getEmployee();
-      _navigationService.pushAndRemoveUntil(const ManagementEmployeeScreen());
+      await index();
     } catch (e) {
       if (e is PostgrestException) {
         debugPrint('Employee Update error: ${e.message}');
@@ -102,7 +105,7 @@ class EmployeeViewModel extends ChangeNotifier {
         _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
       }
       getEmployee();
-      _navigationService.pushAndRemoveUntil((const ManagementEmployeeScreen()));
+      _navigationService.goBack();
     }
   }
 

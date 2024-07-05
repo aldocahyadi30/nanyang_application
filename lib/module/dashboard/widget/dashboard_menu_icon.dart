@@ -3,16 +3,18 @@ import 'package:nanyang_application/helper.dart';
 
 class DashboardMenuIcon extends StatelessWidget {
   final String image;
-  final Widget route;
   final String title;
+  final Function? onTap;
 
-  const DashboardMenuIcon({super.key, required this.image, required this.route, required this.title});
+  const DashboardMenuIcon({super.key, required this.image, required this.title, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => route));
+        if (onTap != null) {
+          onTap!();
+        }
       },
       child: Container(
         width: dynamicWidth(100, context),

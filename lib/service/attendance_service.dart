@@ -45,7 +45,7 @@ class AttendanceService {
     }
   }
 
-  Future<List<Map<String, dynamic>>> getAdminAttendanceByDate(String date, int type) async {
+  Future<List<Map<String, dynamic>>> getAdminAttendanceByDate(String date) async {
     try {
       final startTime = '$date 01:00:00';
       final endTime = '$date 23:59:59';
@@ -57,7 +57,6 @@ class AttendanceService {
           posisi!inner(*),
           absensi!left(*, absensi_detail(*))
           ''')
-          .eq('posisi.tipe', type)
           .gte('absensi.waktu_masuk', startTime)
           .lte('absensi.waktu_masuk', endTime)
           .limit(1, referencedTable: 'absensi')
@@ -81,6 +80,8 @@ class AttendanceService {
           absensi!left(*, absensi_detail!left(*))
           ''').gte('absensi.waktu_masuk', startTime).lte('absensi.waktu_masuk', endTime).eq('id_karyawan', employeeID);
 
+
+      print(data);
       return data;
     } on PostgrestException catch (error) {
       throw PostgrestException(message: error.message);
@@ -123,13 +124,13 @@ class AttendanceService {
       if (model.attendance!.id != 0) {
         await supabase
             .from('absensi')
-            .update({'waktu_masuk': model.attendance!.checkIn!.toIso8601String(), 'waktu_keluar': model.attendance!.checkOut!.toIso8601String()})
+            .update({'waktu_masuk': model.attendance!.checkIn!.toIso8601String(), 'waktu_pulang': model.attendance!.checkOut!.toIso8601String()})
             .eq('id_absensi', model.attendance!.id)
             .eq('id_karyawan', model.employee.id);
       } else {
         await supabase.from('absensi').insert({
           'waktu_masuk': model.attendance!.checkIn!.toIso8601String(),
-          'waktu_keluar': model.attendance!.checkOut!.toIso8601String(),
+          'waktu_pulang': model.attendance!.checkOut!.toIso8601String(),
           'id_karyawan': model.employee.id
         });
       }

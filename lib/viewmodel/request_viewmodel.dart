@@ -7,6 +7,7 @@ import 'package:nanyang_application/module/request/screen/request_form_screen.da
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/navigation_service.dart';
 import 'package:nanyang_application/service/request_service.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,8 +16,7 @@ class RequestViewModel extends ChangeNotifier {
   final RequestService _requestService;
   final NavigationService _navigationService = Provider.of<NavigationService>(navigatorKey.currentContext!, listen: false);
   final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
-  final ConfigurationViewModel _configViewModel = Provider.of<ConfigurationViewModel>(navigatorKey.currentContext!, listen: false);
-  List<RequestModel> _request = [];
+  final AuthViewModel _auth = Provider.of<AuthViewModel>(navigatorKey.currentContext!, listen: false);  List<RequestModel> _request = [];
   List<RequestModel> _requestDashboard = [];
   RequestModel _selectedRequest = RequestModel.empty();
   List<int> _filterCategory = [];
@@ -70,8 +70,8 @@ class RequestViewModel extends ChangeNotifier {
   Future<void> getDashboardRequest() async {
     try {
       List<Map<String, dynamic>> data;
-      data = await _requestService.getDashboardRequest(_configViewModel.user.level,
-          employeeID: _configViewModel.user.isAdmin ? null : _configViewModel.user.employee.id);
+      data = await _requestService.getDashboardRequest(_auth.user.level,
+          employeeID: _auth.user.isAdmin ? null : _auth.user.employee.id);
 
       _requestDashboard = RequestModel.fromSupabaseList(data);
       notifyListeners();
@@ -88,7 +88,7 @@ class RequestViewModel extends ChangeNotifier {
   Future<void> getRequest() async {
     try {
       List<Map<String, dynamic>> data;
-      data = await _requestService.getListRequest(employeeID: _configViewModel.user.isAdmin ? null : _configViewModel.user.employee.id);
+      data = await _requestService.getListRequest(employeeID: _auth.user.isAdmin ? null : _auth.user.employee.id);
       _request = RequestModel.fromSupabaseList(data);
       notifyListeners();
     } catch (e) {
@@ -103,7 +103,7 @@ class RequestViewModel extends ChangeNotifier {
 
   Future<void> response(String type, int id, String? comment) async {
     try {
-      final int employeeID = _configViewModel.user.employee.id;
+      final int employeeID = _auth.user.employee.id;
       if (type == 'approve') {
         await _requestService.approve(id, employeeID, comment);
         _toastProvider.showToast('Permintaan berhasil disetujui!', 'success');
@@ -111,6 +111,8 @@ class RequestViewModel extends ChangeNotifier {
         await _requestService.reject(id, employeeID, comment!);
         _toastProvider.showToast('Permintaan berhasil ditolak!', 'success');
       }
+
+      _navigationService.goBack();
     } catch (e) {
       if (e is PostgrestException) {
         debugPrint('Request response error: ${e.message}');
@@ -151,7 +153,7 @@ class RequestViewModel extends ChangeNotifier {
 
   Future<void> store(RequestModel model) async {
     try {
-      model.requester = _configViewModel.user.employee;
+      model.requester = _auth.user.employee;
 
       await _requestService.store(model).then((_){
         getRequest();
@@ -175,7 +177,7 @@ class RequestViewModel extends ChangeNotifier {
 
   Future<void> update(RequestModel model) async {
     try {
-      model.requester = _configViewModel.user.employee;
+      model.requester = _auth.user.employee;
 
       await _requestService.update(model).then((_){
         getRequest();

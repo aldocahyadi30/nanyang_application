@@ -15,13 +15,6 @@ class PerformanceAdminScreen extends StatefulWidget {
 
 class _PerformanceAdminScreenState extends State<PerformanceAdminScreen> {
   @override
-  void initState() {
-    super.initState();
-    context.read<PerformanceViewmodel>().getAttendanceCount();
-    context.read<PerformanceViewmodel>().getLaborQuote();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorTemplate.periwinkle,
@@ -39,19 +32,29 @@ class _PerformanceAdminScreenState extends State<PerformanceAdminScreen> {
                 builder: (context, viewmodel, child) {
                   return Card(
                     color: ColorTemplate.violetBlue,
-                    child: Container(
+                    child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.4,
                       child: Column(
                         children: [
                           Container(
                             alignment: Alignment.centerLeft,
                             padding: dynamicPaddingSymmetric(8, 12, context),
-                            child: Text(
-                              'Performa Produksi (Gram)',
-                              style: TextStyle(
-                                  fontSize: dynamicFontSize(16, context),
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
+                            child: GestureDetector(
+                              onTap: () async => context.read<PerformanceViewmodel>().production(),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Performa Produksi (Gram)',
+                                    style: TextStyle(
+                                        fontSize: dynamicFontSize(16, context),
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  const Icon(Icons.chevron_right, color: Colors.white)
+
+                                ],
+                              ),
                             ),
                           ),
                           Expanded(
@@ -59,7 +62,6 @@ class _PerformanceAdminScreenState extends State<PerformanceAdminScreen> {
                               padding: dynamicPaddingOnly(12, 12, 12, 18, context),
                               child: LineChart(
                                 LineChartData(
-                                  maxY: 130,
                                   lineBarsData: [
                                     LineChartBarData(
                                       color: Colors.blue,
@@ -137,7 +139,7 @@ class _PerformanceAdminScreenState extends State<PerformanceAdminScreen> {
                                     leftTitles: AxisTitles(
                                       sideTitles: SideTitles(
                                         showTitles: true,
-                                        reservedSize: 30,
+                                        reservedSize: 40,
                                         getTitlesWidget: leftTitleWidget1,
                                       ),
                                     ),
@@ -159,25 +161,31 @@ class _PerformanceAdminScreenState extends State<PerformanceAdminScreen> {
                 builder: (context, viewmodel, child) {
                   return Card(
                     color: ColorTemplate.violetBlue,
-                    child: Container(
+                    child: SizedBox(
                       height: MediaQuery.of(context).size.height * 0.4,
                       child: Column(
                         children: [
                           Container(
                             alignment: Alignment.centerLeft,
                             padding: dynamicPaddingSymmetric(8, 12, context),
-                            child: Text(
-                              'Absensi Karyawan',
-                              style: TextStyle(
-                                  fontSize: dynamicFontSize(16, context),
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Absensi Karyawan',
+                                  style: TextStyle(
+                                      fontSize: dynamicFontSize(16, context),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                const Icon(Icons.chevron_right, color: Colors.white)
+                              ],
                             ),
                           ),
                           Expanded(
                             child: Padding(
                               padding: dynamicPaddingOnly(12, 12, 12, 18, context),
-                              child: Container(
+                              child: SizedBox(
                                 height: MediaQuery.of(context).size.height * 0.4,
                                 child: BarChart(
                                   BarChartData(
@@ -272,7 +280,6 @@ Widget leftTitleWidget1(double value, TitleMeta meta) {
     fontSize: 12,
     color: ColorTemplate.periwinkle,
   );
-  Widget text;
 
   return SideTitleWidget(
     axisSide: meta.axisSide,
@@ -300,7 +307,6 @@ Widget leftTitleWidget2(double value, TitleMeta meta) {
     fontSize: 12,
     color: ColorTemplate.periwinkle,
   );
-  Widget text;
 
   return SideTitleWidget(
     axisSide: meta.axisSide,

@@ -9,6 +9,7 @@ import 'package:nanyang_application/module/dashboard/screen/dashboard_screen.dar
 import 'package:nanyang_application/module/request/screen/request_screen.dart';
 import 'package:nanyang_application/module/setting/screen/setting_screen.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    user = context.read<ConfigurationViewModel>().user;
+    user = context.read<AuthViewModel>().user;
     _attendanceScreen = user.level == 1 ? const AttendanceUserScreen() : const AttendanceAdminScreen();
   }
 

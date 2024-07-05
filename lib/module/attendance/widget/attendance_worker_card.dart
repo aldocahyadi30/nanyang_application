@@ -6,6 +6,7 @@ import 'package:nanyang_application/model/attendance_user.dart';
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,7 @@ class _AttendanceWorkerCardState extends State<AttendanceWorkerCard> {
   @override
   void initState() {
     super.initState();
-    _user = context.read<ConfigurationViewModel>().user;
+    _user = context.read<AuthViewModel>().user;
   }
 
   @override

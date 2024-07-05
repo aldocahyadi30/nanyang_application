@@ -8,6 +8,7 @@ import 'package:nanyang_application/module/dashboard/widget/dashboard_request.da
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
@@ -26,7 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    user = context.read<ConfigurationViewModel>().user;
+    user = context.read<AuthViewModel>().user;
 
     if (user.isAdmin) {
       context.read<EmployeeViewModel>().getCount();

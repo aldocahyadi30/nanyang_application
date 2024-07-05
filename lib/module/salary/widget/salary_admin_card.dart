@@ -50,6 +50,7 @@ class SalaryAdminCard extends StatelessWidget {
         trailing: _buildTrailing(context, model.thisMonthSalary != null),
         onTap: () async{
           if (model.thisMonthSalary != null) {
+
             await context.read<SalaryViewModel>().detail(model);
           } else {
             await context.read<SalaryViewModel>().create(model);

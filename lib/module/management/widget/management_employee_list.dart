@@ -17,12 +17,6 @@ class ManagementEmployeeList extends StatefulWidget {
 
 class _ManagementEmployeeListState extends State<ManagementEmployeeList> {
   @override
-  void initState() {
-    super.initState();
-    context.read<EmployeeViewModel>().getEmployee();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: dynamicPaddingSymmetric(16, 16, context),

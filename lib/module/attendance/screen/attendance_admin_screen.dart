@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/module/attendance/widget/attendance_admin_list.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_date_picker.dart';
-import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +45,8 @@ class _AttendanceAdminScreenState extends State<AttendanceAdminScreen> with Tick
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         title: Text(
           'Absensi',
-          style: TextStyle(color: ColorTemplate.violetBlue, fontSize: dynamicFontSize(32, context), fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: ColorTemplate.violetBlue, fontSize: dynamicFontSize(32, context), fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
         elevation: 0,
@@ -95,7 +96,10 @@ class _AttendanceAdminScreenState extends State<AttendanceAdminScreen> with Tick
       ),
       body: TabBarView(
         controller: _tabController,
-        children: [_buildWorkerScreen(context, workerController, date), _buildLaborScreen(context, laborController,date)],
+        children: [
+          _buildWorkerScreen(context, workerController, date),
+          _buildLaborScreen(context, laborController, date)
+        ],
       ),
     );
   }
@@ -133,8 +137,8 @@ Widget _buildWorkerScreen(BuildContext context, TextEditingController dateContro
                 selectedDate: date,
                 onDatePicked: (picked) {
                   dateController.text = parseDateToStringFormatted(picked);
-                  context.read<AttendanceViewModel>().setAdminDate(picked);
-                  context.read<AttendanceViewModel>().getAdminAttendance(1);
+                  context.read<AttendanceViewModel>().selectedAdminDate = picked;
+                  context.read<AttendanceViewModel>().getAdminAttendance();
                 },
               ),
               border: InputBorder.none,
@@ -182,8 +186,8 @@ Widget _buildLaborScreen(BuildContext context, TextEditingController dateControl
                 selectedDate: date,
                 onDatePicked: (picked) {
                   dateController.text = parseDateToStringFormatted(picked);
-                  context.read<AttendanceViewModel>().setAdminDate(picked);
-                  context.read<AttendanceViewModel>().getAdminAttendance(2);
+                  context.read<AttendanceViewModel>().selectedAdminDate = picked;
+                  context.read<AttendanceViewModel>().getAdminAttendance();
                 },
               ),
               border: InputBorder.none,

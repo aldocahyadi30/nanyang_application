@@ -9,6 +9,7 @@ import 'package:nanyang_application/module/chat/screen/chat_screen.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/chat_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
   @override
   void initState() {
     super.initState();
-    _user = context.read<ConfigurationViewModel>().user;
+    _user = context.read<AuthViewModel>().user;
     _toast = context.read<ToastProvider>();
     _chatViewModel = context.read<ChatViewModel>();
     try {
@@ -138,10 +139,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   ),
                 ],
               ),
-            ),
-            const Divider(
-              color: ColorTemplate.periwinkle,
-              thickness: 0.5,
             ),
             StreamBuilder<List<Map<String, dynamic>>>(
               stream: _messageStream,

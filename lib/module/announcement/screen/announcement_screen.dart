@@ -6,6 +6,7 @@ import 'package:nanyang_application/module/announcement/screen/announcement_form
 import 'package:nanyang_application/module/announcement/widget/announcement_list.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +26,7 @@ class _AnnouncementScreenState extends State<AnnouncementScreen> {
   @override
   void initState() {
     super.initState();
-    _user = context.read<ConfigurationViewModel>().user;
+    _user = context.read<AuthViewModel>().user;
   }
 
   @override

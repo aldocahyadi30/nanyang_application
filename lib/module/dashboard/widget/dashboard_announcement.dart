@@ -41,7 +41,7 @@ class _DashboardAnnouncementState extends State<DashboardAnnouncement> {
             height: MediaQuery.of(context).size.height * 0.2,
             width: double.infinity,
             child: Selector<AnnouncementViewModel, List<AnnouncementModel>>(
-              selector: (context, viewmodel) => viewmodel.announcementDashboard,
+              selector: (context, viewmodel) => viewmodel.announcementDashboard.where((element) => element.isValid == true).toList(),
               builder: (context, announcementDashboard, child) {
                 return announcementDashboard.isEmpty
                     ? const NanyangEmptyPlaceholder()

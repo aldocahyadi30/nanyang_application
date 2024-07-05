@@ -92,9 +92,7 @@ class _ManagementUserScreenState extends State<ManagementUserScreen> with Ticker
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const ManagementUserFormScreen()));
-        },
+        onPressed: () => context.read<UserViewModel>().create(),
         backgroundColor: ColorTemplate.violetBlue,
         child: const Icon(
           Icons.add,

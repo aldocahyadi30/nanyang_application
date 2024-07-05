@@ -29,7 +29,6 @@ class SalaryService {
         posisi!inner(*),
         gaji!left(*)
       ''').eq('gaji.periode', period).limit(1, referencedTable: 'gaji').order('nama', ascending: true);
-
       return data;
     } on PostgrestException catch (error) {
       throw PostgrestException(message: error.message);
@@ -66,7 +65,7 @@ class SalaryService {
         {
           'id_karyawan': employee.id,
           'periode': salary.period,
-          'gaji': salary.monthlySalary,
+          'gaji': salary.baseSalary,
           'tunjangan': salary.totalBonus,
           'lembur': salary.totalOvertime,
           'bpjs': salary.bpjsRate,
@@ -74,7 +73,8 @@ class SalaryService {
           'total_gaji': salary.totalSalary,
           'keterangan': salary.note,
           'jumlah_kehadiran': salary.totalAttendance,
-          'jumlah_hari_kerja': salary.totalWorkingDay
+          'jumlah_hari_kerja': salary.totalWorkingDay,
+          'total_gram': salary.totalGram
         }
       ]);
     } on PostgrestException catch (error) {
@@ -89,7 +89,7 @@ class SalaryService {
       await supabase.from('gaji').update({
         'id_karyawan': employee.id,
         'periode': salary.period,
-        'gaji': salary.monthlySalary,
+        'gaji': salary.baseSalary,
         'tunjangan': salary.totalBonus,
         'lembur': salary.totalOvertime,
         'bpjs': salary.bpjsRate,
@@ -97,7 +97,8 @@ class SalaryService {
         'total_gaji': salary.totalSalary,
         'keterangan': salary.note,
         'jumlah_kehadiran': salary.totalAttendance,
-        'jumlah_hari_kerja': salary.totalWorkingDay
+        'jumlah_hari_kerja': salary.totalWorkingDay,
+        'total_gram': salary.totalGram
       }).eq('id_gaji', salary.id);
     } on PostgrestException catch (error) {
       throw PostgrestException(message: error.message);

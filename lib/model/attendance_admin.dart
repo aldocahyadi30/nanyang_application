@@ -78,7 +78,6 @@ class AttendanceAdminModel {
     }
 
     if (attendance.id != 0 && attendanceData['absensi'][0]['absensi_detail'].isNotEmpty) {
-      // laborDetail = attendance['absensi_detail'][0]
       Map<String, dynamic> laborData = attendanceData['absensi'][0]['absensi_detail'][0];
 
       String status = '';
@@ -91,13 +90,13 @@ class AttendanceAdminModel {
         id: laborData['id_detail'],
         status: laborData['status'].toInt(),
         statusName: status,
-        featherType: laborData['jenis_bulu'].toInt(),
-        initialQty: laborData['qty_awal'].toInt(),
-        finalQty: laborData['qty_akhir'].toInt(),
-        initialWeight: laborData['berat_awal'].toDouble(),
-        finalWeight: laborData['berat_akhir'].toDouble(),
-        minDepreciation: laborData['min_susut'].toInt(),
-        performanceScore: laborData['nilai_performa'].toDouble(),
+        featherType: laborData['status'] == 1 ? laborData['jenis_bulu'].toInt() :0,
+        initialQty: laborData['status'] == 1 ? laborData['qty_awal'].toInt() : 0,
+        finalQty: laborData['status'] == 1 ? laborData['qty_akhir'].toInt() : 0,
+        initialWeight: laborData['status'] == 1 ? laborData['berat_awal'].toDouble() : 0,
+        finalWeight: laborData['status'] == 1 ? laborData['berat_akhir'].toDouble() : 0,
+        minDepreciation: laborData['status'] == 1 ? laborData['min_susut'].toInt() : 0,
+        performanceScore: laborData['status'] == 1 ? laborData['nilai_performa'].toDouble() : 0,
       );
     } else {
       laborDetail = AttendanceDetailModel.empty();
@@ -119,6 +118,18 @@ class AttendanceAdminModel {
       employee: EmployeeModel.empty(),
       attendance: AttendanceModel.empty(),
       laborDetail: AttendanceDetailModel.empty(),
+    );
+  }
+
+  factory AttendanceAdminModel.copyWith({
+    EmployeeModel? employee,
+    AttendanceModel? attendance,
+    AttendanceDetailModel? laborDetail,
+  }) {
+    return AttendanceAdminModel(
+      employee: employee ?? EmployeeModel.empty(),
+      attendance: attendance ?? AttendanceModel.empty(),
+      laborDetail: laborDetail ?? AttendanceDetailModel.empty(),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/request.dart';
 import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:nanyang_application/module/global/form/form_dropdown.dart';
@@ -11,8 +12,7 @@ import 'package:nanyang_application/module/global/picker/nanyang_date_picker.dar
 import 'package:nanyang_application/module/global/picker/nanyang_date_range_picker.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_file_picker.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_time_picker.dart';
-import 'package:nanyang_application/helper.dart';
-import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
+import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +35,6 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
   final TextEditingController commentController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late RequestViewModel _requestViewModel;
-  late ConfigurationViewModel _configurationViewModel;
   late RequestModel model;
   bool isLoading = false;
   bool isEdit = false;
@@ -90,9 +89,15 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
       String? endTime;
       model.reason = reasonController.text;
       if (selectedAttendance == 1 || selectedAttendance == 2) {
-        startDate = dateController.text;
-        startTime = timeController1.text;
-        model.startDateTime = parseStringToDateFormattedWithTime('$startTime $startTime');
+        if (DateTime.now().isAfter(model.startDateTime!)) {
+          context
+              .read<ToastProvider>()
+              .showToast('Waktu izin tidak boleh melebihi waktu saat ini!', 'error');
+          setState(() {
+            isLoading = false;
+          });
+          return;
+        }
       } else if (selectedAttendance == 7) {
         startDate = dateController.text;
         startTime = timeController1.text;
@@ -113,6 +118,8 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
       } else {
         await _requestViewModel.store(model);
       }
+
+      Navigator.pop(context);
     }
     setState(() {
       isLoading = false;
@@ -167,7 +174,8 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
                       )
                     : Container(),
                 SizedBox(height: dynamicHeight(16, context)),
-                _buildDateTimeField(context, widget.type, dateController, dateRangeController, timeController1, timeController2, model),
+                _buildDateTimeField(
+                    context, widget.type, dateController, dateRangeController, timeController1, timeController2, model),
                 SizedBox(height: dynamicHeight(16, context)),
                 FormTextField(
                   title: 'Alasan',
@@ -253,16 +261,27 @@ Widget _buildTypeField(BuildContext context, int type) {
   }
 }
 
-Widget _buildDateTimeField(BuildContext context, int type, TextEditingController dateController, TextEditingController dateRangeController,
-    TextEditingController timeController1, TextEditingController timeController2, RequestModel model) {
+Widget _buildDateTimeField(
+    BuildContext context,
+    int type,
+    TextEditingController dateController,
+    TextEditingController dateRangeController,
+    TextEditingController timeController1,
+    TextEditingController timeController2,
+    RequestModel model) {
   if (type == 1) {
     return Column(children: [
       FormPickerField(
         title: 'Tanggal',
         picker: NanyangDatePicker(
           selectedDate: model.startDateTime,
+          firstDate: DateTime.now(),
           onDatePicked: (date) {
             dateController.text = DateFormat('dd/MM/yyyy').format(date);
+            if (dateController.text.isNotEmpty && timeController1.text.isNotEmpty) {
+              model.startDateTime =
+                  parseStringToDateFormattedWithTime('${dateController.text} ${timeController1.text}');
+            }
           },
         ),
         controller: dateController,
@@ -271,9 +290,15 @@ Widget _buildDateTimeField(BuildContext context, int type, TextEditingController
       FormPickerField(
         title: 'Jam Masuk',
         picker: NanyangTimePicker(
-          selectedTime: model.startDateTime != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
+          selectedTime: model.startDateTime != null
+              ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute)
+              : null,
           onTimePicked: (time) {
             timeController1.text = time.format(context);
+            if (dateController.text.isNotEmpty && timeController1.text.isNotEmpty) {
+              model.startDateTime =
+                  parseStringToDateFormattedWithTime('${dateController.text} ${timeController1.text}');
+            }
           },
         ),
         controller: timeController1,
@@ -285,8 +310,13 @@ Widget _buildDateTimeField(BuildContext context, int type, TextEditingController
         title: 'Tanggal',
         picker: NanyangDatePicker(
           selectedDate: model.startDateTime,
+          firstDate: DateTime.now(),
           onDatePicked: (date) {
             dateController.text = DateFormat('dd/MM/yyyy').format(date);
+            if (dateController.text.isNotEmpty && timeController1.text.isNotEmpty) {
+              model.startDateTime =
+                  parseStringToDateFormattedWithTime('${dateController.text} ${timeController1.text}');
+            }
           },
         ),
         controller: dateController,
@@ -295,9 +325,15 @@ Widget _buildDateTimeField(BuildContext context, int type, TextEditingController
       FormPickerField(
         title: 'Jam Pulang',
         picker: NanyangTimePicker(
-          selectedTime: model.startDateTime != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
+          selectedTime: model.startDateTime != null
+              ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute)
+              : null,
           onTimePicked: (time) {
             timeController1.text = time.format(context);
+            if (dateController.text.isNotEmpty && timeController1.text.isNotEmpty) {
+              model.startDateTime =
+                  parseStringToDateFormattedWithTime('${dateController.text} ${timeController1.text}');
+            }
           },
         ),
         controller: timeController1,
@@ -309,8 +345,17 @@ Widget _buildDateTimeField(BuildContext context, int type, TextEditingController
         title: 'Tanggal',
         picker: NanyangDatePicker(
           selectedDate: model.startDateTime,
+          firstDate: DateTime.now(),
           onDatePicked: (date) {
             dateController.text = DateFormat('dd/MM/yyyy').format(date);
+            if (dateController.text.isNotEmpty && timeController1.text.isNotEmpty) {
+              model.startDateTime =
+                  parseStringToDateFormattedWithTime('${dateController.text} ${timeController1.text}');
+            }
+
+            if (dateController.text.isNotEmpty && timeController2.text.isNotEmpty) {
+              model.endDateTime = parseStringToDateFormattedWithTime('${dateController.text} ${timeController2.text}');
+            }
           },
         ),
         controller: dateController,
@@ -319,9 +364,15 @@ Widget _buildDateTimeField(BuildContext context, int type, TextEditingController
       FormPickerField(
         title: 'Jam Mulai',
         picker: NanyangTimePicker(
-          selectedTime: model.startDateTime != null ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute) : null,
+          selectedTime: model.startDateTime != null
+              ? TimeOfDay(hour: model.startDateTime!.hour, minute: model.startDateTime!.minute)
+              : null,
           onTimePicked: (time) {
             timeController1.text = time.format(context);
+            if (dateController.text.isNotEmpty && timeController1.text.isNotEmpty) {
+              model.startDateTime =
+                  parseStringToDateFormattedWithTime('${dateController.text} ${timeController1.text}');
+            }
           },
         ),
         controller: timeController1,
@@ -330,9 +381,15 @@ Widget _buildDateTimeField(BuildContext context, int type, TextEditingController
       FormPickerField(
         title: 'Jam Selesai',
         picker: NanyangTimePicker(
-          selectedTime: model.endDateTime != null ? TimeOfDay(hour: model.endDateTime!.hour, minute: model.endDateTime!.minute) : null,
+          selectedTime: model.endDateTime != null
+              ? TimeOfDay(hour: model.endDateTime!.hour, minute: model.endDateTime!.minute)
+              : null,
           onTimePicked: (time) {
             timeController2.text = time.format(context);
+
+            if (dateController.text.isNotEmpty && timeController2.text.isNotEmpty) {
+              model.endDateTime = parseStringToDateFormattedWithTime('${dateController.text} ${timeController2.text}');
+            }
           },
         ),
         controller: timeController2,
@@ -342,9 +399,18 @@ Widget _buildDateTimeField(BuildContext context, int type, TextEditingController
     return FormPickerField(
       title: 'Tanggal',
       picker: NanyangDateRangePicker(
-        selectedDateRange: model.startDateTime != null ? DateTimeRange(start: model.startDateTime!, end: model.endDateTime!) : null,
+        selectedDateRange:
+            model.startDateTime != null ? DateTimeRange(start: model.startDateTime!, end: model.endDateTime!) : null,
         onDateRangePicked: (dateRange) {
-          dateRangeController.text = '${DateFormat('dd/MM/yyyy').format(dateRange.start)} - ${DateFormat('dd/MM/yyyy').format(dateRange.end)}';
+          dateRangeController.text =
+              '${DateFormat('dd/MM/yyyy').format(dateRange.start)} - ${DateFormat('dd/MM/yyyy').format(dateRange.end)}';
+
+          if (dateRangeController.text.isNotEmpty) {
+            model.startDateTime =
+                parseStringToDateFormattedWithTime('${DateFormat('dd/MM/yyyy').format(dateRange.start)} 00:00');
+            model.endDateTime =
+                parseStringToDateFormattedWithTime('${DateFormat('dd/MM/yyyy').format(dateRange.end)} 23:59');
+          }
         },
       ),
       controller: dateRangeController,

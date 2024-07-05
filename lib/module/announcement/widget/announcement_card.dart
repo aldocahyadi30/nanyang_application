@@ -79,7 +79,7 @@ class AnnouncementCard extends StatelessWidget {
                         Icon(Icons.access_time_outlined, size: dynamicFontSize(16, context), color: Colors.grey),
                         SizedBox(width: dynamicWidth(4, context)),
                         Text(
-                          '$formattedTime, $formattedDate',
+                          formattedDate,
                           style: TextStyle(
                             fontSize: dynamicFontSize(12, context),
                             color: Colors.grey,

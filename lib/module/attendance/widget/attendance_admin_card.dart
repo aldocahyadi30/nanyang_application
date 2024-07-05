@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/attendance.dart';
 import 'package:nanyang_application/model/attendance_admin.dart';
 import 'package:nanyang_application/model/attendance_detail.dart';
-import 'package:nanyang_application/helper.dart';
-import 'package:nanyang_application/module/attendance/screen/attendance_admin_detail_screen.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -51,18 +50,13 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
             ),
           ),
         ),
-        subtitle:
-            widget.model.employee.position.type == 1 ? _buildSubWorker(context, widget.model.attendance!) : _buildSubLabor(context, widget.model.laborDetail!),
-        trailing: widget.model.employee.position.type == 1 ? _buildTrailing(context, 1) : _buildTrailing(context, 2, detailID: widget.model.laborDetail!.id),
-        onTap: () {
-          context.read<AttendanceViewModel>().setAttendanceAdmin(widget.model);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AttendanceAdminDetailScreen(),
-            ),
-          );
-        },
+        subtitle: widget.model.employee.position.type == 1
+            ? _buildSubWorker(context, widget.model.attendance!)
+            : _buildSubLabor(context, widget.model.laborDetail!),
+        trailing: widget.model.employee.position.type == 1
+            ? _buildTrailing(context, 1)
+            : _buildTrailing(context, 2, detailID: widget.model.laborDetail!.id),
+        onTap: () async => context.read<AttendanceViewModel>().detail(widget.model),
       ),
     );
   }
@@ -91,7 +85,8 @@ class _AttendanceAdminCardState extends State<AttendanceAdminCard> {
     }
   }
 
-  Row _buildStatusWorker(BuildContext context, int type, {int? inStatus, int? outStatus, DateTime? checkIn, DateTime? checkOut}) {
+  Row _buildStatusWorker(BuildContext context, int type,
+      {int? inStatus, int? outStatus, DateTime? checkIn, DateTime? checkOut}) {
     Color color = const Color(0xFFFF8D8D);
     String time = '-';
 

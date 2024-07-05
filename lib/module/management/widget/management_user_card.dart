@@ -4,7 +4,9 @@ import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/management/screen/management_user_detail_screen.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ManagementUserCard extends StatelessWidget {
@@ -14,7 +16,7 @@ class ManagementUserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isEditable = model.level < context.read<ConfigurationViewModel>().user.level;
+    final bool isEditable = model.level < context.read<AuthViewModel>().user.level;
     return Card(
       color: ColorTemplate.violetBlue,
       shape: RoundedRectangleBorder(
@@ -54,12 +56,7 @@ class ManagementUserCard extends StatelessWidget {
         trailing: const Icon(Icons.chevron_right, color: Colors.white),
         onTap: () {
           if (isEditable) {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ManagementUserDetailScreen(
-                          model: model,
-                        )));
+            context.read<UserViewModel>().edit(model);
           } else {
             context.read<ToastProvider>().showToast('Anda tidak memiliki akses', 'error');
           }

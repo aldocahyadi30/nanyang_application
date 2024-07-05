@@ -24,7 +24,15 @@ class AnnouncementViewModel extends ChangeNotifier {
 
   AnnouncementViewModel({required AnnouncementService announcementService}) : _announcementService = announcementService;
 
-  get announcement => _announcement;
+  get announcement {
+    return _announcement.where((element) {
+      if (element.isValid && element.isSend) {
+        return true;
+      } else {
+        return false;
+      }
+    }).toList();
+  }
   get announcementDashboard => _announcementDashboard;
   get announcementCategory => _announcementCategory;
   AnnouncementModel get selectedAnnouncement => _selectedAnnouncement;
@@ -139,7 +147,6 @@ class AnnouncementViewModel extends ChangeNotifier {
       await _announcementService.storeAnnouncement(model).then((_) {
         _toastProvider.showToast('Berhasil menambahkan pengumuman!', 'success');
         getAnnouncement();
-        _navigationService.goBack();
       });
     } catch (e) {
       if (e is PostgrestException) {
@@ -166,7 +173,6 @@ class AnnouncementViewModel extends ChangeNotifier {
       await _announcementService.updateAnnouncement(model).then((_) {
         _toastProvider.showToast('Berhasil update pengumuman!', 'success');
         getAnnouncement();
-        _navigationService.goBack();
       });
     } catch (e) {
       if (e is PostgrestException) {

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/user.dart';
-import 'package:nanyang_application/module/announcement/screen/announcement_screen.dart';
-import 'package:nanyang_application/module/attendance/screen/attendance_admin_screen.dart';
 import 'package:nanyang_application/module/chat/screen/chat_list_screen.dart';
 import 'package:nanyang_application/module/chat/screen/chat_screen.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_menu.dart';
 import 'package:nanyang_application/module/dashboard/widget/dashboard_menu_icon.dart';
-import 'package:nanyang_application/module/management/screen/management_user_screen.dart';
-import 'package:nanyang_application/module/performance/screen/performance_admin_screen.dart';
-import 'package:nanyang_application/module/salary/screen/salary_admin_screen.dart';
-import 'package:nanyang_application/module/salary/screen/salary_user_screen.dart';
-import 'package:nanyang_application/helper.dart';
-import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
+import 'package:nanyang_application/module/global/other/nanyang_coming_soon_placeholder.dart';
+import 'package:nanyang_application/service/navigation_service.dart';
+import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/calendar_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/performance_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/salary_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class DashboardMenuCard extends StatelessWidget {
@@ -19,7 +20,7 @@ class DashboardMenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel user = Provider.of<ConfigurationViewModel>(context).user;
+    final UserModel user = Provider.of<AuthViewModel>(context).user;
 
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
@@ -64,33 +65,72 @@ class DashboardMenuCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (user.level == 1) _userMenu(),
-            if (user.level != 1) _adminMenu(),
+            if (user.level == 1) _userMenu(context),
+            if (user.level != 1) _adminMenu(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _adminMenu() {
+  Widget _adminMenu(BuildContext context) {
     return _buildMenu([
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/peformance.png', route: PerformanceAdminScreen(), title: 'Performance'),
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/gaji.png', route: SalaryAdminScreen(), title: 'Gaji'),
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/manajemen-pengguna.png', route: ManagementUserScreen(), title: 'Pengguna'),
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/pengumuman.png', route: AnnouncementScreen(), title: 'Pengumuman'),
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/chat.png', route: ChatListScreen(), title: 'Help Chat'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/peformance.png',
+          onTap: () => context.read<PerformanceViewmodel>().index(),
+          title: 'Performa'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/gaji.png',
+          onTap: () => context.read<SalaryViewModel>().index(),
+          title: 'Gaji'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/manajemen-pengguna.png',
+          onTap: () => context.read<UserViewModel>().index(),
+          title: 'Pengguna'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/pengumuman.png',
+          onTap: () => context.read<AnnouncementViewModel>().index(),
+          title: 'Pengumuman'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/chat.png',
+          onTap: () => context.read<NavigationService>().navigateTo(const ChatListScreen()),
+          title: 'Help Chat'),
       const DashboardMenu(),
     ]);
   }
 
-  Widget _userMenu() {
+  Widget _userMenu(BuildContext context) {
     return _buildMenu([
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/peformance.png', route: AttendanceAdminScreen(), title: 'Performance'),
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/gaji.png', route: SalaryUserScreen(), title: 'Gaji'),
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/manajemen-pengguna.png', route: ManagementUserScreen(), title: 'Pengguna'),
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/pengumuman.png', route: AnnouncementScreen(), title: 'Pengumuman'),
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/chat.png', route: ChatScreen(), title: 'Help Chat'),
-      const DashboardMenuIcon(image: 'assets/image/icon/menu/guidebook.png', route: AttendanceAdminScreen(), title: 'Guidebook'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/peformance.png',
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const NanyangComingSoonPlaceholder(title: 'Performa')));
+          },
+          title: 'Performa'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/gaji.png',
+          onTap: () => context.read<SalaryViewModel>().index(),
+          title: 'Gaji'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/pengumuman.png',
+          onTap: () => context.read<AnnouncementViewModel>().index(),
+          title: 'Pengumuman'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/chat.png',
+          onTap: () => context.read<NavigationService>().navigateTo(const ChatScreen()),
+          title: 'Help Chat'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/guidebook.png',
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const NanyangComingSoonPlaceholder(title: 'Guidebook')));
+          },
+          title: 'Guidebook'),
+      DashboardMenuIcon(
+          image: 'assets/image/icon/menu/kalender.png',
+          onTap: () => context.read<CalendarViewmodel>().index(),
+          title: 'Kalender'),
     ]);
   }
 

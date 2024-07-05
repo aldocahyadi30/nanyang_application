@@ -52,6 +52,21 @@ class HolidayModel {
     }).toList();
   }
 
+  factory HolidayModel.fromMap(Map<String, dynamic> map) {
+    return HolidayModel(
+      id: map['id_hari'],
+      name: map['nama'],
+      date: DateTime.parse(map['tanggal']),
+      isHoliday: true,
+    );
+  }
+
+  static List<HolidayModel> fromMapList(List<Map<String, dynamic>> mapList) {
+    return mapList.map((map) {
+      return HolidayModel.fromMap(map);
+    }).toList();
+  }
+
   //empty holiday
   factory HolidayModel.empty() {
     return HolidayModel(

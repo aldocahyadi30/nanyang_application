@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/model/employee.dart';
+import 'package:nanyang_application/model/salary.dart';
 import 'package:nanyang_application/model/user.dart';
-import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_month_picker.dart';
-import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/salary_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class SalaryUserScreen extends StatefulWidget {
@@ -17,6 +20,7 @@ class SalaryUserScreen extends StatefulWidget {
 
 class _SalaryUserScreenState extends State<SalaryUserScreen> {
   late final UserModel _user;
+  late DateTime date;
   final TextEditingController dateController = TextEditingController();
   bool isDownloadLoading = false;
   bool isContactLoading = false;
@@ -24,7 +28,9 @@ class _SalaryUserScreenState extends State<SalaryUserScreen> {
   @override
   void initState() {
     super.initState();
-    _user = context.read<ConfigurationViewModel>().user;
+    _user = context.read<AuthViewModel>().user;
+    date = context.read<SalaryViewModel>().selectedDate;
+    dateController.text = DateFormat('MMMM yyyy').format(date);
   }
 
   @override
@@ -36,113 +42,96 @@ class _SalaryUserScreenState extends State<SalaryUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorTemplate.lightVistaBlue,
+      backgroundColor: ColorTemplate.periwinkle,
       appBar: const NanyangAppbar(
         title: 'Gaji',
         isBackButton: true,
         isCenter: true,
       ),
-      body: Container(
-        padding: dynamicPaddingSymmetric(0, 16, context),
-        child: Column(
-          children: [
-            Container(
-              padding: dynamicPaddingSymmetric(0, 10, context),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(dynamicWidth(25, context)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey[600]!,
-                    spreadRadius: 1,
-                    blurRadius: 2,
-                    offset: const Offset(0, 2),
+      body: Consumer<SalaryViewModel>(
+        builder: (context, viewmodel, child) {
+          return Container(
+            padding: dynamicPaddingSymmetric(0, 16, context),
+            child: Column(
+              children: [
+                Container(
+                  padding: dynamicPaddingSymmetric(0, 10, context),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(dynamicWidth(25, context)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey[600]!,
+                        spreadRadius: 1,
+                        blurRadius: 2,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: TextField(
-                readOnly: true,
-                controller: dateController,
-                decoration: InputDecoration(
-                  contentPadding: dynamicPaddingSymmetric(12, 16, context),
-                  labelText: 'Filter Bulan',
-                  labelStyle: const TextStyle(color: ColorTemplate.violetBlue, fontWeight: FontWeight.w600),
-                  suffixIcon: NanyangMonthPicker(
+                  child: TextField(
+                    readOnly: true,
                     controller: dateController,
-                    type: 'salary-user',
-                    color: ColorTemplate.violetBlue,
+                    decoration: InputDecoration(
+                      contentPadding: dynamicPaddingSymmetric(12, 16, context),
+                      labelText: 'Filter Bulan',
+                      labelStyle: const TextStyle(color: ColorTemplate.violetBlue, fontWeight: FontWeight.w600),
+                      suffixIcon: NanyangMonthPicker(
+                        controller: dateController,
+                        color: ColorTemplate.violetBlue,
+                        onDatePicked: (date) {
+                          context.read<SalaryViewModel>().selectedDate = date;
+                          dateController.text = DateFormat('MMMM yyyy').format(date);
+                          context.read<SalaryViewModel>().getSalary();
+                        },
+                      ),
+                      border: InputBorder.none,
+                    ),
                   ),
-                  border: InputBorder.none,
                 ),
-              ),
-            ),
-            SizedBox(height: dynamicHeight(16, context)),
-            Card(
-              elevation: 0,
-              child: Container(
-                width: double.infinity,
-                padding: dynamicPaddingSymmetric(16, 16, context),
-                child: Column(
-                  children: [
-                    _buildProfileField(context, _user),
-                    SizedBox(height: dynamicHeight(8, context)),
-                    const Divider(color: Colors.grey),
-                    SizedBox(height: dynamicHeight(8, context)),
-                    _buildSalaryDetailField(context),
-                    SizedBox(height: dynamicHeight(8, context)),
-                    const Divider(color: Colors.grey),
-                    SizedBox(height: dynamicHeight(8, context)),
-                    Row(
+                SizedBox(height: dynamicHeight(16, context)),
+                Card(
+                  elevation: 0,
+                  child: Container(
+                    width: double.infinity,
+                    padding: dynamicPaddingSymmetric(16, 16, context),
+                    child: Column(
                       children: [
-                        Expanded(
-                          child: FormButton(
-                            text: 'Download',
-                            textSize: 12,
-                            buttonHeight: 56,
-                            isLoading: isDownloadLoading,
-                            onPressed: () {},
-                            backgroundColor: Colors.green,
-                          ),
-                        ),
-                        SizedBox(
-                          width: dynamicWidth(16, context),
-                        ),
-                        Expanded(
-                          child: FormButton(
-                            text: 'Kontak Admin',
-                            textSize: 12,
-                            buttonHeight: 56,
-                            isLoading: isDownloadLoading,
-                            onPressed: () {},
-                            backgroundColor: ColorTemplate.violetBlue,
-                          ),
-                        ),
+                        _buildProfileField(context, _user.employee),
+                        SizedBox(height: dynamicHeight(8, context)),
+                        const Divider(color: Colors.grey),
+                        SizedBox(height: dynamicHeight(8, context)),
+                        _buildSalaryVariableField(context, _user.employee, viewmodel.salary),
+                        SizedBox(height: dynamicHeight(8, context)),
+                        const Divider(color: Colors.grey),
+                        SizedBox(height: dynamicHeight(8, context)),
+                        _buildSalaryDetailField(context, _user.employee, viewmodel.salary),
+                        SizedBox(height: dynamicHeight(8, context)),
                       ],
-                    )
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-Column _buildProfileField(BuildContext context, UserModel user) {
+Column _buildProfileField(BuildContext context, EmployeeModel employee) {
   return Column(
     children: [
       CircleAvatar(
         radius: dynamicWidth(48, context),
         backgroundColor: Colors.black,
         child: Text(
-          user.employee.initials!,
+          employee.initials!,
           style: TextStyle(color: Colors.white, fontSize: dynamicFontSize(24, context)),
         ),
       ),
       Text(
-        user.employee.shortedName!,
+        employee.shortedName!,
         style: TextStyle(
           color: Colors.black,
           fontSize: dynamicFontSize(20, context),
@@ -150,7 +139,7 @@ Column _buildProfileField(BuildContext context, UserModel user) {
         ),
       ),
       Text(
-        user.employee.position.name,
+        employee.position.name,
         style: TextStyle(
           color: Colors.black,
           fontSize: dynamicFontSize(16, context),
@@ -161,14 +150,81 @@ Column _buildProfileField(BuildContext context, UserModel user) {
   );
 }
 
-Column _buildSalaryDetailField(BuildContext context) {
+Column _buildSalaryVariableField(BuildContext context, EmployeeModel employee, SalaryModel salary) {
   return Column(
     children: [
+      if (employee.position.type == 1)
+        Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Jumlah Hari Kerja',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: dynamicFontSize(16, context),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                salary.totalWorkingDay.toString(),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: dynamicFontSize(16, context),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Jumlah Hari Masuk',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: dynamicFontSize(16, context),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                salary.totalAttendance.toString(),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: dynamicFontSize(16, context),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ]),
+      if (employee.position.type == 2)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Total Kuota (Gram)',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: dynamicFontSize(16, context),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Text(
+              salary.totalGram.toString(),
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: dynamicFontSize(16, context),
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            'Gaji Pokok',
+            employee.position.type == 1 ? 'Gaji Pokok' : 'Gaji / 10 Gram',
             style: TextStyle(
               color: Colors.black,
               fontSize: dynamicFontSize(16, context),
@@ -176,7 +232,37 @@ Column _buildSalaryDetailField(BuildContext context) {
             ),
           ),
           Text(
-            '100.000',
+            formatCurrency(salary.baseSalary),
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: dynamicFontSize(16, context),
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+Column _buildSalaryDetailField(BuildContext context, EmployeeModel employee, SalaryModel salary) {
+  return Column(
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Gaji Yang Didapatkan',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: dynamicFontSize(16, context),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            employee.position.type == 1
+                ? formatCurrency((salary.baseSalary / salary.totalWorkingDay) * salary.totalAttendance)
+                : formatCurrency((salary.baseSalary * (salary.totalGram / 10))),
             style: TextStyle(
               color: Colors.black,
               fontSize: dynamicFontSize(16, context),
@@ -197,7 +283,7 @@ Column _buildSalaryDetailField(BuildContext context) {
             ),
           ),
           Text(
-            '0',
+            formatCurrency(salary.totalOvertime),
             style: TextStyle(
               color: Colors.black,
               fontSize: dynamicFontSize(16, context),
@@ -218,7 +304,7 @@ Column _buildSalaryDetailField(BuildContext context) {
             ),
           ),
           Text(
-            '0',
+            formatCurrency(salary.totalBonus),
             style: TextStyle(
               color: Colors.black,
               fontSize: dynamicFontSize(16, context),
@@ -239,7 +325,9 @@ Column _buildSalaryDetailField(BuildContext context) {
             ),
           ),
           Text(
-            '0',
+            employee.position.type == 1
+                ? "(${formatCurrency(salary.baseSalary * (salary.bpjsRate / 100))})"
+                : "(${formatCurrency(salary.baseSalary * salary.totalGram * (salary.bpjsRate / 100))})",
             style: TextStyle(
               color: Colors.black,
               fontSize: dynamicFontSize(16, context),
@@ -260,7 +348,7 @@ Column _buildSalaryDetailField(BuildContext context) {
             ),
           ),
           Text(
-            '0',
+            "(${formatCurrency(salary.totalDeduction)})",
             style: TextStyle(
               color: Colors.black,
               fontSize: dynamicFontSize(16, context),
@@ -284,7 +372,7 @@ Column _buildSalaryDetailField(BuildContext context) {
             ),
           ),
           Text(
-            '100.000',
+            formatCurrency(salary.totalSalary),
             style: TextStyle(
               color: Colors.black,
               fontSize: dynamicFontSize(16, context),

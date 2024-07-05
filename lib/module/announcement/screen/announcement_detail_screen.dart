@@ -7,6 +7,7 @@ import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/other/nanyang_detail_card.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -15,10 +16,11 @@ class AnnouncementDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel user = context.read<ConfigurationViewModel>().user;
+    final UserModel user = context.read<AuthViewModel>().user;
     return Consumer<AnnouncementViewModel>(builder: (context, viewmodel, _) {
       final AnnouncementModel model = viewmodel.selectedAnnouncement;
       return Scaffold(
+        backgroundColor: ColorTemplate.periwinkle,
         appBar: NanyangAppbar(
           title: 'Pengumuman',
           isCenter: true,
@@ -48,7 +50,7 @@ class AnnouncementDetailScreen extends StatelessWidget {
                     SizedBox(height: dynamicHeight(8, context)),
                     _buildRow(context, 'Kategori', model.category.name),
                     SizedBox(height: dynamicHeight(8, context)),
-                    _buildRow(context, 'Waktu Kirim', DateFormat('HH:mm').format(model.postDate!)),
+                    _buildRow(context, 'Tanggal Pengumuman', parseDateToStringFormatted(model.postDate!)),
                     SizedBox(height: dynamicHeight(8, context)),
                   ],
                 ),

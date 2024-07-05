@@ -30,7 +30,7 @@ class _AttendanceAdminListState extends State<AttendanceAdminList> {
         builder: (context, attendanceAdmin, child) {
           return RefreshIndicator(
             onRefresh: () async {
-              context.read<AttendanceViewModel>().getAdminAttendance(widget.type);
+              context.read<AttendanceViewModel>().getAdminAttendance();
             },
             child: attendanceAdmin.isEmpty
                 ? const Center(child: NanyangEmptyPlaceholder())

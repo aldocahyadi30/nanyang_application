@@ -10,11 +10,11 @@ import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/employee_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class ManagementUserFormScreen extends StatefulWidget {
-  final UserModel? model;
-  const ManagementUserFormScreen({super.key, this.model});
+  const ManagementUserFormScreen({super.key});
 
   @override
   State<ManagementUserFormScreen> createState() => _ManagementUserFormScreenState();
@@ -22,14 +22,12 @@ class ManagementUserFormScreen extends StatefulWidget {
 
 class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
   late final AuthViewModel _authViewModel;
+  late final UserModel _model;
   late final UserModel _user;
   final formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _retypePasswordController = TextEditingController();
-
-  int? selectedEmployee;
-  int? selectedLevel;
   bool isLoading = false;
   bool isEdit = false;
   bool isObscure1 = true;
@@ -38,13 +36,14 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
   @override
   void initState() {
     super.initState();
+    _user = context.read<AuthViewModel>().user;
     _authViewModel = context.read<AuthViewModel>();
-    _user = context.read<ConfigurationViewModel>().user;
-    if (widget.model != null) {
+    if (context.read<UserViewModel>().selectedUser.id == '') {
+      _model = context.read<UserViewModel>().selectedUser;
+    } else {
+      _model = UserModel.copyWith(context.read<UserViewModel>().selectedUser);
       isEdit = true;
-      _emailController.text = widget.model!.email;
-      selectedEmployee = widget.model!.employee.id;
-      selectedLevel = widget.model!.level;
+      _emailController.text = _model.email;
     }
   }
 
@@ -54,20 +53,6 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _retypePasswordController.dispose();
-  }
-
-  void _createUser(String email, String password, int employeeID, int level) async {
-    await _authViewModel.register(email, password, employeeID, level);
-    if (mounted) {
-      Navigator.pop(context);
-    }
-  }
-
-  void _updateUser(String email, int employeeID, int level) async {
-    await _authViewModel.update(widget.model!.id, email, employeeID, level);
-    if (mounted) {
-      Navigator.pop(context);
-    }
   }
 
   @override
@@ -99,10 +84,11 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
                                 child: Text(employee.name),
                               );
                             }).toList(),
-                      value: selectedEmployee,
+                      value: _model.employee.id != 0 ? _model.employee.id : null,
                       onChanged: (value) {
                         setState(() {
-                          selectedEmployee = value!;
+                          _model.employee =
+                              EmployeeModel.copyWith(employee.firstWhere((element) => element.id == value));
                         });
                       },
                     );
@@ -138,10 +124,10 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
                               child: Text('Admin'),
                             ),
                           ],
-                    value: selectedLevel,
+                    value: _model.id != '' ? _model.level : null,
                     onChanged: (value) {
                       setState(() {
-                        selectedLevel = value!;
+                        _model.level = value;
                       });
                     }),
                 SizedBox(
@@ -158,6 +144,9 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
                       return 'Email tidak valid';
                     }
                     return null;
+                  },
+                  onChanged: (value) {
+                    if (value!.isNotEmpty) _model.email = value;
                   },
                 ),
                 SizedBox(
@@ -221,10 +210,12 @@ class _ManagementUserFormScreenState extends State<ManagementUserFormScreen> {
                       });
 
                       if (isEdit) {
-                        _updateUser(_emailController.text, selectedEmployee!, selectedLevel!);
+                        _authViewModel.update(_model);
                       } else {
-                        _createUser(_emailController.text, _passwordController.text, selectedEmployee!, selectedLevel!);
+                        _authViewModel.register(_model, _passwordController.text);
                       }
+
+                      Navigator.pop(context);
                       setState(() {
                         isLoading = false;
                       });

@@ -6,6 +6,7 @@ import 'package:nanyang_application/module/attendance/widget/attendance_worker_c
 import 'package:nanyang_application/module/global/other/nanyang_empty_placeholder.dart';
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,7 @@ class _AttendanceUserListState extends State<AttendanceUserList> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = Provider.of<ConfigurationViewModel>(context).user;
+    UserModel user = Provider.of<AuthViewModel>(context).user;
     return Padding(
       padding: dynamicPaddingSymmetric(0, 16, context),
       child: Selector<AttendanceViewModel, List<AttendanceUserModel>>(

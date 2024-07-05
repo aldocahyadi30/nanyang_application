@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:nanyang_application/main.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/main.dart';
 
 class ToastProvider with ChangeNotifier {
-final FToast _fToast = FToast();
+  final FToast _fToast = FToast();
 
   ToastProvider() {
     _fToast.init(navigatorKey.currentContext!);
@@ -35,7 +35,7 @@ final FToast _fToast = FToast();
 
     _fToast.showToast(
       child: Container(
-        padding: dynamicPaddingAll(12, _fToast.context!),
+        padding: dynamicPaddingAll(8, _fToast.context!),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(dynamicWidth(8, _fToast.context!)),
           color: Colors.white,
@@ -43,19 +43,20 @@ final FToast _fToast = FToast();
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color),
-            SizedBox(
-              width: dynamicWidth(12, _fToast.context!),
-            ),
-            Text(
-              message,
-              style:  TextStyle(color: Colors.black, fontSize: dynamicFontSize(12, _fToast.context!)),
-            ),
+            Expanded(flex: 1,child: Icon(icon, color: color)),
+            Expanded(
+              flex: 5,
+              child: Text(
+                message,
+                maxLines: 3,
+                style: TextStyle(color: Colors.black, fontSize: dynamicFontSize(12, _fToast.context!)),
+              ),
+            )
           ],
         ),
       ),
       gravity: ToastGravity.BOTTOM,
-      toastDuration: const Duration(seconds: 2),
+      toastDuration: const Duration(seconds: 3),
     );
   }
 }

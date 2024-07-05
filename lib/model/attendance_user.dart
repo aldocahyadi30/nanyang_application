@@ -24,10 +24,6 @@ class AttendanceUserModel {
         DateTime checkIn = DateTime.parse(data['waktu_masuk']);
         DateTime? checkOut;
 
-        if (data['waktu_pulang'] != null) {
-          checkOut = DateTime.parse(data['waktu_pulang']);
-        }
-
         if (checkIn.year == date.year && checkIn.month == date.month && checkIn.day == date.day) {
           int inHour = checkIn.hour;
           int inStatus = 0;
@@ -37,6 +33,9 @@ class AttendanceUserModel {
             inStatus = 2;
           }
 
+          if (data['waktu_pulang'] != null) {
+            checkOut = DateTime.parse(data['waktu_pulang']);
+          }
           int outStatus = 0;
           if (checkOut != null) {
             outStatus = 1;
@@ -51,8 +50,7 @@ class AttendanceUserModel {
 
           if (data['absensi_detail'].isNotEmpty) {
             // laborDetail = attendance['absensi_detail'][0]
-            Map<String, dynamic> laborData = attendanceData[0]['absensi_detail'][0];
-
+            Map<String, dynamic> laborData = data['absensi_detail'][0];
 
             String status = '';
             if (data['absensi_detail'][0]['status'] == 1) {
@@ -60,20 +58,21 @@ class AttendanceUserModel {
             } else {
               status = 'Melanjutkan Tugas';
             }
-            
 
             laborDetail = AttendanceDetailModel(
               id: laborData['id_detail'],
               status: laborData['status'].toInt(),
               statusName: status,
-              featherType: laborData['jenis_bulu'].toInt(),
-              initialQty: laborData['qty_awal'].toInt(),
-              finalQty: laborData['qty_akhir'].toInt(),
-              initialWeight: laborData['berat_awal'].toDouble(),
-              finalWeight: laborData['berat_akhir'].toDouble(),
-              minDepreciation: laborData['min_susut'].toInt(),
-              performanceScore: laborData['nilai_performa'].toDouble(),
+              featherType: laborData['status'] == 1 ? laborData['jenis_bulu'].toInt() : 0,
+              initialQty: laborData['status'] == 1 ? laborData['qty_awal'].toInt() : 0,
+              finalQty: laborData['status'] == 1 ? laborData['qty_akhir'].toInt() : 0,
+              initialWeight: laborData['status'] == 1 ? laborData['berat_awal'].toDouble() : 0,
+              finalWeight: laborData['status'] == 1 ? laborData['berat_akhir'].toDouble() : 0,
+              minDepreciation: laborData['status'] == 1 ? laborData['min_susut'].toInt() : 0,
+              performanceScore: laborData['status'] == 1 ? laborData['nilai_performa'].toDouble() : 0,
             );
+          } else {
+            laborDetail = AttendanceDetailModel.empty();
           }
 
           return AttendanceUserModel(

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:nanyang_application/model/employee.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -8,8 +7,7 @@ class EmployeeService {
   Future<List<Map<String, dynamic>>> getEmployee() async {
     try {
       final data = await supabase.from('karyawan').select('''
-       id_karyawan,
-            nama,
+       *,
         posisi!inner(*)
       ''').order('nama', ascending: true);
 
@@ -23,8 +21,10 @@ class EmployeeService {
 
   Future<List<int>> getEmployeeCount() async {
     try {
-      final worker = await supabase.from('karyawan').select('''id_karyawan, posisi!inner(tipe)''').eq('posisi.tipe', 1).count();
-      final labor = await supabase.from('karyawan').select('''id_karyawan, posisi!inner(tipe)''').eq('posisi.tipe', 2).count();
+      final worker =
+          await supabase.from('karyawan').select('''id_karyawan, posisi!inner(tipe)''').eq('posisi.tipe', 1).count();
+      final labor =
+          await supabase.from('karyawan').select('''id_karyawan, posisi!inner(tipe)''').eq('posisi.tipe', 2).count();
 
       return [worker.count, labor.count];
     } on PostgrestException catch (error) {
@@ -65,13 +65,13 @@ class EmployeeService {
         'alamat': model.address,
         'tempat_lahir': model.birthPlace,
         'tanggal_lahir': model.birthDate,
-        'no_hp': model.phoneNumber,
-        'jenis_kelamin': model.gender,
+        'no_telp': model.phoneNumber,
+        'gender': model.gender,
         'agama': model.religion,
         'id_mesin_absensi': model.attendanceMachineID,
-        'tanggal_masuk': model.entryDate,
+        'tanggal_masuk': model.entryDate?.toIso8601String(),
         'gaji_pokok': model.salary,
-        'id_posisi': model.position!.id,
+        'id_posisi': model.position.id,
       }).eq('id_karyawan', model.id);
     } on PostgrestException catch (error) {
       throw PostgrestException(message: error.message);

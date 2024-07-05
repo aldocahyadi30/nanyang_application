@@ -43,4 +43,14 @@ class UserModel {
   factory UserModel.empty() {
     return UserModel(id: '', email: '', level: 0, employee: EmployeeModel.empty());
   }
+
+  factory UserModel.copyWith(UserModel user) {
+    return UserModel(
+        id: user.id,
+        email: user.email,
+        level: user.level,
+        userChatId: user.userChatId,
+        employee: user.employee,
+        isAdmin: user.isAdmin);
+  }
 }

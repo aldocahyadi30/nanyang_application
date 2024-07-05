@@ -58,7 +58,7 @@ class EmployeeModel {
             .toUpperCase();
 
     if (employee['gaji'] != null && employee['gaji'].isNotEmpty) {
-      thisMonthSalary = SalaryModel.fromMap(employee['gaji']);
+      thisMonthSalary = SalaryModel.fromMap(employee['gaji'][0]);
     }
     return EmployeeModel(
       id: employee['id_karyawan'],
@@ -76,7 +76,7 @@ class EmployeeModel {
       gender: employee['gender'].toString(),
       religion: employee['agama'].toString(),
       salary: employee['gaji_pokok'] != null ? employee['gaji_pokok'].toDouble() : 0.0,
-      attendanceMachineID: employee['id_mesin_absensi'],
+      attendanceMachineID: employee['id_mesin_absensi'] ?? 0,
     );
   }
 

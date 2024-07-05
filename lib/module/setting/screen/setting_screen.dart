@@ -66,7 +66,7 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = Provider.of<ConfigurationViewModel>(context).user;
+    UserModel user = Provider.of<AuthViewModel>(context).user;
 
     return Scaffold(
       backgroundColor: ColorTemplate.periwinkle,

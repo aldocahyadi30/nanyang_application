@@ -69,9 +69,10 @@ class AnnouncementService {
         'id_kategori': model.category.id,
         'judul': model.title,
         'isi': model.content,
-        'waktu_kirim': model.postDate!.toIso8601String(),
+        'waktu_kirim': model.postDate?.toIso8601String(),
         'durasi': model.duration,
         'status': model.status,
+        'sudah_kirim': model.isSend,
         'id_pembuat': model.employee.id,
       });
     } on PostgrestException catch (error) {

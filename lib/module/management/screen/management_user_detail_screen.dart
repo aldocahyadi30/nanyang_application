@@ -7,15 +7,15 @@ import 'package:nanyang_application/module/global/other/nanyang_detail_card.dart
 import 'package:nanyang_application/module/management/screen/management_user_form_screen.dart';
 import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/user_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 enum MenuItem { edit, delete }
 
 class ManagementUserDetailScreen extends StatelessWidget {
-  final UserModel model;
-  const ManagementUserDetailScreen({super.key, required this.model});
+  const ManagementUserDetailScreen({super.key});
 
-  void _delete(BuildContext context) async {
+  void _delete(BuildContext context, UserModel model) async {
     await showDialog(
       context: context,
       builder: (context) {
@@ -43,86 +43,80 @@ class ManagementUserDetailScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _edit(BuildContext context) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ManagementUserFormScreen(model: model),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final UserModel _user = context.read<ConfigurationViewModel>().user;
-    return Scaffold(
-      backgroundColor: ColorTemplate.periwinkle,
-      appBar: NanyangAppbar(
-        title: 'User',
-        isCenter: true,
-        isBackButton: true,
-        actions: [
-          PopupMenuButton<MenuItem>(
-            color: ColorTemplate.periwinkle,
-            onSelected: (MenuItem result) {
-              if (result == MenuItem.edit) {
-                _edit(context);
-              } else if (result == MenuItem.delete) {
-                _delete(context);
-              }
-            },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
-              PopupMenuItem<MenuItem>(
-                value: MenuItem.edit,
-                child: Row(
+    return Selector<UserViewModel, UserModel>(
+        selector: (context, viewmodel) => viewmodel.selectedUser,
+        builder: (context, user, child) {
+          return Scaffold(
+            backgroundColor: ColorTemplate.periwinkle,
+            appBar: NanyangAppbar(
+              title: 'User',
+              isCenter: true,
+              isBackButton: true,
+              actions: [
+                PopupMenuButton<MenuItem>(
+                  color: ColorTemplate.periwinkle,
+                  onSelected: (MenuItem result) {
+                    if (result == MenuItem.edit) {
+                      context.read<UserViewModel>().edit(user);
+                    } else if (result == MenuItem.delete) {
+                      _delete(context, user);
+                    }
+                  },
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
+                    PopupMenuItem<MenuItem>(
+                      value: MenuItem.edit,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.edit, color: ColorTemplate.violetBlue),
+                          SizedBox(width: dynamicWidth(16, context)),
+                          const Text(
+                            'Edit',
+                            style: TextStyle(color: ColorTemplate.violetBlue),
+                          )
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<MenuItem>(
+                      value: MenuItem.delete,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.delete, color: ColorTemplate.violetBlue),
+                          SizedBox(width: dynamicWidth(16, context)),
+                          const Text(
+                            'Delete',
+                            style: TextStyle(color: ColorTemplate.violetBlue),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            body: Container(
+              padding: dynamicPaddingSymmetric(0, 16, context),
+              child: SingleChildScrollView(
+                child: Column(
                   children: [
-                    const Icon(Icons.edit, color: ColorTemplate.violetBlue),
-                    SizedBox(width: dynamicWidth(16, context)),
-                    const Text(
-                      'Edit',
-                      style: TextStyle(color: ColorTemplate.violetBlue),
-                    )
+                    NanyangDetailCard(
+                      title: 'Detail User',
+                      children: [
+                        _buildRow(context, 'Nama', user.employee.name),
+                        SizedBox(height: dynamicHeight(8, context)),
+                        _buildRow(context, 'Email', user.email),
+                        SizedBox(height: dynamicHeight(8, context)),
+                        _buildLevelRow(context, user.level),
+                        SizedBox(height: dynamicHeight(8, context)),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              PopupMenuItem<MenuItem>(
-                value: MenuItem.delete,
-                child: Row(
-                  children: [
-                    const Icon(Icons.delete, color: ColorTemplate.violetBlue),
-                    SizedBox(width: dynamicWidth(16, context)),
-                    const Text(
-                      'Delete',
-                      style: TextStyle(color: ColorTemplate.violetBlue),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: Container(
-        padding: dynamicPaddingSymmetric(0, 16, context),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              NanyangDetailCard(
-                title: 'Detail User',
-                children: [
-                  _buildRow(context, 'Nama', model.employee.name),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildRow(context, 'Email', model.email),
-                  SizedBox(height: dynamicHeight(8, context)),
-                  _buildLevelRow(context, model.level),
-                  SizedBox(height: dynamicHeight(8, context)),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
+        });
   }
 }
 

@@ -13,6 +13,7 @@ import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/announcement_service.dart';
 import 'package:nanyang_application/service/attendance_service.dart';
 import 'package:nanyang_application/service/auth_service.dart';
+import 'package:nanyang_application/service/calendar_service.dart';
 import 'package:nanyang_application/service/chat_service.dart';
 import 'package:nanyang_application/service/configuration_service.dart';
 import 'package:nanyang_application/service/employee_service.dart';
@@ -25,6 +26,7 @@ import 'package:nanyang_application/service/user_service.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/calendar_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/chat_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/date_viewmodel.dart';
@@ -105,6 +107,9 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(
           create: (context) => PerformanceViewmodel(performanceService: PerformanceService()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => CalendarViewmodel(calendarService: CalendarService()),
         ),
         ChangeNotifierProvider(
           create: (context) => DateViewModel(),

@@ -4,7 +4,6 @@ import 'package:nanyang_application/model/announcement_category.dart';
 import 'package:nanyang_application/model/configuration.dart';
 import 'package:nanyang_application/model/holiday.dart';
 import 'package:nanyang_application/model/position.dart';
-import 'package:nanyang_application/model/user.dart';
 import 'package:nanyang_application/provider/toast_provider.dart';
 import 'package:nanyang_application/service/configuration_service.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +12,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class ConfigurationViewModel extends ChangeNotifier {
   final ConfigurationService _configurationService;
   final ToastProvider _toastProvider = Provider.of<ToastProvider>(navigatorKey.currentContext!, listen: false);
-  UserModel currentUser = UserModel.empty();
   ConfigurationModel currentConfig = ConfigurationModel.empty();
   List<HolidayModel> holidayList = [];
   List<PositionModel> positionList = [];
@@ -24,7 +22,6 @@ class ConfigurationViewModel extends ChangeNotifier {
 
   ConfigurationViewModel({required ConfigurationService configurationService}) : _configurationService = configurationService;
 
-  UserModel get user => currentUser;
   HolidayModel get selectedHoliday => _selectedHoliday;
   PositionModel get selectedPosition => _selectedPosition;
   ConfigurationModel get configuration => currentConfig;
@@ -46,10 +43,6 @@ class ConfigurationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setUser(UserModel user) {
-    currentUser = user;
-    notifyListeners();
-  }
 
   void setConfiguration(ConfigurationModel configuration) {
     currentConfig = configuration;
@@ -64,7 +57,6 @@ class ConfigurationViewModel extends ChangeNotifier {
   Future<void> getConfiguration() async {
     try {
       List<Map<String, dynamic>> data = await _configurationService.getConfiguration();
-      print(data);
       currentConfig = ConfigurationModel.fromSupabaseList(data);
       notifyListeners();
     } catch (e) {
@@ -204,6 +196,20 @@ class ConfigurationViewModel extends ChangeNotifier {
         debugPrint('Update Announcement Category error: ${e.message}');
       } else {
         debugPrint('Update Announcement Category error: ${e.toString()}');
+      }
+      _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
+    }
+  }
+
+  Future<void> updatePerformanceThreshold(double value)async{
+    try{
+      _configurationService.updatePerformanceThreshold(value);
+      getConfiguration();
+    } catch (e) {
+      if (e is PostgrestException) {
+        debugPrint('Update Performance Threshold error: ${e.message}');
+      } else {
+        debugPrint('Update Performance Threshold error: ${e.toString()}');
       }
       _toastProvider.showToast('Terjadi kesalahan, silahkan coba lagi!', 'error');
     }

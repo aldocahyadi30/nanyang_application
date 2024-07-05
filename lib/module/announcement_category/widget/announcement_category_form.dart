@@ -111,6 +111,7 @@ class _AnnouncementCategoryFormState extends State<AnnouncementCategoryForm> {
                       } else {
                         await store();
                       }
+
                     }
                   },
                 )

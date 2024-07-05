@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/helper.dart';
+import 'package:nanyang_application/main.dart';
 import 'package:nanyang_application/model/announcement.dart';
 import 'package:nanyang_application/model/announcement_category.dart';
 import 'package:nanyang_application/module/global/form/form_button.dart';
@@ -10,7 +11,7 @@ import 'package:nanyang_application/module/global/form/form_text_field.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/global/picker/nanyang_date_picker.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
-import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class AnnouncementFormScreen extends StatefulWidget {
@@ -53,75 +54,13 @@ class _AnnouncementFormScreenState extends State<AnnouncementFormScreen> {
   }
 
   Future<void> send() async {
-    _model.status = 2;
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: ColorTemplate.periwinkle,
-          title: const Text(
-            'Kirim Pengumuman',
-            style: TextStyle(color: ColorTemplate.violetBlue),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FormPickerField(
-                hintText: 'Pilih Tanggal',
-                picker: NanyangDatePicker(
-                  controller: dateController,
-                  selectedDate: _model.postDate,
-                  onDatePicked: (date) {
-                    dateController.text = parseDateToStringFormatted(date);
-                    _model.postDate = date;
-                  },
-                ),
-                controller: dateController,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Batal'),
-            ),
-            TextButton(
-              onPressed: () {
-                DateTime now = DateTime.now();
-                bool isToday = _model.postDate!.day == now.day &&
-                    _model.postDate!.month == now.month &&
-                    _model.postDate!.year == now.year;
-                _model.employee = context.read<ConfigurationViewModel>().user.employee;
-                if (isToday) {
-                  _model.status = 1;
-                  _model.isSend = true;
-                } else {
-                  _model.status = 2;
-                }
-
-                if (isEdit) {
-                  _announcementViewModel.update(_model);
-                } else {
-                  _announcementViewModel.store(_model);
-                }
-              },
-              child: const Text('Ya'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> test(BuildContext context) async {
     await showModalBottomSheet(
       elevation: 10,
       context: context,
       builder: (context) {
         return StatefulBuilder(builder: (context, StateSetter setState) {
           return Container(
+            padding: dynamicPaddingOnly(16, 0, 16, 16, context),
             decoration: BoxDecoration(
               color: ColorTemplate.periwinkle,
               borderRadius: BorderRadius.only(
@@ -129,7 +68,7 @@ class _AnnouncementFormScreenState extends State<AnnouncementFormScreen> {
                 topRight: Radius.circular(dynamicWidth(25, context)),
               ),
             ),
-            height: MediaQuery.of(context).size.height * 0.5,
+            height: MediaQuery.of(context).size.height * 0.2,
             child: Column(
               children: [
                 FormPickerField(
@@ -151,23 +90,26 @@ class _AnnouncementFormScreenState extends State<AnnouncementFormScreen> {
                   text: 'Buat',
                   isLoading: isLoadingPost,
                   onPressed: () {
-
                     DateTime now = DateTime.now();
-                    bool isToday = _model.postDate!.day == now.day &&
-                        _model.postDate!.month == now.month &&
-                        _model.postDate!.year == now.year;
-                    _model.employee = context.read<ConfigurationViewModel>().user.employee;
-                    if (isToday) {
-                      _model.status = 1;
-                      _model.isSend = true;
-                    } else {
-                      _model.status = 2;
-                    }
+                    if (_model.postDate == null) {
+                      bool isToday = _model.postDate!.day == now.day &&
+                          _model.postDate!.month == now.month &&
+                          _model.postDate!.year == now.year;
+                      _model.employee = context.read<AuthViewModel>().user.employee;
+                      if (isToday) {
+                        _model.status = 1;
+                        _model.isSend = true;
+                      } else {
+                        _model.status = 2;
+                        _model.isSend = false;
+                      }
 
-                    if (isEdit) {
-                      _announcementViewModel.update(_model);
-                    } else {
-                      _announcementViewModel.store(_model);
+                      if (isEdit) {
+                        _announcementViewModel.update(_model);
+                      } else {
+                        _announcementViewModel.store(_model);
+                      }
+                      Navigator.pop(context);
                     }
                   },
                 )
@@ -227,7 +169,7 @@ class _AnnouncementFormScreenState extends State<AnnouncementFormScreen> {
                                 child: Text(category.name),
                               );
                             }).toList(),
-                      value: _model.category.id != 0 ? _model.category.id : 1,
+                      value: _model.category.id != 0 ? _model.category.id : null,
                       onChanged: (value) {
                         setState(() {
                           _model.category = categories.firstWhere((element) => element.id == value);
@@ -261,7 +203,12 @@ class _AnnouncementFormScreenState extends State<AnnouncementFormScreen> {
                 FormButton(
                   text: 'Kirim',
                   onPressed: () async {
-                    await send();
+                    if (_formKey.currentState!.validate()) {
+                      await send();
+                      if (mounted){
+                        Navigator.pop(context);
+                      }
+                    }
                   },
                   backgroundColor: ColorTemplate.lightVistaBlue,
                   isLoading: isLoadingPost,

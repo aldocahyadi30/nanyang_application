@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
-import 'package:nanyang_application/provider/date_provider.dart';
-import 'package:nanyang_application/viewmodel/attendance_viewmodel.dart';
-import 'package:nanyang_application/viewmodel/date_viewmodel.dart';
-import 'package:provider/provider.dart';
 
 class NanyangDatePicker extends StatefulWidget {
   final TextEditingController? controller;
   final Color color;
   final DateTime? selectedDate;
   final bool isDisabled;
+  final DateTime? firstDate;
+  final DateTime? lastDate;
   final Function(DateTime)? onDatePicked;
 
   const NanyangDatePicker({
@@ -19,6 +17,8 @@ class NanyangDatePicker extends StatefulWidget {
     this.color = ColorTemplate.violetBlue,
     this.selectedDate,
     this.isDisabled = false,
+    this.firstDate,
+    this.lastDate,
     this.onDatePicked,
   });
 
@@ -50,8 +50,8 @@ class _NanyangDatePickerState extends State<NanyangDatePicker> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(2015, 8),
-      lastDate: DateTime(2101),
+      firstDate: widget.firstDate ?? DateTime(2015, 8),
+      lastDate: widget.lastDate ?? DateTime(2101),
       builder: (BuildContext context, Widget? child) {
         return child!;
       },

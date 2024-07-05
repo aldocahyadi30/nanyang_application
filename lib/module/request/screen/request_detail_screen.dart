@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:nanyang_application/color_template.dart';
 import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/request.dart';
 import 'package:nanyang_application/model/user.dart';
+import 'package:nanyang_application/module/global/form/form_button.dart';
 import 'package:nanyang_application/module/global/other/nanyang_appbar.dart';
 import 'package:nanyang_application/module/request/screen/request_form_screen.dart';
-import 'package:nanyang_application/module/request/screen/request_screen.dart';
-import 'package:nanyang_application/viewmodel/configuration_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:nanyang_application/viewmodel/request_viewmodel.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +22,6 @@ class RequestDetailScreen extends StatefulWidget {
 class _RequestDetailScreenState extends State<RequestDetailScreen> {
   final TextEditingController commentController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  // late RequestViewModel _requestViewModel;
   late UserModel _user;
   bool isLoading = false;
   bool isAdmin = false;
@@ -32,93 +29,85 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // _requestViewModel = Provider.of<RequestViewModel>(context, listen: false);
-    _user = Provider.of<ConfigurationViewModel>(context, listen: false).user;
+    _user = Provider.of<AuthViewModel>(context, listen: false).user;
     isAdmin = _user.isAdmin;
   }
 
+
+
   Future<void> response(BuildContext context, String type, RequestViewModel viewmodel) async {
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(builder: (context, StateSetter setState) {
-          bool isTypeApproval = type == 'approve';
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            title: Text(
-              isTypeApproval ? 'Approve Perizinan' : 'Tolak Perizinan',
-              style: TextStyle(color: isTypeApproval ? ColorTemplate.lightVistaBlue : Colors.redAccent, fontWeight: FontWeight.bold),
-            ),
-            content: Form(
-              key: _formKey,
-              child: TextFormField(
-                controller: commentController,
-                validator: isTypeApproval
-                    ? null
-                    : (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Alasan Penolakan tidak boleh kosong';
-                        }
-                        return null;
-                      },
-                maxLines: 5,
-                decoration: InputDecoration(
-                  hintText: isTypeApproval ? 'Berikan Komentar (Opsional)' : 'Alasan Penolakan (Wajib diisi)',
-                  border: OutlineInputBorder(
-                    borderSide: const BorderSide(
-                      color: Colors.transparent,
-                    ),
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  contentPadding: dynamicPaddingSymmetric(16, 16, context),
-                  filled: true,
-                  fillColor: Colors.white,
+    await showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return StatefulBuilder(builder: (context, StateSetter setState) {
+            bool isTypeApproval = type == 'approve';
+            return Container(
+              padding: dynamicPaddingOnly(16, 0, 16, 16, context),
+              decoration: BoxDecoration(
+                color: ColorTemplate.periwinkle,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(dynamicWidth(25, context)),
+                  topRight: Radius.circular(dynamicWidth(25, context)),
                 ),
               ),
-            ),
-            actions: [
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: isTypeApproval ? ColorTemplate.lightVistaBlue : Colors.redAccent),
-                child: const Text('Batal'),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    if (isTypeApproval) {
-                      await viewmodel.response('approve', viewmodel.request.id, commentController.text);
-                    } else {
-                      await viewmodel.response('reject', viewmodel.request.id, commentController.text);
-                    }
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      controller: commentController,
+                      validator: isTypeApproval
+                          ? null
+                          : (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Alasan Penolakan tidak boleh kosong';
+                              }
+                              return null;
+                            },
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                        hintText: isTypeApproval ? 'Berikan Komentar (Opsional)' : 'Alasan Penolakan (Wajib diisi)',
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.transparent,
+                          ),
+                          borderRadius: BorderRadius.circular(25.0),
+                        ),
+                        contentPadding: dynamicPaddingSymmetric(16, 16, context),
+                        filled: true,
+                        fillColor: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: dynamicHeight(16, context)),
+                    FormButton(
+                        text: isTypeApproval ? 'Approve' : 'Tolak',
+                        backgroundColor: isTypeApproval ? ColorTemplate.lightVistaBlue : Colors.redAccent,
+                        isLoading: isLoading,
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            if (isTypeApproval) {
+                              await viewmodel.response('approve', viewmodel.selectedRequest.id, commentController.text);
+                            } else {
+                              await viewmodel.response('reject', viewmodel.selectedRequest.id, commentController.text);
+                            }
 
-                    setState(() {
-                      isLoading = false;
-                    });
-                    if (mounted) {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => const RequestScreen(type: 'list')),
-                        (Route<dynamic> route) => false,
-                      );
-                    }
-                  }
-                },
-                style:
-                    ElevatedButton.styleFrom(backgroundColor: isTypeApproval ? ColorTemplate.lightVistaBlue : Colors.redAccent, foregroundColor: Colors.white),
-                child: isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      )
-                    : Text(isTypeApproval ? 'Approve' : 'Tolak'),
+                            Navigator.pop(context);
+
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        })
+                  ],
+                ),
               ),
-            ],
-          );
+            );
+          });
         });
-      },
-    );
   }
 
   Future<void> delete() async {}
@@ -186,7 +175,8 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                         SizedBox(height: dynamicHeight(8, context)),
                         _buildTypeField(context, model.type),
                         SizedBox(height: dynamicHeight(8, context)),
-                        if (model.type == 1 || model.type == 2 || model.type == 3) _buildAttendanceStatus(context, model.type),
+                        if (model.type == 1 || model.type == 2 || model.type == 3)
+                          _buildAttendanceStatus(context, model.type),
                         SizedBox(height: dynamicHeight(8, context)),
                         _buildDate(context, model),
                       ],
@@ -293,7 +283,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                   ),
                                   child: Text(
                                     'Tolak',
-                                    style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.red, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: dynamicFontSize(16, context),
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold),
                                   )),
                             ),
                           ),
@@ -316,7 +309,10 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                                   ),
                                   child: Text(
                                     'Approve',
-                                    style: TextStyle(fontSize: dynamicFontSize(16, context), color: Colors.white, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontSize: dynamicFontSize(16, context),
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
                                   )),
                             ),
                           ),
@@ -373,7 +369,9 @@ class _RequestDetailScreenState extends State<RequestDetailScreen> {
                               Align(
                                 alignment: Alignment.topLeft,
                                 child: Text(
-                                  model.comment != null && model.comment!.isNotEmpty ? model.comment! : 'Tidak ada komentar',
+                                  model.comment != null && model.comment!.isNotEmpty
+                                      ? model.comment!
+                                      : 'Tidak ada komentar',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: dynamicFontSize(16, context),
@@ -463,7 +461,7 @@ Widget _buildAttendanceStatus(BuildContext context, int type) {
     status = 'Izin Tidak Masuk';
   }
 
-  return _buildRow(context, 'Status Kehadira', status);
+  return _buildRow(context, 'Status Kehadiran', status);
 }
 
 Widget _buildDate(BuildContext context, RequestModel model) {
@@ -480,11 +478,13 @@ Widget _buildDate(BuildContext context, RequestModel model) {
       children: [
         _buildRow(context, 'Tanggal', parseDateToStringFormatted(model.startDateTime!)),
         SizedBox(height: dynamicHeight(8, context)),
-        _buildRow(context, 'Jam Lembur', "${parseTimeToString(model.startDateTime!)} - ${parseTimeToString(model.endDateTime!)}"),
+        _buildRow(context, 'Jam Lembur',
+            "${parseTimeToString(model.startDateTime!)} - ${parseTimeToString(model.endDateTime!)}"),
       ],
     );
   } else {
-    return _buildRow(context, 'Tanggal', "${parseDateToStringFormatted(model.startDateTime!)} - ${parseDateToStringFormatted(model.endDateTime!)}");
+    return _buildRow(context, 'Tanggal',
+        "${parseDateToStringFormatted(model.startDateTime!)} - ${parseDateToStringFormatted(model.endDateTime!)}");
   }
 }
 
@@ -495,7 +495,8 @@ Column _buildResponseField(BuildContext context, RequestModel model) {
       SizedBox(height: dynamicHeight(8, context)),
       _buildRow(context, 'Status', model.approver!.id != 0 ? 'Disetujui' : 'Ditolak'),
       SizedBox(height: dynamicHeight(8, context)),
-      _buildRow(context, 'Waktu Respon', parseDateToStringWithTime(model.status == 1 ? model.approvalTime! : model.rejectTime!)),
+      _buildRow(context, 'Waktu Respon',
+          parseDateToStringWithTime(model.status == 1 ? model.approvalTime! : model.rejectTime!)),
     ],
   );
 }

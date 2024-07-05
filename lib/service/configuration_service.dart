@@ -30,6 +30,16 @@ class ConfigurationService {
     }
   }
 
+  Future<void> updatePerformanceThreshold(double value) async{
+    try{
+      await supabase.from('konfigurasi').update({'value': value}).eq('nama_konfigurasi', 'batas_performa');
+    }on PostgrestException catch (error) {
+      throw PostgrestException(message: error.message);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   // Future<
   Future<List<dynamic>> getHolidayByAPI() async {
     try {

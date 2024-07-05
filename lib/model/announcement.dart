@@ -8,6 +8,7 @@ class AnnouncementModel {
   DateTime? postDate;
   int duration;
   bool isSend;
+  bool isValid;
   int status;
   EmployeeModel employee;
   AnnouncementCategoryModel category;
@@ -19,20 +20,35 @@ class AnnouncementModel {
     this.postDate,
     this.duration = 0,
     this.isSend = false,
+    this.isValid = true,
     this.status = 0,
     required this.employee,
     required this.category,
   });
 
   factory AnnouncementModel.fromSupabase(Map<String, dynamic> announcement) {
+    DateTime? postDate = announcement['waktu_kirim'] != null ? DateTime.parse(announcement['waktu_kirim']) : null;
+    bool valid = false;
+    if (postDate != null && announcement['status'] == 1) {
+      DateTime endDate = postDate.add(Duration(days: announcement['durasi'].toInt()));
+
+      if (endDate.isBefore(DateTime.now())) {
+        valid = false;
+      } else {
+        valid = true;
+      }
+    } else {
+      valid = false;
+    }
     return AnnouncementModel(
       id: announcement['id_pengumuman'],
       title: announcement['judul'],
       content: announcement['isi'],
       postDate: announcement['waktu_kirim'] != null ? DateTime.parse(announcement['waktu_kirim']) : null,
-      duration: int.parse(announcement['durasi']),
+      duration: announcement['durasi'].toInt(),
       isSend: announcement['sudah_kirim'],
       status: announcement['status'],
+      isValid: valid,
       employee: EmployeeModel.fromSupabase(announcement['karyawan']),
       category: AnnouncementCategoryModel.fromSupabase(announcement['pengumuman_kategori']),
     );

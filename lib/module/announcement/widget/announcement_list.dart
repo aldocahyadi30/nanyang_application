@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nanyang_application/color_template.dart';
+import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/model/announcement.dart';
 import 'package:nanyang_application/module/announcement/widget/announcement_card.dart';
 import 'package:nanyang_application/module/announcement/widget/announcement_filter.dart';
 import 'package:nanyang_application/module/global/other/nanyang_empty_placeholder.dart';
-import 'package:nanyang_application/helper.dart';
 import 'package:nanyang_application/viewmodel/announcement_viewmodel.dart';
+import 'package:nanyang_application/viewmodel/auth_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class AnnouncementList extends StatefulWidget {
@@ -41,7 +42,8 @@ class _AnnouncementListState extends State<AnnouncementList> {
                         elevation: WidgetStateProperty.all<double>(0),
                         hintText: 'Cari...',
                         backgroundColor: WidgetStateProperty.all<Color>(ColorTemplate.periwinkle),
-                        shape: WidgetStateProperty.all<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(dynamicWidth(20, context)))),
+                        shape: WidgetStateProperty.all<OutlinedBorder>(
+                            RoundedRectangleBorder(borderRadius: BorderRadius.circular(dynamicWidth(20, context)))),
                         onTap: () {
                           controller.openView();
                         },
@@ -60,7 +62,8 @@ class _AnnouncementListState extends State<AnnouncementList> {
                     return context
                         .read<AnnouncementViewModel>()
                         .announcement
-                        .where((AnnouncementModel announcement) => announcement.title.toLowerCase().contains(query.toLowerCase()))
+                        .where((AnnouncementModel announcement) =>
+                            announcement.title.toLowerCase().contains(query.toLowerCase()))
                         .map<Widget>((announcement) => InkWell(
                               onTap: () {},
                               child: Container(
@@ -95,7 +98,9 @@ class _AnnouncementListState extends State<AnnouncementList> {
           SizedBox(height: dynamicHeight(16, context)),
           Expanded(
             child: Selector<AnnouncementViewModel, List<AnnouncementModel>>(
-              selector: (context, viewmodel) => viewmodel.announcement,
+              selector: (context, viewmodel) => context.read<AuthViewModel>().user.level == 1
+                  ? viewmodel.announcement.where((element) => element.isValid == true).toList()
+                  : viewmodel.announcement,
               builder: (context, announcement, child) {
                 return RefreshIndicator(
                   onRefresh: () async {
@@ -103,11 +108,15 @@ class _AnnouncementListState extends State<AnnouncementList> {
                   },
                   child: announcement.isEmpty
                       ? const NanyangEmptyPlaceholder()
-                      : ListView.builder(
+                      : ListView.separated(
                           itemCount: announcement.length,
                           itemBuilder: (context, index) {
                             return AnnouncementCard(model: announcement[index]);
                           },
+                          separatorBuilder: (BuildContext context, int index) => Divider(
+                            color: Colors.transparent,
+                            height: dynamicHeight(8, context),
+                          ),
                         ),
                 );
               },
